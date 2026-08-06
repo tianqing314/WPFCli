@@ -353,16 +353,19 @@ public static class ReferencesAdapter
         sb.AppendLine($"/// {dut} {label}被检命令层。**自动转换**自旧 <c>Bots.TestBench.Device.{dut}_2.SimpleCommandEnum</c>");
         sb.AppendLine("/// （SCPI 指令转发）。执行失败抛 <see cref=\"DeviceCommException\"/>（由引擎按异常收尾并落盘）。");
         sb.AppendLine("/// </summary>");
-        sb.AppendLine($"public enum {dut}Command");
-        sb.AppendLine("{");
-        foreach (var (name, scpi) in commands)
-            sb.AppendLine($"    /// <summary>SCPI {scpi}</summary>");
-        foreach (var (name, _) in commands)
-            sb.AppendLine($"    {name},");
-        sb.AppendLine("}");
-        sb.AppendLine();
+        if (commands.Count > 0)
+        {
+            sb.AppendLine($"public enum {dut}Command");
+            sb.AppendLine("{");
+            foreach (var (name, scpi) in commands)
+                sb.AppendLine($"    /// <summary>SCPI {scpi}</summary>");
+            foreach (var (name, _) in commands)
+                sb.AppendLine($"    {name},");
+            sb.AppendLine("}");
+            sb.AppendLine();
+        }
         sb.AppendLine("/// <summary>");
-        sb.AppendLine($"/// {dut} 主板（设备族 {dut}）被检命令接口。**自动转换**自旧 <c>Bots.TestBench.Device.{dut}_2</c>");
+        sb.AppendLine($"/// {dut} {label}（设备族 {dut}）被检{(commands.Count > 0 ? "命令" : "设备")}接口。**自动转换**自旧 <c>Bots.TestBench.Device.{dut}_2</c>");
         sb.AppendLine("/// （旧平台驱动，内部转调 Xmas11 <c>DPG2SCPI</c>，返回 <c>iResponse</c>）。");
         sb.AppendLine("/// 读值方法返回值、通讯/执行失败抛 <see cref=\"DeviceCommException\"/>（由引擎按异常收尾并落盘）。");
         sb.AppendLine("/// </summary>");
@@ -375,12 +378,15 @@ public static class ReferencesAdapter
         sb.AppendLine("    /// <returns>是否连接成功。</returns>");
         sb.AppendLine("    Task<bool> ReplenishLinkAsync(CancellationToken ct = default);");
         sb.AppendLine();
-        sb.AppendLine("    /// <summary>");
-        sb.AppendLine("    /// 执行一条主板动态测试 SCPI 指令（无回值）。PORT: 旧 ConST221_2.ExecuteAnyCommand_NoResponse。");
-        sb.AppendLine("    /// </summary>");
-        sb.AppendLine("    /// <param name=\"command\">指令（电源开/关、RTC/铁电/FLASH 自检等）。</param>");
-        sb.AppendLine("    /// <param name=\"ct\">取消令牌。</param>");
-        sb.AppendLine($"    Task ExecuteAnyCommandNoResponseAsync({dut}Command command, CancellationToken ct = default);");
+        if (commands.Count > 0)
+        {
+            sb.AppendLine("    /// <summary>");
+            sb.AppendLine("    /// 执行一条" + label + "测试 SCPI 指令（无回值）。PORT: 旧 " + dut + "_2.ExecuteAnyCommand_NoResponse。");
+            sb.AppendLine("    /// </summary>");
+            sb.AppendLine("    /// <param name=\"command\">指令（电源开/关、RTC/铁电/FLASH 自检等）。</param>");
+            sb.AppendLine("    /// <param name=\"ct\">取消令牌。</param>");
+            sb.AppendLine($"    Task ExecuteAnyCommandNoResponseAsync({dut}Command command, CancellationToken ct = default);");
+        }
         sb.AppendLine("}");
         return sb.ToString();
     }
@@ -504,6 +510,9 @@ public static class ReferencesAdapter
         sb.AppendLine("    /// </summary>");
         sb.AppendLine("    /// <param name=\"command\">指令。</param>");
         sb.AppendLine("    /// <param name=\"ct\">取消令牌。</param>");
+        sb.AppendLine("    // 无 SimpleCommands 字典（如 P27CommonBase 走 Xmas11 API）时不生成命令执行方法，由人工按设备 API 补充");
+        if (commands.Count > 0)
+        {
         sb.AppendLine($"    public Task ExecuteAnyCommandNoResponseAsync({dut}Command command, CancellationToken ct = default)");
         sb.AppendLine("    {");
         sb.AppendLine("        return Task.Run(() =>");
@@ -519,6 +528,7 @@ public static class ReferencesAdapter
         sb.AppendLine($"                throw new DeviceCommException($\"执行指令 {{command}} 失败\", TestResultStatus.HardwareError);");
         sb.AppendLine("        }, ct);");
         sb.AppendLine("    }");
+        }
         sb.AppendLine();
         sb.AppendLine("    // ===== IDutDevice 必需实现 ===== ");
         sb.AppendLine();
