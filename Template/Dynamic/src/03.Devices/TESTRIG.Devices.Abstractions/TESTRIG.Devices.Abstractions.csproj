@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\01.Core\TESTRIG.Core.Abstractions\TESTRIG.Core.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

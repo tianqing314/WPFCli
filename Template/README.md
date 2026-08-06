@@ -10,20 +10,24 @@ Template/
   Common/                          公共骨架（跨业务共享）
     src/01.Core/                   引擎契约 + 测试引擎
       TESTRIG.Core.Abstractions/      测试流程契约（ITestStep / ITestEngine / JigManifest …）
-      TESTRIG.Core.Engine/            测试引擎实现（顺序执行、异常收尾、结果落库）
+      TESTRIG.Core.Engine/            测试引擎实现（顺序执行、异常收尾、结果落库、ManualStep 人工确认 / 过程等待原语）
     src/02.Infrastructure/         基础设施（SQLite 结果库 / MySQL 远程同步 / Serilog 日志）
-    src/03.Devices/                设备层
+    refdlls/                       Xmas11 通讯库（设备层通过 $(X11) 引用）
+  Dynamic/                         动态工装业务（完整：设备层 + 测试项 + 自动化 + UI + App）
+    TESTRIG.sln                       解决方案（跨引用 Common + Dynamic 共 12 个项目）
+    src/03.Devices/                设备层（动态工装专属，含 PLC 上下料）
       TESTRIG.Devices.Abstractions/   设备接口契约（被检 / 标准盒 / PLC / 蓝牙 / 环境温度 …）
       TESTRIG.Devices/                设备驱动实现（TemplateUUT 被检 + 标准盒 + PLC + 扫描器）
       TESTRIG.Devices.BleWin/         Win10 蓝牙扫描（WinRT 广播监听）
-  Dynamic/                         动态工装业务
-    TESTRIG.sln                       解决方案（跨引用 Common + Dynamic 共 12 个项目）
     src/04.TestSteps/              测试项处理器（IStepHandler 反射注册，TemplateUUT 专属测试项）
     src/05.Jigs/                   针床 Manifest（JSON 声明被检/号位/测试项，运行时加载）
     src/06.Automation/             自动化流程编排
     src/07.UI/                     WPF 界面（主窗 / 测试运行 / 连接配置 / 维护页）
     src/08.App/                    启动项目（DI 组装 + WPF 宿主）
     src/09.Updater/                升级器（net48，独立于主程序）
+  Machine/                         整机测试业务（设备层去 PLC + ManualStep 人工确认 + 温控过程）
+  Complete/                        组件测试业务（设备层去 PLC + 工装/治具管理）
+  Inspect/                         出厂检验业务（设备层去 PLC + 证书/合格证）
 ```
 
 ## 构建与运行
@@ -46,7 +50,7 @@ dotnet run --project src/08.App/TESTRIG.App
 
 ## 新增被检（加板）流程
 
-1. **设备驱动**：在 `Common/src/03.Devices/TESTRIG.Devices/Dut/<型号>/` 添加驱动类，打 `[DutDriver("型号")]` 特性即可自动注册（无需手写 DI）。
+1. **设备驱动**：在业务模板的 `src/03.Devices/TESTRIG.Devices/Dut/<型号>/` 添加驱动类，打 `[DutDriver("型号")]` 特性即可自动注册（无需手写 DI）。
 2. **测试项**：在 `Dynamic/src/04.TestSteps/TESTRIG.TestSteps/<型号>/` 添加 `IStepHandler` 实现，反射自动注册。
 3. **针床清单**：在 `Dynamic/src/05.Jigs/TESTRIG.Jigs/Manifests/<型号>/` 添加一份 JSON（声明被检型号、号位、测试项列表）。
 

@@ -10,7 +10,7 @@ namespace TESTRIG.Devices;
 /// 共享设备连接管理：持有**全局共享**的标准盒，统一连接/断开/查状态，
 /// 并通过 <see cref="IConnectionResolver"/> 把配置里的物理链路解析到当前 COM/网络目标。
 /// 支持一键连接（全部）与单独连接（按端点）。
-/// 整机模板不依赖 PLC：与动态模板的差异在无 IPlcController 依赖（见业务模板同名覆盖）。
+/// 整机模板不依赖 PLC：与动态模板的差异在无 IPlcController 依赖。
 /// </summary>
 public sealed class ConnectionManager
 {
