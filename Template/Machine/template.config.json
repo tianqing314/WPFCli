@@ -4,6 +4,7 @@
   "businessType": "machine",
   "category": "machine",
   "disabled": false,
+  "dutPlaceholder": "TemplateUUT",
   "excludeFromCopy": [],
   "excludeFromReplacement": []
 }

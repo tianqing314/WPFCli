@@ -199,6 +199,74 @@ public sealed class ReferencesAdapterTests
     }
 
     [Fact]
+    public void Inject_machine_biztype_reads_machine_folder_and_generates_machine_manifest()
+    {
+        var parent = CreateTempDirectory();
+        try
+        {
+            // 整机数据放 References\Machine\{dut}（区别于动态工装的 References\Dynamic\{dut}）
+            var refs = Path.Combine(parent, "References", "Machine", "ConST221");
+            Directory.CreateDirectory(Path.Combine(refs, "Uut"));
+            File.WriteAllText(Path.Combine(refs, "Uut", "ConST221.cs"), SampleUutSource);
+            Directory.CreateDirectory(Path.Combine(refs, "TestSteps"));
+            Directory.CreateDirectory(Path.Combine(refs, "Jigs"));
+            File.WriteAllText(Path.Combine(refs, "TestSteps", "ConST221_MainBoard_Auto.cs"), SampleScriptSource);
+            File.WriteAllText(Path.Combine(refs, "Jigs", "ConST221_MainBoard_Auto.distributed.json"), SampleJigJson);
+            var output = Path.Combine(parent, "out");
+            Directory.CreateDirectory(output);
+
+            var opts = CreateOptions(Path.Combine(parent, "Template"), parent);
+            opts.BusinessTemplate.BusinessType = "machine";
+            opts.BusinessTemplate.DutPlaceholder = "TemplateUUT";
+            var result = ReferencesAdapter.Inject(opts, "ConST221", output);
+
+            Assert.True(result.Found);
+            // 整机产物：_Machine 后缀 manifest
+            var manifest = Path.Combine(output, "src", "05.Jigs", "TESTRIG.Jigs", "Manifests", "ConST221", "ConST221_Machine.json");
+            Assert.True(File.Exists(manifest), "整机 manifest 未生成");
+            var manifestText = File.ReadAllText(manifest);
+            Assert.Contains("\"Key\": \"ConST221_Machine\"", manifestText);
+            // JSON 序列化会把反斜杠转义为 \\，断言其转义形式
+            Assert.Contains("References\\\\Machine\\\\ConST221", manifestText);
+
+            // 整机产物：处理器 _Machine 后缀 + Uut 接口/驱动同样生成
+            var handler = Path.Combine(output, "src", "04.TestSteps", "TESTRIG.TestSteps", "ConST221", "ConST221_Machine", "ConST221_Machine.cs");
+            Assert.True(File.Exists(handler), "整机处理器未生成");
+            var iface = Path.Combine(output, "src", "03.Devices", "TESTRIG.Devices.Abstractions", "Dut", "IConST221Dut.cs");
+            Assert.True(File.Exists(iface), "整机 Uut 接口未生成");
+        }
+        finally
+        {
+            Directory.Delete(parent, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void Inject_machine_biztype_ignores_dynamic_folder()
+    {
+        var parent = CreateTempDirectory();
+        try
+        {
+            // 数据只放在 Dynamic 目录，Machine 业务类型不应命中
+            var refs = Path.Combine(parent, "References", "Dynamic", "ConST221");
+            Directory.CreateDirectory(Path.Combine(refs, "Uut"));
+            File.WriteAllText(Path.Combine(refs, "Uut", "ConST221.cs"), SampleUutSource);
+            var output = Path.Combine(parent, "out");
+            Directory.CreateDirectory(output);
+
+            var opts = CreateOptions(Path.Combine(parent, "Template"), parent);
+            opts.BusinessTemplate.BusinessType = "machine";
+            var result = ReferencesAdapter.Inject(opts, "ConST221", output);
+
+            Assert.False(result.Found);
+        }
+        finally
+        {
+            Directory.Delete(parent, recursive: true);
+        }
+    }
+
+    [Fact]
     public void Translate_body_marks_unmappable_statements_as_todo()
     {
         var parent = CreateTempDirectory();

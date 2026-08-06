@@ -1,0 +1,506 @@
+{
+  "Name": "ConST171A整机测试",
+  "Type": {
+    "Type": 2,
+    "Categories": "ConST171A",
+    "IsManualConfig": true,
+    "TestCategoriesItems": [
+      {
+        "Name": "ConST171A",
+        "Value": "ConST171A",
+        "IsRadio": true,
+        "IsSelected": false
+      }
+    ]
+  },
+
+  "View": "TestBench_SelfCheckTaskRunView",
+  "ViewModel": "SelfCheckTaskRunViewModlel",
+  "ViewModelAssembly": "Bots.TestBench.UI.P27",
+  "ScriptFile": "SelfAutoTest.cs",
+  "RefAssemblies": "Bots.TestBench.Device.Base.dll,Bots.TestBench.Model.Task.dll,Bots.TestBench.Model.Scripts.dll,Xmas11.Comm.Devices.ConST171.dll",
+  "Devices": [
+    {
+      "$type": "Bots.TestBench.Device.P27CommonBase, Bots.TestBench.Device.ConST171A",
+      "DeviceKey": "ConST171A",
+      "DeviceName": "ConST171A",
+      "DeviceMode": "P27CommonBase",
+      "DeviceType": "DUT",
+      "CommConfigs": [
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.SerialPortConfig, Bots.TestBench.Device.Base",
+          "Bauds": 115200,
+          "StopBits": "Two",
+          "Parity": "None"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Device.DPSEX, Bots.TestBench.Device.DPSEX",
+      "DeviceKey": "DPSEX1",
+      "DeviceName": "正压模块",
+      "DeviceMode": "DPSEX1",
+      "DeviceType": "Tool",
+      "CommConfigs": [
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.SerialPortConfig, Bots.TestBench.Device.Base",
+          "DevSn": "DPSE022FE0054",
+          "Bauds": 4800,
+          "StopBits": "Two",
+          "Parity": "None"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Device.DPSEX, Bots.TestBench.Device.DPSEX",
+      "DeviceKey": "DPSEX2",
+      "DeviceName": "真空模块",
+      "DeviceMode": "DPSEX2",
+      "DeviceType": "Tool",
+      "CommConfigs": [
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.SerialPortConfig, Bots.TestBench.Device.Base",
+          "DevSn": "005215A0002",
+          "Bauds": 4800,
+          "StopBits": "Two",
+          "Parity": "None"
+        }
+      ]
+    }
+  ],
+  "TaskCollection": [
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "SelfTestWriteSNAndType"
+      },
+      "SortIdentifier": 1,
+      "Categories": "ConST171A",
+      "Name": "基础信息写入",
+      "TestDesc": "写入SN号及设备类型，并回读核对信息",
+      "HandleDesc": "1.设备二维码编号与设备型号不符，检查二维码标签；\r\n2.数据库中存储的设备型号异常；\r\n3.设备自身异常；",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "写入SN",
+          "Tag": "SN",
+          "Value": ""
+        }
+      ],
+      "Conditions": []
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "TestVersions"
+      },
+      "SortIdentifier": 2,
+      "Categories": "ConST171A",
+      "Name": "版本验证",
+      "TestDesc": "核对当前设备各模块的版本是否最新，若不是最新提示升级",
+      "HandleDesc": "如果版本较低，请联系工程师进行升级",
+      "Parameters": [],
+      "Conditions": []
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "SetDeviceParameter"
+      },
+      "SortIdentifier": 3,
+      "Categories": "ConST171A",
+      "Name": "设备参数设置",
+      "TestDesc": "核对当前设备是否正确开启静音模式",
+      "HandleDesc": "如果模式设置失败，联系相关产品负责人处理",
+      "Parameters": [],
+      "Conditions": []
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.ManualTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "TestBatteryTest"
+      },
+      "SortIdentifier": 4,
+      "Categories": "ConST171A",
+      "Name": "供电测试",
+      "TestDesc": "验证电源供电，电源功能是否正常。",
+      "HandleDesc": "测试失败后，如异常隔离设备，并通知产品负责人！",
+      "Parameters": [],
+      "Conditions": []
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "ScreenGeneralTest"
+      },
+      "SortIdentifier": 5,
+      "Categories": "ConST171A",
+      "Name": "屏幕颜色",
+      "TestDesc": "进入颜色测试，点击屏幕，背景色更改，如果不存在坏点，则按下成功按钮",
+      "HandleDesc": "检查屏幕是否存在坏点",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "屏幕颜色测试",
+          "Value": "0",
+          "Description": "屏幕颜色"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超时时间",
+          "Value": 60,
+          "Operator": "<=",
+          "Unit": "S"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "ScreenTouchTest"
+      },
+      "SortIdentifier": 6,
+      "Categories": "ConST171A",
+      "Name": "屏幕触摸",
+      "TestDesc": "进入触摸测试，根据提示触摸对应按钮，如有异常请联系产品负责人！",
+      "HandleDesc": "屏幕触摸异常，隔离设备，通知产品负责人",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "屏幕触摸测试",
+          "Value": "1",
+          "Description": "屏幕触摸"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超时时间",
+          "Value": 60,
+          "Operator": "<=",
+          "Unit": "s"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "ScreenLightTest"
+      },
+      "SortIdentifier": 7,
+      "Categories": "ConST171A",
+      "Name": "屏幕亮度",
+      "TestDesc": "调节屏幕亮度，观察屏幕亮度变化情况",
+      "HandleDesc": "屏幕亮度调节异常，隔离设备，通知产品负责人",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "屏幕亮度测试",
+          "Value": "2",
+          "Description": "屏幕亮度"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超时时间",
+          "Value": 60,
+          "Operator": "<=",
+          "Unit": "S"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "ScreenSoundTest"
+      },
+      "SortIdentifier": 8,
+      "Categories": "ConST171A",
+      "Name": "扬声器测试",
+      "TestDesc": "进入扬声器测试，测试人员调节界面高低音量按钮,判断通过或不通过！",
+      "HandleDesc": "扬声器异常，隔离设备，通知产品负责人",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "扬声器测试",
+          "Value": "3",
+          "Description": "扬声器"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超时时间",
+          "Value": 60,
+          "Operator": "<=",
+          "Unit": "S"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "FanTest"
+      },
+      "SortIdentifier": 9,
+      "Categories": "ConST171A",
+      "Name": "风扇测试",
+      "TestDesc": "验证风扇功能是否正常",
+      "HandleDesc": "核验未通过请联系产品负责人确认",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "转速低值",
+          "Value": "0.2",
+          "Tag": "1",
+          "Description": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "转速中值",
+          "Value": "0.3",
+          "Tag": "2",
+          "Description": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "转速高值",
+          "Value": "0.6",
+          "Tag": "3",
+          "Description": ""
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "转速低值范围",
+          "Lower": 2500,
+          "Upper": 3300,
+          "Unit": "rpm"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "转速中值范围",
+          "Lower": 3700,
+          "Upper": 4500,
+          "Unit": "rpm"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "转速高值范围",
+          "Lower": 6000,
+          "Upper": 7700,
+          "Unit": "rpm"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "SensorTest"
+      },
+      "SortIdentifier": 10,
+      "Categories": "ConST171A",
+      "Name": "传感器测试",
+      "TestDesc": "验证传感器是否正常",
+      "HandleDesc": "核验未通过请联系产品负责人确认",
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压传感器范围",
+          "Lower": -25,
+          "Upper": 25,
+          "Unit": "kPa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压传感器范围",
+          "Lower": 90,
+          "Upper": 105,
+          "Unit": "kPa"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "PositiveTest"
+      },
+      "SortIdentifier": 11,
+      "Categories": "ConST171A",
+      "Name": "正压测试",
+      "TestDesc": "1)查看造压效率是否正常；2）是否泄漏",
+      "HandleDesc": "核验未通过请联系产品负责人确认",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "下限值",
+          "Value": "8000",
+          "Tag": "1",
+          "Description": "kPa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "上限值",
+          "Value": "8500",
+          "Tag": "2",
+          "Description": "kPa"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "泄漏指标",
+          "Value": "100",
+          "Tag": "3",
+          "Description": "kPa"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "VacuumTest"
+      },
+      "SortIdentifier": 12,
+      "Categories": "ConST171A",
+      "Name": "真空测试",
+      "TestDesc": "1)查看造压效率是否正常；2）是否泄漏",
+      "HandleDesc": "核验未通过请联系产品负责人确认",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "下限值",
+          "Value": "0",
+          "Tag": "1",
+          "Description": "kPa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "上限值",
+          "Value": "10",
+          "Tag": "1",
+          "Description": "kPa"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "泄漏率",
+          "Value": "0.5",
+          "Tag": "3",
+          "Description": "kPa"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "BlowTest"
+      },
+      "SortIdentifier": 13,
+      "Categories": "ConST171A",
+      "Name": "吹扫测试",
+      "TestDesc": "吹扫功能是否正常",
+      "HandleDesc": "测试失败后，请复测，如异常隔离设备，并通知产品负责人！",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "打压时长",
+          "Tag": "s",
+          "Value": "5"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "合格下限",
+          "Operator": "＞=",
+          "Value": 5,
+          "Unit": "kPa"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "VacuumCalibrationTest"
+      },
+      "SortIdentifier": 14,
+      "Categories": "ConST171A",
+      "Name": "真空模块校准",
+      "TestDesc": "真空接口连接绝压表，两点校准",
+      "HandleDesc": "核验未通过请联系产品负责人确认",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "压力下限",
+          "Value": "5",
+          "Description": "kPa"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "精度等级",
+          "Value": 0.05,
+          "Operator": "<=",
+          "Unit": "%"
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "P27_HostSctript",
+        "Entry": "PositiveCalibrationTest"
+      },
+      "SortIdentifier": 15,
+      "Categories": "ConST171A",
+      "Name": "正压模块校准",
+      "TestDesc": "正压接口连接10MPa压力表，两点校准",
+      "HandleDesc": "核验未通过请联系产品负责人确认",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "压力下限",
+          "Value": "0",
+          "Description": "kPa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "压力上限",
+          "Value": "8500",
+          "Description": "kPa"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "精度等级",
+          "Value": 0.1,
+          "Operator": "<=",
+          "Unit": "%"
+        }
+      ]
+    }
+  ]
+}

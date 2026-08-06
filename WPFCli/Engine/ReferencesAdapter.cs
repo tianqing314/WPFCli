@@ -15,17 +15,19 @@ public sealed record ReferencesAdapterResult(
     IReadOnlyList<string> TodoItems);
 
 /// <summary>
-/// References 适配器 —— 动态工装模板构建时，从 <c>References\Dynamic\{被检类型}\</c> 拉取旧 Bots.TestBench
+/// References 适配器 —— 按业务类型从 <c>References\{业务类型}\{被检类型}\</c> 拉取旧 Bots.TestBench
 /// 体系资源（Xmas11 dll / Uut 设备类 / TestSteps 脚本 / Jigs 配置），自动转换为新 TESTRIG 体系产物并
-/// 注入 staging 输出目录，替换模板内置被检占位（如 ConST171）。
+/// 注入 staging 输出目录，替换模板内置被检占位（如 TemplateUUT）。
+/// 业务类型取自模板配置的 businessType：动态工装 → References\Dynamic\{dut}（产物后缀 _ControlBoard），
+/// 整机 → References\Machine\{dut}（产物后缀 _Machine）。
 ///
 /// 四类适配规则：
 ///   1) Xmas11\*.dll      → 拷贝到 refdlls（同名覆盖，新名添加），新 dll 自动补 TESTRIG.Devices.csproj Reference；
 ///   2) Uut\*.cs          → 生成 TESTRIG.Devices.Abstractions\Dut\I{类型}Dut.cs（命令枚举+接口）
 ///                          与 TESTRIG.Devices\Dut\{类型}\{类型}Dut.cs（[DutDriver] 真机驱动，走 Xmas11 DPG2SCPI）；
-///   3) TestSteps\*.cs    → 生成 TESTRIG.TestSteps\{类型}\{类型}_ControlBoard\{类型}_ControlBoard.cs
+///   3) TestSteps\*.cs    → 生成 TESTRIG.TestSteps\{类型}\{类型}_{后缀}\{类型}_{后缀}.cs
 ///                          （Ops 辅助类 + 每测试项一个 IStepHandler，自动注册）；
-///   4) Jigs\*.json       → 生成 TESTRIG.Jigs\Manifests\{类型}\{类型}_ControlBoard.json（新 manifest 格式）。
+///   4) Jigs\*.json       → 生成 TESTRIG.Jigs\Manifests\{类型}\{类型}_{后缀}.json（新 manifest 格式）。
 /// 生成产物直接以实际被检类型命名（不依赖后续占位符替换），并删除模板内置占位对应文件。
 /// 无法自动映射的语句转成 TODO 注释并汇总到 <c>_ReferencesAdapterReport.md</c>。
 /// </summary>
@@ -143,16 +145,18 @@ public static class ReferencesAdapter
         var removed = new List<string>();
         var todos = new List<string>();
 
-        var refDir = Path.Combine(ResolveReferencesRoot(opts), "Dynamic", dutValue);
+        // 按业务类型路由 References 子目录：动态工装 → References\Dynamic\{dut}，整机 → References\Machine\{dut}
+        var bizType = NormalizeBizType(opts.BusinessTemplate.BusinessType);
+        var refDir = Path.Combine(ResolveReferencesRoot(opts), bizType, dutValue);
         if (!Directory.Exists(refDir))
         {
-            var msg = $"未找到 References\\Dynamic\\{dutValue}，跳过 References 适配（保留模板内置占位 {opts.BusinessTemplate.DutPlaceholder}）";
+            var msg = $"未找到 References\\{bizType}\\{dutValue}，跳过 References 适配（保留模板内置占位 {opts.BusinessTemplate.DutPlaceholder}）";
             onProgress?.Invoke(msg);
             report.Add($"> {msg}");
             WriteReport(outputDir, report, generated, removed, todos);
             return new ReferencesAdapterResult(false, 0, 0, generated, removed, todos);
         }
-        onProgress?.Invoke($"找到 References\\Dynamic\\{dutValue}，开始适配注入");
+        onProgress?.Invoke($"找到 References\\{bizType}\\{dutValue}，开始适配注入");
 
         var placeholder = opts.BusinessTemplate.DutPlaceholder;
         var dllCopied = 0;
@@ -188,7 +192,7 @@ public static class ReferencesAdapter
         var uutFile = FirstFile(refDir, "Uut", "*.cs");
         if (uutFile != null)
         {
-            var (ifaceRel, driverRel, uutTodos) = GenerateDutFiles(uutFile, dutValue, outputDir);
+            var (ifaceRel, driverRel, uutTodos) = GenerateDutFiles(uutFile, dutValue, outputDir, bizType);
             generated.AddRange(ifaceRel);
             generated.AddRange(driverRel);
             todos.AddRange(uutTodos);
@@ -207,7 +211,7 @@ public static class ReferencesAdapter
         var jigFile = FirstFile(refDir, "Jigs", "*.json");
         if (stepsFile != null && jigFile != null)
         {
-            var (handlerRel, manifestRel, stepsTodos) = GenerateTestStepsAndManifest(stepsFile, jigFile, dutValue, outputDir);
+            var (handlerRel, manifestRel, stepsTodos) = GenerateTestStepsAndManifest(stepsFile, jigFile, dutValue, outputDir, bizType);
             generated.AddRange(handlerRel);
             generated.AddRange(manifestRel);
             todos.AddRange(stepsTodos);
@@ -238,6 +242,34 @@ public static class ReferencesAdapter
         var dir = Path.Combine(refDir, subDir);
         return Directory.Exists(dir) ? Directory.GetFiles(dir, pattern).FirstOrDefault() : null;
     }
+
+    /// <summary>
+    /// 归一化业务类型为 References 目录名（首字母大写，如 Dynamic / Machine；空值按动态工装处理）。
+    /// </summary>
+    /// <param name="businessType">模板配置的 businessType（小写）。</param>
+    /// <returns>References 目录名。</returns>
+    private static string NormalizeBizType(string? businessType)
+    {
+        if (string.IsNullOrWhiteSpace(businessType)) return "Dynamic";
+        var t = businessType.ToLowerInvariant();
+        return char.ToUpperInvariant(t[0]) + t[1..];
+    }
+
+    /// <summary>
+    /// 业务类型对应的 manifest 后缀：整机 → Machine，其余（动态工装等）→ ControlBoard。
+    /// </summary>
+    /// <param name="bizType">业务类型（References 目录名）。</param>
+    /// <returns>manifest 后缀。</returns>
+    private static string BizSuffix(string bizType)
+        => bizType.Equals("Machine", StringComparison.OrdinalIgnoreCase) ? "Machine" : "ControlBoard";
+
+    /// <summary>
+    /// 业务类型对应的被检描述词：整机 → 整机，其余 → 主板。
+    /// </summary>
+    /// <param name="bizType">业务类型（References 目录名）。</param>
+    /// <returns>描述词。</returns>
+    private static string BizLabel(string bizType)
+        => bizType.Equals("Machine", StringComparison.OrdinalIgnoreCase) ? "整机" : "主板";
 
     // =====================================================================
     // 1. Xmas11 → csproj 联动
@@ -283,7 +315,7 @@ public static class ReferencesAdapter
     // =====================================================================
 
     private static (List<string> ifaceFiles, List<string> driverFiles, List<string> todos) GenerateDutFiles(
-        string sourceFile, string dut, string outputDir)
+        string sourceFile, string dut, string outputDir, string bizType)
     {
         var todos = new List<string>();
         var text = File.ReadAllText(sourceFile);
@@ -300,8 +332,8 @@ public static class ReferencesAdapter
 
         var ifaceRel = Path.Combine("src", "03.Devices", "TESTRIG.Devices.Abstractions", "Dut", $"I{dut}Dut.cs");
         var driverRel = Path.Combine("src", "03.Devices", "TESTRIG.Devices", "Dut", dut, $"{dut}Dut.cs");
-        File.WriteAllText(Path.Combine(outputDir, ifaceRel), BuildInterfaceSource(dut, commands), new UTF8Encoding(false));
-        File.WriteAllText(Path.Combine(outputDir, driverRel), BuildDriverSource(dut, commands), new UTF8Encoding(false));
+        File.WriteAllText(Path.Combine(outputDir, ifaceRel), BuildInterfaceSource(dut, commands, bizType), new UTF8Encoding(false));
+        File.WriteAllText(Path.Combine(outputDir, driverRel), BuildDriverSource(dut, commands, bizType), new UTF8Encoding(false));
 
         if (commands.Count == 0)
             todos.Add($"{Path.GetFileName(sourceFile)}：未解析到 SimpleCommands 字典，{dut}Command 枚举为空");
@@ -309,15 +341,16 @@ public static class ReferencesAdapter
         return (new List<string> { ifaceRel }, new List<string> { driverRel }, todos);
     }
 
-    private static string BuildInterfaceSource(string dut, IReadOnlyList<(string Name, string Scpi)> commands)
+    private static string BuildInterfaceSource(string dut, IReadOnlyList<(string Name, string Scpi)> commands, string bizType)
     {
+        var label = BizLabel(bizType);
         var sb = new StringBuilder();
         sb.AppendLine("using TESTRIG.Core.Abstractions;");
         sb.AppendLine();
         sb.AppendLine("namespace TESTRIG.Devices.Abstractions;");
         sb.AppendLine();
         sb.AppendLine("/// <summary>");
-        sb.AppendLine($"/// {dut} 主板被检命令层。**自动转换**自旧 <c>Bots.TestBench.Device.{dut}_2.SimpleCommandEnum</c>");
+        sb.AppendLine($"/// {dut} {label}被检命令层。**自动转换**自旧 <c>Bots.TestBench.Device.{dut}_2.SimpleCommandEnum</c>");
         sb.AppendLine("/// （SCPI 指令转发）。执行失败抛 <see cref=\"DeviceCommException\"/>（由引擎按异常收尾并落盘）。");
         sb.AppendLine("/// </summary>");
         sb.AppendLine($"public enum {dut}Command");
@@ -352,8 +385,9 @@ public static class ReferencesAdapter
         return sb.ToString();
     }
 
-    private static string BuildDriverSource(string dut, IReadOnlyList<(string Name, string Scpi)> commands)
+    private static string BuildDriverSource(string dut, IReadOnlyList<(string Name, string Scpi)> commands, string bizType)
     {
+        var label = BizLabel(bizType);
         var sb = new StringBuilder();
         sb.AppendLine("using System.Globalization;");
         sb.AppendLine("using System.IO.Ports;");
@@ -466,7 +500,7 @@ public static class ReferencesAdapter
         sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine("    /// <summary>");
-        sb.AppendLine("    /// 执行一条主板动态测试 SCPI 指令（无回值）。PORT: 旧 ExecuteAnyCommand_NoResponse。");
+        sb.AppendLine($"    /// 执行一条{label}测试 SCPI 指令（无回值）。PORT: 旧 ExecuteAnyCommand_NoResponse。");
         sb.AppendLine("    /// </summary>");
         sb.AppendLine("    /// <param name=\"command\">指令。</param>");
         sb.AppendLine("    /// <param name=\"ct\">取消令牌。</param>");
@@ -535,8 +569,9 @@ public static class ReferencesAdapter
     // =====================================================================
 
     private static (List<string> handlerFiles, List<string> manifestFiles, List<string> todos) GenerateTestStepsAndManifest(
-        string stepsFile, string jigFile, string dut, string outputDir)
+        string stepsFile, string jigFile, string dut, string outputDir, string bizType)
     {
+        var suffix = BizSuffix(bizType);
         var todos = new List<string>();
         var script = File.ReadAllText(stepsFile);
 
@@ -564,15 +599,15 @@ public static class ReferencesAdapter
             }
         }
 
-        var handlerDir = Path.Combine(outputDir, "src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_ControlBoard");
+        var handlerDir = Path.Combine(outputDir, "src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_{suffix}");
         var manifestDir = Path.Combine(outputDir, "src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dut);
         Directory.CreateDirectory(handlerDir);
         Directory.CreateDirectory(manifestDir);
 
-        var handlerRel = Path.Combine("src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_ControlBoard", $"{dut}_ControlBoard.cs");
-        var manifestRel = Path.Combine("src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dut, $"{dut}_ControlBoard.json");
-        File.WriteAllText(Path.Combine(outputDir, handlerRel), BuildHandlerSource(script, tasks, dut, todos), new UTF8Encoding(false));
-        File.WriteAllText(Path.Combine(outputDir, manifestRel), BuildManifestSource(root, tasks, dut), new UTF8Encoding(false));
+        var handlerRel = Path.Combine("src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_{suffix}", $"{dut}_{suffix}.cs");
+        var manifestRel = Path.Combine("src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dut, $"{dut}_{suffix}.json");
+        File.WriteAllText(Path.Combine(outputDir, handlerRel), BuildHandlerSource(script, tasks, dut, suffix, todos), new UTF8Encoding(false));
+        File.WriteAllText(Path.Combine(outputDir, manifestRel), BuildManifestSource(root, tasks, dut, bizType), new UTF8Encoding(false));
 
         return (new List<string> { handlerRel }, new List<string> { manifestRel }, todos);
     }
@@ -627,7 +662,7 @@ public static class ReferencesAdapter
     }
 
     /// <summary>生成处理器源码：Ops 辅助类 + 每任务一个 IStepHandler（Kind = Entry，DeviceFamily = 被检类型）。</summary>
-    private static string BuildHandlerSource(string script, IReadOnlyList<JigTask> tasks, string dut, List<string> todos)
+    private static string BuildHandlerSource(string script, IReadOnlyList<JigTask> tasks, string dut, string suffix, List<string> todos)
     {
         var sb = new StringBuilder();
         sb.AppendLine("using System.Globalization;");
@@ -636,7 +671,7 @@ public static class ReferencesAdapter
         sb.AppendLine("using TESTRIG.Devices.Abstractions;");
         sb.AppendLine("using R = TESTRIG.Devices.Abstractions.BoxRelayCommand;");
         sb.AppendLine();
-        sb.AppendLine($"namespace TESTRIG.TestSteps.{dut}.{dut}_ControlBoard;");
+        sb.AppendLine($"namespace TESTRIG.TestSteps.{dut}.{dut}_{suffix};");
         sb.AppendLine();
         sb.AppendLine("/// <summary>");
         sb.AppendLine($"/// {dut} 主板（设备族 {dut}）测试**设备特有**处理器集合。**自动转换**自旧");
@@ -944,9 +979,11 @@ public static class ReferencesAdapter
     // manifest 生成
     // =====================================================================
 
-    private static string BuildManifestSource(JsonElement root, IReadOnlyList<JigTask> tasks, string dut)
+    private static string BuildManifestSource(JsonElement root, IReadOnlyList<JigTask> tasks, string dut, string bizType)
     {
-        var boardName = GetString(root, "Name") ?? $"{dut}系统板动态测试";
+        var suffix = BizSuffix(bizType);
+        var label = BizLabel(bizType);
+        var boardName = GetString(root, "Name") ?? $"{dut} {label}测试";
         var deviceName = $"{dut} 被检";
 
         // 号位 Comm（旧 Devices[0].CommConfigs[0] SerialPortConfig）
@@ -965,10 +1002,10 @@ public static class ReferencesAdapter
 
         var json = new Dictionary<string, object?>
         {
-            ["Key"] = $"{dut}_ControlBoard",
+            ["Key"] = $"{dut}_{suffix}",
             ["DeviceFamily"] = dut,
             ["BoardName"] = boardName,
-            ["Description"] = $"{dut} 主板动态测试（自动转换自 References\\Dynamic\\{dut}\\Jigs，旧 {boardName}）",
+            ["Description"] = $"{dut} {label}测试（自动转换自 References\\{bizType}\\{dut}\\Jigs，旧 {boardName}）",
             ["Dut"] = new Dictionary<string, object?> { ["Name"] = deviceName, ["Model"] = dut },
             ["Positions"] = new object[]
             {
