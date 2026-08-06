@@ -37,6 +37,14 @@ internal sealed class ConST171Ops
     }
 
     /// <summary>
+    /// 按实例键取标准模块（Tool 设备，如 DPSEX1 正压 / DPSEX2 真空标准模块）。
+    /// </summary>
+    /// <param name="deviceKey">manifest ToolDevices 的 Key。</param>
+    /// <returns>标准模块驱动。</returns>
+    public IStandardModule Standard(string deviceKey)
+        => _ctx.GetDevice<IStandardModule>(deviceKey);
+
+    /// <summary>
     /// 推送实时消息。
     /// </summary>
     /// <param name="m">消息。</param>
@@ -537,7 +545,8 @@ public sealed class BlowTestConST171Handler : IStepHandler
 }
 
 /// <summary>
-/// 真空模块校准：进入校准模式 → 校准点比对 → 精度等级 ≤0.05%。
+/// 真空模块校准：DPSEX2 真空标准模块作标准源，ConST171 造压至校准点后
+/// 读标准压力比对设备校准回读，精度等级 ≤0.05%。
 /// </summary>
 public sealed class VacuumCalibrationTestConST171Handler : IStepHandler
 {
@@ -555,18 +564,38 @@ public sealed class VacuumCalibrationTestConST171Handler : IStepHandler
         var op = new ConST171Ops(ctx, ct);
         var calPoint = op.ParamContains("下限", 5);
         var acc = op.Cond("精度等级")?.Max ?? 0.05;
+        var std = op.Standard("DPSEX2");   // 真空标准模块
 
-        // TODO(DPSEX)：真空标准模块（DPSEX2）造压至校准点后比对，当前用设备回读校准压力
+        await std.SetPressureTypeAsync("Vacuum", ct);
         if (!await op.Dut.StartCalibrationAsync("Vacuum", ct))
         {
             return StepResult.Fail("进入真空校准模式失败");
         }
-        await op.Dut.SetCalibrationValueAsync("Vacuum", calPoint, ct);
+
+        // 真空造压至校准点（±0.5 kPa）
+        await op.Dut.SetPressureRangeAsync("Vacuum", Math.Min(0, calPoint), calPoint + 1, ct);
+        await op.Dut.SetPumpStatusAsync("Vacuum", true, ct);
+        await op.Dut.SetControlStateAsync("Vacuum", true, ct);
+        var outcome = await ProcessWaiter.WaitUntilAsync(ctx, "真空压力", "kPa",
+            () => op.Dut.GetPressureAsync("Vacuum", ct),
+            v => Math.Abs(v - calPoint) <= 0.5,
+            TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(1), ct);
+        if (outcome != ProcessWaiter.WaitOutcome.Satisfied)
+        {
+            await op.VentAndStop("Vacuum");
+            await op.Dut.StopCalibrationAsync("Vacuum", ct);
+            return StepResult.Fail($"真空未达校准点 {calPoint} kPa（60s 超时）");
+        }
+
+        // 标准模块读数作为标准值，写入设备校准并回读比对
+        var stdVal = await std.GetPressureKpaAsync(ct);
+        await op.Dut.SetCalibrationValueAsync("Vacuum", stdVal, ct);
         var read = await op.Dut.GetCalPressureAsync("Vacuum", ct);
         await op.Dut.StopCalibrationAsync("Vacuum", ct);
+        await op.VentAndStop("Vacuum");
 
-        var err = Math.Abs(read - calPoint) / Math.Max(Math.Abs(calPoint), 1) * 100;
-        op.Report($"真空校准：标准 {calPoint:0.000} kPa，读回 {read:0.000} kPa，误差 {err:0.000}%（≤{acc}%）",
+        var err = Math.Abs(read - stdVal) / Math.Max(Math.Abs(stdVal), 1) * 100;
+        op.Report($"真空校准：标准 {stdVal:0.000} kPa（DPSEX2），设备回读 {read:0.000} kPa，误差 {err:0.000}%（≤{acc}%）",
             err <= acc ? RealtimeLevel.Success : RealtimeLevel.Warn);
         return err <= acc
             ? StepResult.Pass($"真空校准完成（误差 {err:0.000}% ≤{acc}%）", err.ToString("0.000"))
@@ -575,7 +604,8 @@ public sealed class VacuumCalibrationTestConST171Handler : IStepHandler
 }
 
 /// <summary>
-/// 正压模块校准：0 / 8500 kPa 双点校准，精度等级 ≤0.1%。
+/// 正压模块校准：DPSEX1 正压标准模块作标准源，ConST171 逐点造压（0 / 上限）
+/// 读标准压力比对设备校准回读，精度等级 ≤0.1%。
 /// </summary>
 public sealed class PositiveCalibrationTestConST171Handler : IStepHandler
 {
@@ -594,22 +624,42 @@ public sealed class PositiveCalibrationTestConST171Handler : IStepHandler
         var lo = op.ParamContains("下限", 0);
         var hi = op.ParamContains("上限", 8500);
         var acc = op.Cond("精度等级")?.Max ?? 0.1;
+        var std = op.Standard("DPSEX1");   // 正压标准模块
 
-        // TODO(DPSEX)：正压标准模块（DPSEX1）造压至各校准点后比对，当前用设备回读校准压力
+        await std.SetPressureTypeAsync("Pressure", ct);
         if (!await op.Dut.StartCalibrationAsync("Pressure", ct))
         {
             return StepResult.Fail("进入正压校准模式失败");
         }
+
         var maxErr = 0d;
         foreach (var pt in new[] { lo, hi })
         {
-            await op.Dut.SetCalibrationValueAsync("Pressure", pt, ct);
+            // 正压造压至校准点（±50 kPa）
+            await op.Dut.SetPressureRangeAsync("Pressure", Math.Min(0, pt), pt + 100, ct);
+            await op.Dut.SetPumpStatusAsync("Pressure", true, ct);
+            await op.Dut.SetControlStateAsync("Pressure", true, ct);
+            var outcome = await ProcessWaiter.WaitUntilAsync(ctx, "正压压力", "kPa",
+                () => op.Dut.GetPressureAsync("Pressure", ct),
+                v => Math.Abs(v - pt) <= 50,
+                TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(1), ct);
+            if (outcome != ProcessWaiter.WaitOutcome.Satisfied)
+            {
+                await op.VentAndStop("Pressure");
+                await op.Dut.StopCalibrationAsync("Pressure", ct);
+                return StepResult.Fail($"正压未达校准点 {pt} kPa（60s 超时）");
+            }
+
+            // 标准模块读数作为标准值，写入设备校准并回读比对
+            var stdVal = await std.GetPressureKpaAsync(ct);
+            await op.Dut.SetCalibrationValueAsync("Pressure", stdVal, ct);
             var read = await op.Dut.GetCalPressureAsync("Pressure", ct);
-            var err = Math.Abs(read - pt) / Math.Max(Math.Abs(pt), 1) * 100;
+            var err = Math.Abs(read - stdVal) / Math.Max(Math.Abs(stdVal), 1) * 100;
             maxErr = Math.Max(maxErr, err);
-            op.Report($"正压校准点 {pt:0.000} kPa：读回 {read:0.000} kPa（误差 {err:0.000}%）");
+            op.Report($"正压校准点 {pt:0} kPa：标准 {stdVal:0.000}（DPSEX1），设备回读 {read:0.000}，误差 {err:0.000}%");
         }
         await op.Dut.StopCalibrationAsync("Pressure", ct);
+        await op.VentAndStop("Pressure");
 
         op.Report($"正压校准：最大误差 {maxErr:0.000}%（≤{acc}%）",
             maxErr <= acc ? RealtimeLevel.Success : RealtimeLevel.Warn);

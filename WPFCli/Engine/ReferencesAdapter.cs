@@ -226,6 +226,19 @@ public static class ReferencesAdapter
             report.Add("- TestSteps/Jigs：缺少脚本或配置，跳过（保留内置占位）");
         }
 
+        // ---- 4. StandardBox 标准模块（Tool 设备，如 DPSEX 正压/真空模块）----
+        var stdDir = Path.Combine(refDir, "StandardBox");
+        if (Directory.Exists(stdDir))
+        {
+            var stdFile = Directory.GetFiles(stdDir, "*.cs").FirstOrDefault();
+            if (stdFile != null)
+            {
+                report.Add($"- StandardBox：{Path.GetFileName(stdFile)} 标准模块已识别（manifest ToolDevices 生成），"
+                    + "驱动按 IStandardModule 接口模板内置/人工实现（见 DPSEXStandardModule 示例）");
+                todos.Add($"{Path.GetFileName(stdFile)}：标准模块驱动需实现 IStandardModule（如 DPSEXStandardModule 示例）");
+            }
+        }
+
         if (todos.Count > 0)
         {
             report.Add("");
@@ -1039,8 +1052,9 @@ public static class ReferencesAdapter
         var boardName = GetString(root, "Name") ?? $"{dut} {label}测试";
         var deviceName = $"{dut} 被检";
 
-        // 号位 Comm（旧 Devices[0].CommConfigs[0] SerialPortConfig）
+        // 号位 Comm（旧 Devices[0].CommConfigs[0] SerialPortConfig）+ 标准模块（DeviceType=Tool，如 DPSEX1/DPSEX2）
         string? baud = null, stopBits = null, parity = null;
+        var toolDevices = new List<object>();
         if (root.TryGetProperty("Devices", out var devices) && devices.ValueKind == JsonValueKind.Array && devices.GetArrayLength() > 0)
         {
             deviceName = GetString(devices[0], "DeviceName") ?? deviceName;
@@ -1051,6 +1065,49 @@ public static class ReferencesAdapter
                 stopBits = GetString(cfg[0], "StopBits");
                 parity = GetString(cfg[0], "Parity");
             }
+            // 旧 Tool 设备（标准模块，如正压 DPSEX1 / 真空 DPSEX2）→ manifest ToolDevices，按 DeviceKey 多实例
+            foreach (var dev in devices.EnumerateArray().Skip(1))
+            {
+                if (!(GetString(dev, "DeviceType") ?? "").Equals("Tool", StringComparison.OrdinalIgnoreCase)) continue;
+                var key = GetString(dev, "DeviceKey");
+                if (string.IsNullOrWhiteSpace(key)) continue;
+                var toolComm = new Dictionary<string, object?>
+                {
+                    ["Link"] = "Serial",
+                    ["PhysicalLink"] = "COM1",
+                    ["Serial"] = new Dictionary<string, object?>
+                    {
+                        ["Baud"] = int.TryParse(GetString(dev, "Bauds"), out var tb) ? tb : 4800,
+                        ["DataBits"] = 8,
+                        ["StopBits"] = GetString(dev, "StopBits") ?? "Two",
+                        ["Parity"] = GetString(dev, "Parity") ?? "None",
+                    },
+                };
+                if (dev.TryGetProperty("CommConfigs", out var tcfg) &&
+                    tcfg.ValueKind == JsonValueKind.Array && tcfg.GetArrayLength() > 0)
+                {
+                    // 旧串口配置：DevSn 作物理链路（按 SN 识别标准模块），Bauds/StopBits/Parity 为串口参数
+                    toolComm["PhysicalLink"] = GetString(tcfg[0], "DevSn") ?? "COM1";
+                    toolComm["Serial"] = new Dictionary<string, object?>
+                    {
+                        ["Baud"] = int.TryParse(GetString(tcfg[0], "Bauds"), out var tb2) ? tb2 : 4800,
+                        ["DataBits"] = 8,
+                        ["StopBits"] = GetString(tcfg[0], "StopBits") ?? "Two",
+                        ["Parity"] = GetString(tcfg[0], "Parity") ?? "None",
+                    };
+                }
+                // 型号取旧 $type 的类名（如 Bots.TestBench.Device.DPSEX → DPSEX），标准模块注册表按此匹配 [DutDriver]
+                var typeName = GetString(dev, "$type") ?? "";
+                var model = typeName.Split(',')[0].Trim().Split('.').LastOrDefault();
+                if (string.IsNullOrWhiteSpace(model)) model = key;
+                toolDevices.Add(new Dictionary<string, object?>
+                {
+                    ["Key"] = key,
+                    ["Name"] = GetString(dev, "DeviceName") ?? key,
+                    ["Model"] = model,
+                    ["Comm"] = toolComm,
+                });
+            }
         }
 
         var json = new Dictionary<string, object?>
@@ -1060,6 +1117,8 @@ public static class ReferencesAdapter
             ["BoardName"] = boardName,
             ["Description"] = $"{dut} {label}测试（自动转换自 References\\{bizType}\\{dut}\\Jigs，旧 {boardName}）",
             ["Dut"] = new Dictionary<string, object?> { ["Name"] = deviceName, ["Model"] = dut },
+            // 标准模块（Tool 设备）多实例：处理器按 DeviceKey 用 GetDevice<T>(key) 获取（如 DPSEX1/DPSEX2）
+            ["ToolDevices"] = toolDevices.ToArray(),
             ["Positions"] = new object[]
             {
                 new Dictionary<string, object?>

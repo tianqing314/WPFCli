@@ -28,6 +28,7 @@
     <Reference Include="Xmas11.Comm.Devices.DPC2"><HintPath>$(X11)\Xmas11.Comm.Devices.DPC2.dll</HintPath><Private>true</Private></Reference>
     <!-- TemplateUUT 控制板(TemplateUUT)被检：ConST171Base -->
     <Reference Include="Xmas11.Comm.Devices.ConST171"><HintPath>$(X11)\Xmas11.Comm.Devices.ConST171.dll</HintPath><Private>true</Private></Reference>
+<Reference Include="Xmas11.Comm.Devices.DPSEX"><HintPath>$(X11)\Xmas11.Comm.Devices.DPSEX.dll</HintPath><Private>true</Private></Reference>
     <!-- 串口物理链路解析（WmiSerialScanner 用 DiscoveredSerial） -->
     <Reference Include="Xmas11.IO.USB"><HintPath>$(X11)\Xmas11.IO.USB.dll</HintPath><Private>true</Private></Reference>
     <Reference Include="Xmas11.Json"><HintPath>$(X11)\Xmas11.Json.dll</HintPath><Private>true</Private></Reference>

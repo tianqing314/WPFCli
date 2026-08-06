@@ -94,6 +94,16 @@ public static class DevicesServiceCollectionExtensions
             return registry;
         });
 
+        // 标准模块注册表：按型号自动注册标准设备驱动（实现 IStandardModule + [DutDriver]，如 DPSEX 正压/真空模块）。
+        // 新增标准设备只需给驱动类打特性，无需在此手写一行。
+        services.AddSingleton(sp =>
+        {
+            var lf = sp.GetRequiredService<ILoggerFactory>();
+            var registry = new StandardModuleRegistry(lf);
+            registry.AutoRegisterFromAssembly();
+            return registry;
+        });
+
         services.AddSingleton<IDeviceProviderFactory, DeviceProviderFactory>();
         return services;
     }

@@ -2,12 +2,15 @@ using TESTRIG.Core.Abstractions;
 using TESTRIG.Devices.Abstractions;
 using TESTRIG.Devices.Comm;
 using TESTRIG.Devices.Dut;
+using TESTRIG.Devices.StandardBox;
 
 namespace TESTRIG.Devices;
 
 /// <summary>
 /// 按号位创建设备提供者：标准盒取**全局共享单例**（纠正第一轮 per-module scoped 的错误），
-/// 被检按 manifest 的型号经 <see cref="DutDriverRegistry"/> 创建。
+/// 被检按 manifest 的型号经 <see cref="DutDriverRegistry"/> 创建；
+/// 标准模块（Tool 设备，如 DPSEX1/DPSEX2）按 manifest <c>ToolDevices</c> 经
+/// <see cref="StandardModuleRegistry"/> 每号位创建实例，处理器按 DeviceKey 获取。
 /// </summary>
 public sealed class DeviceProviderFactory : IDeviceProviderFactory
 {
@@ -20,6 +23,11 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
     /// 被检驱动注册表。
     /// </summary>
     private readonly DutDriverRegistry _registry;
+
+    /// <summary>
+    /// 标准模块注册表。
+    /// </summary>
+    private readonly StandardModuleRegistry _stdRegistry;
 
     /// <summary>
     /// 连接配置（被检端点覆盖来源）。
@@ -36,13 +44,16 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
     /// </summary>
     /// <param name="standardBox">全局共享标准盒。</param>
     /// <param name="registry">被检驱动注册表。</param>
+    /// <param name="stdRegistry">标准模块注册表。</param>
     /// <param name="connections">连接配置。</param>
     /// <param name="resolver">连接解析器（串口物理链路 → 当前 COM）。</param>
-    public DeviceProviderFactory(IStandardBox standardBox, DutDriverRegistry registry, ConnectionSettings connections,
+    public DeviceProviderFactory(IStandardBox standardBox, DutDriverRegistry registry, StandardModuleRegistry stdRegistry,
+        ConnectionSettings connections,
         IConnectionResolver resolver)
     {
         _standardBox = standardBox;
         _registry = registry;
+        _stdRegistry = stdRegistry;
         _connections = connections;
         _resolver = resolver;
     }
@@ -77,7 +88,24 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
         }
 
         var dut = comm is not null ? manifest.Dut with { Comm = comm } : manifest.Dut;
-        return new DeviceProvider(_standardBox, _registry.Create(dut));
+
+        // 标准模块（Tool 设备）：按 manifest.ToolDevices 每号位创建实例，处理器按 DeviceKey 获取
+        var tools = new Dictionary<string, IStandardModule>(StringComparer.OrdinalIgnoreCase);
+        foreach (var tool in manifest.ToolDevices)
+        {
+            var toolComm = tool.Comm;
+            if (toolComm is not null && toolComm.Link == LinkType.Serial)
+            {
+                var tr = _resolver.Resolve(toolComm);
+                if (tr.Ok && !string.IsNullOrWhiteSpace(tr.Target))
+                {
+                    toolComm = toolComm with { PhysicalLink = tr.Target };
+                }
+            }
+            var descriptor = new DeviceDescriptor(tool.Name, tool.Model) { Comm = toolComm };
+            tools[tool.Key] = _stdRegistry.Create(descriptor);
+        }
+        return new DeviceProvider(_standardBox, _registry.Create(dut), tools);
     }
 
     /// <summary>
@@ -96,14 +124,21 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
         private readonly IDutDevice _dut;
 
         /// <summary>
+        /// 该号位标准模块实例表（按 manifest ToolDevices 的 Key）。
+        /// </summary>
+        private readonly IReadOnlyDictionary<string, IStandardModule> _tools;
+
+        /// <summary>
         /// 构造设备提供者。
         /// </summary>
         /// <param name="box">共享标准盒。</param>
         /// <param name="dut">该号位被检。</param>
-        public DeviceProvider(IStandardBox box, IDutDevice dut)
+        /// <param name="tools">该号位标准模块实例表。</param>
+        public DeviceProvider(IStandardBox box, IDutDevice dut, IReadOnlyDictionary<string, IStandardModule> tools)
         {
             _box = box;
             _dut = dut;
+            _tools = tools;
         }
 
         /// <summary>
@@ -125,16 +160,37 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
                 return dut;
             }
 
-            throw new InvalidOperationException($"当前号位未提供设备 {typeof(T).Name}");
+            throw new InvalidOperationException($"该号位未提供 {typeof(T).Name} 设备（标准模块请用 GetDevice<T>(deviceKey)）");
         }
 
         /// <summary>
-        /// 释放**该号位被检**的连接（串口/网络），避免下一次运行新建被检时端口仍被占用（如串口 COMx）。
+        /// 按类型 + 实例键解析设备（标准模块等多实例设备）。
+        /// </summary>
+        /// <typeparam name="T">设备接口类型。</typeparam>
+        /// <param name="deviceKey">实例键（manifest ToolDevices 的 Key，如 DPSEX1）。</param>
+        /// <returns>设备实例。</returns>
+        /// <exception cref="InvalidOperationException">未找到该键的标准模块或类型不匹配。</exception>
+        public T GetDevice<T>(string deviceKey)
+            where T : class, IDevice
+        {
+            if (_tools.TryGetValue(deviceKey, out var module) && module is T typed)
+            {
+                return typed;
+            }
+            throw new InvalidOperationException($"未找到标准模块「{deviceKey}」或类型不匹配 {typeof(T).Name}");
+        }
+
+        /// <summary>
+        /// 释放**该号位被检与标准模块**的连接（串口/网络），避免下一次运行新建时端口仍被占用（如串口 COMx）。
         /// 共享标准盒/PLC 是全局单例，**不**在此释放。
         /// </summary>
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            return _dut.DisposeAsync();
+            await _dut.DisposeAsync();
+            foreach (var module in _tools.Values)
+            {
+                await module.DisposeAsync();
+            }
         }
     }
 }

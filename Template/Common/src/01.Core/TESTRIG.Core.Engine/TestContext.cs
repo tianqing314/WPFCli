@@ -119,6 +119,18 @@ internal sealed class TestContext : ITestContext
     }
 
     /// <summary>
+    /// 按类型 + 实例键解析设备（标准模块等多实例设备）。
+    /// </summary>
+    /// <typeparam name="T">设备接口类型。</typeparam>
+    /// <param name="deviceKey">实例键（manifest ToolDevices 的 Key）。</param>
+    /// <returns>设备实例。</returns>
+    public T GetDevice<T>(string deviceKey)
+        where T : class, IDevice
+    {
+        return _devices.GetDevice<T>(deviceKey);
+    }
+
+    /// <summary>
     /// 推送一条实时消息。
     /// </summary>
     /// <param name="message">消息。</param>

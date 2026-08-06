@@ -48,6 +48,29 @@ public sealed record JigManifest
     /// 现有板不设此字段 → 行为完全不变。
     /// </summary>
     public IReadOnlyList<SubDeviceConfig> FixtureDevices { get; init; } = [];
+
+    /// <summary>
+    /// 标准模块（Tool 设备）列表（可选，默认空）。整机等模板的标准设备（如 ConST171 的 DPSEX1 正压 /
+    /// DPSEX2 真空标准模块）挂在此：按 <see cref="ToolDeviceDescriptor.Key"/> 创建实例，
+    /// 处理器用 <c>GetDevice&lt;T&gt;(deviceKey)</c> 获取（同一型号可多实例，独立串口/SN）。
+    /// 空 = 无标准模块，行为不变。
+    /// </summary>
+    public IReadOnlyList<ToolDeviceDescriptor> ToolDevices { get; init; } = [];
+}
+
+/// <summary>
+/// 标准模块（Tool 设备）描述：每号位独立的标准设备（独立通讯/SN），按 <see cref="Key"/> 区分实例。
+/// 驱动按 <see cref="Model"/> 经标准模块注册表创建（如 DPSEX 标准模块 → DPSEXStandardModule）。
+/// </summary>
+/// <param name="Key">实例键（旧 DeviceKey，如 DPSEX1/DPSEX2），处理器按此获取。</param>
+/// <param name="Name">设备名（仅界面/日志显示，如"正压模块"）。</param>
+/// <param name="Model">型号：决定用哪个标准模块驱动（如 DPSEX）。</param>
+public sealed record ToolDeviceDescriptor(string Key, string Name, string Model)
+{
+    /// <summary>
+    /// 该标准模块的连接端点（manifest 串口配置）。
+    /// </summary>
+    public CommEndpoint? Comm { get; init; }
 }
 
 /// <summary>
