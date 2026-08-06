@@ -43,11 +43,35 @@ public static class ProcessWaiter
     /// <param name="pollInterval">轮询间隔。</param>
     /// <param name="ct">取消令牌。</param>
     /// <returns>等待结果。</returns>
-    public static async Task<WaitOutcome> WaitUntilAsync(
+    public static Task<WaitOutcome> WaitUntilAsync(
         ITestContext ctx,
         string valueName,
         string unit,
         Func<double> readValue,
+        Func<double, bool> isSatisfied,
+        TimeSpan timeout,
+        TimeSpan pollInterval,
+        CancellationToken ct)
+        => WaitUntilAsync(ctx, valueName, unit, () => Task.FromResult(readValue()), isSatisfied, timeout, pollInterval, ct);
+
+    /// <summary>
+    /// 轮询等待（异步读值版）：以 <paramref name="pollInterval"/> 间隔异步读取过程值并上报采样点（实时曲线），
+    /// 直到 <paramref name="isSatisfied"/> 返回 true 或超过 <paramref name="timeout"/>。
+    /// </summary>
+    /// <param name="ctx">测试项上下文（用于采样上报与消息）。</param>
+    /// <param name="valueName">过程量名称（如"正压压力"）。</param>
+    /// <param name="unit">单位（如 kPa）。</param>
+    /// <param name="readValue">异步读取当前过程值（如设备读压力）。</param>
+    /// <param name="isSatisfied">条件判定（入参=当前值）。</param>
+    /// <param name="timeout">最长等待时间。</param>
+    /// <param name="pollInterval">轮询间隔。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>等待结果。</returns>
+    public static async Task<WaitOutcome> WaitUntilAsync(
+        ITestContext ctx,
+        string valueName,
+        string unit,
+        Func<Task<double>> readValue,
         Func<double, bool> isSatisfied,
         TimeSpan timeout,
         TimeSpan pollInterval,
@@ -60,7 +84,7 @@ public static class ProcessWaiter
         {
             ct.ThrowIfCancellationRequested();
 
-            var v = readValue();
+            var v = await readValue();
             ctx.ReportSample(t, v);
 
             if (isSatisfied(v))

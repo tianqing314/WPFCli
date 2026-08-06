@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -332,8 +333,8 @@ public static class ReferencesAdapter
 
         var ifaceRel = Path.Combine("src", "03.Devices", "TESTRIG.Devices.Abstractions", "Dut", $"I{dut}Dut.cs");
         var driverRel = Path.Combine("src", "03.Devices", "TESTRIG.Devices", "Dut", dut, $"{dut}Dut.cs");
-        File.WriteAllText(Path.Combine(outputDir, ifaceRel), BuildInterfaceSource(dut, commands, bizType), new UTF8Encoding(false));
-        File.WriteAllText(Path.Combine(outputDir, driverRel), BuildDriverSource(dut, commands, bizType), new UTF8Encoding(false));
+        WriteIfNotExists(Path.Combine(outputDir, ifaceRel), () => BuildInterfaceSource(dut, commands, bizType));
+        WriteIfNotExists(Path.Combine(outputDir, driverRel), () => BuildDriverSource(dut, commands, bizType));
 
         if (commands.Count == 0)
             todos.Add($"{Path.GetFileName(sourceFile)}：未解析到 SimpleCommands 字典，{dut}Command 枚举为空");
@@ -599,13 +600,17 @@ public static class ReferencesAdapter
             {
                 var entry = GetString(item, "Location", "Entry");
                 if (string.IsNullOrWhiteSpace(entry)) continue;
+                // 旧体系人工项（ManualTestItem，如整机供电测试）转新体系 Manual 步（引擎弹确认框）
+                var isManual = item.TryGetProperty("$type", out var tt) &&
+                               tt.ValueKind == JsonValueKind.String && tt.GetString()?.Contains("ManualTestItem") == true;
                 tasks.Add(new JigTask(
                     entry,
                     GetString(item, "Name") ?? entry,
                     GetString(item, "TestDesc") ?? "",
                     GetGuid(item),
                     ReadParameters(item),
-                    ReadConditions(item)));
+                    ReadConditions(item),
+                    isManual));
             }
         }
 
@@ -614,16 +619,32 @@ public static class ReferencesAdapter
         Directory.CreateDirectory(handlerDir);
         Directory.CreateDirectory(manifestDir);
 
+        // 产物已存在（模板内置人工填充版）则不覆盖：References 只负责生成缺失的骨架
         var handlerRel = Path.Combine("src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_{suffix}", $"{dut}_{suffix}.cs");
         var manifestRel = Path.Combine("src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dut, $"{dut}_{suffix}.json");
-        File.WriteAllText(Path.Combine(outputDir, handlerRel), BuildHandlerSource(script, tasks, dut, suffix, todos), new UTF8Encoding(false));
-        File.WriteAllText(Path.Combine(outputDir, manifestRel), BuildManifestSource(root, tasks, dut, bizType), new UTF8Encoding(false));
+        WriteIfNotExists(Path.Combine(outputDir, handlerRel),
+            () => BuildHandlerSource(script, tasks, dut, suffix, todos));
+        WriteIfNotExists(Path.Combine(outputDir, manifestRel),
+            () => BuildManifestSource(root, tasks, dut, bizType));
 
         return (new List<string> { handlerRel }, new List<string> { manifestRel }, todos);
     }
 
     private sealed record JigTask(string Entry, string Name, string Description, string Guid,
-        List<(string Name, string Value, string? Unit)> Parameters, List<(string Name, double Min, double Max, string Unit)> Conditions);
+        List<(string Name, string Value, string? Unit)> Parameters, List<(string Name, double Min, double Max, string Unit)> Conditions,
+        bool IsManual);
+
+    /// <summary>
+    /// 若目标已存在（模板内置人工填充产物）则不写，保留现有内容；否则生成。
+    /// </summary>
+    /// <param name="path">目标文件。</param>
+    /// <param name="factory">内容工厂。</param>
+    private static void WriteIfNotExists(string path, Func<string> factory)
+    {
+        if (File.Exists(path)) return;
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, factory(), new UTF8Encoding(false));
+    }
 
     private static string? GetString(JsonElement obj, params string[] path)
     {
@@ -663,9 +684,31 @@ public static class ReferencesAdapter
         {
             var name = GetString(c, "Name") ?? "";
             if (name.Length == 0) continue;
-            var min = c.TryGetProperty("Lower", out var lo) && lo.TryGetDouble(out var lv) ? lv : 0;
-            var max = c.TryGetProperty("Upper", out var hi) && hi.TryGetDouble(out var hv) ? hv : 0;
+            var min = c.TryGetProperty("Lower", out var lo) && lo.ValueKind == JsonValueKind.Number && lo.TryGetDouble(out var lv) ? lv : 0;
+            var max = c.TryGetProperty("Upper", out var hi) && hi.ValueKind == JsonValueKind.Number && hi.TryGetDouble(out var hv) ? hv : 0;
             var unit = GetString(c, "Unit") ?? "";
+            // 旧 ValueCondition（Value + Operator，如 "泄漏指标 ≤100"）→ Range 语义：<= 取上限，>= 取下限，否则取等值。
+            // Value 可能是 Number 或字符串（"100"/"0.5"）；TryGetDouble 对非 Number 会抛，须先按 ValueKind 处理。
+            if (min == 0 && max == 0 && c.TryGetProperty("Value", out var v))
+            {
+                double val = 0;
+                if (v.ValueKind == JsonValueKind.Number)
+                {
+                    val = v.GetDouble();
+                }
+                else if (v.ValueKind == JsonValueKind.String &&
+                         double.TryParse(v.GetString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var sv))
+                {
+                    val = sv;
+                }
+                var op = GetString(c, "Operator") ?? "";
+                if (val != 0 || op.Length > 0)
+                {
+                    if (op.Contains("<=") || op == "<") max = val;
+                    else if (op.Contains(">=") || op == ">") min = val;
+                    else { min = val; max = val; }
+                }
+            }
             list.Add((name, min, max, unit));
         }
         return list;
@@ -1044,6 +1087,9 @@ public static class ReferencesAdapter
                 ["Name"] = t.Name,
                 ["Description"] = t.Description,
                 ["Settings"] = new Dictionary<string, object?>(),
+                // 旧 ManualTestItem → 新 Manual 步（引擎弹人工确认框，60s 超时）
+                ["StepType"] = t.IsManual ? "Manual" : "Auto",
+                ["TimeoutMs"] = t.IsManual ? 60000 : 0,
                 ["Parameters"] = t.Parameters.Select(p => (object)new Dictionary<string, object?>
                 {
                     ["Name"] = p.Name,
