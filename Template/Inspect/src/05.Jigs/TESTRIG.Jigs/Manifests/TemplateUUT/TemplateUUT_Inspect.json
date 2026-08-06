@@ -1,0 +1,94 @@
+{
+  "Key": "TemplateUUT_Inspect",
+  "DeviceFamily": "TemplateUUT",
+  "BoardName": "TemplateUUT 出厂检验",
+  "Description": "TemplateUUT 出厂检验（内置占位：外观/附件/功能复检。出厂模板专属 UI 为证书/合格证生成、预览与打印）",
+  "Dut": {
+    "Name": "TemplateUUT 出厂被检",
+    "Model": "TemplateUUT"
+  },
+  "Positions": [
+    {
+      "Index": 1,
+      "Name": "1号位",
+      "Comm": {
+        "Link": "Serial",
+        "PhysicalLink": "123",
+        "Serial": {
+          "Baud": 115200,
+          "DataBits": 8,
+          "StopBits": "One",
+          "Parity": "None"
+        }
+      }
+    }
+  ],
+  "Steps": [
+    {
+      "Key": "InspectPrep",
+      "Kind": "InspectPrep",
+      "Name": "出厂检验准备",
+      "Description": "接线检查、共享标准盒连接并上电就绪。",
+      "StepType": "Auto",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "5a1c9e2a-0001-4a00-9c00-000000000001"
+    },
+    {
+      "Key": "AppearanceInspect",
+      "Kind": "InspectCheck",
+      "Name": "外观检查",
+      "Description": "出厂外观检查：外壳无划痕破损、丝印清晰、标签完整。",
+      "StepType": "Auto",
+      "Settings": {
+        "外壳无划痕破损": "已确认",
+        "丝印清晰": "已确认",
+        "铭牌标签完整": "已确认"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "5a1c9e2a-0002-4a00-9c00-000000000002"
+    },
+    {
+      "Key": "AccessoryInspect",
+      "Kind": "InspectCheck",
+      "Name": "附件检查",
+      "Description": "出厂附件检查：电源线、说明书、合格证等齐套。",
+      "StepType": "Auto",
+      "Settings": {
+        "电源线": "已确认",
+        "说明书": "已确认",
+        "包装齐套": "已确认"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "5a1c9e2a-0003-4a00-9c00-000000000003"
+    },
+    {
+      "Key": "FunctionRecheck",
+      "Kind": "InspectCheck",
+      "Name": "功能复检",
+      "Description": "出厂功能复检：通讯、基本功能抽样复测。",
+      "StepType": "Auto",
+      "Settings": {
+        "通讯复测": "已确认",
+        "基本功能": "已确认"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "5a1c9e2a-0004-4a00-9c00-000000000004"
+    },
+    {
+      "Key": "InspectFinish",
+      "Kind": "InspectFinish",
+      "Name": "出厂检验结束",
+      "Description": "断电复位，汇总出厂检验结果；合格品可生成出厂证书。",
+      "StepType": "Auto",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "5a1c9e2a-0005-4a00-9c00-000000000005"
+    }
+  ]
+}

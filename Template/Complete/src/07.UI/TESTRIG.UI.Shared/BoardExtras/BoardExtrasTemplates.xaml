@@ -1,0 +1,10 @@
+<!--
+    板卡专属工具栏扩展的 VM → View 映射。合并进 App.xaml 的资源字典后，测试运行页只需一个
+    <ContentControl Content="{Binding BoardToolbarExtra}"/>，WPF 按 DataType 自动挑到对应视图——
+    **测试运行页因此不认识任何一块具体的板**。新增板卡的专属工具栏只需在此加一条 DataTemplate。
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:be="clr-namespace:TESTRIG.UI.Shared.BoardExtras">
+    <!-- 模板仅保留 TemplateUUT，无板卡专属工具栏。新增板卡扩展时在此加 DataTemplate。 -->
+</ResourceDictionary>

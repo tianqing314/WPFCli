@@ -1,0 +1,177 @@
+<chrome:ChromeWindow x:Class="TESTRIG.UI.Shared.Views.ManualWindow"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                     xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
+                     xmlns:chrome="clr-namespace:TESTRIG.UI.Shared.Views.Chrome"
+                     xmlns:views="clr-namespace:TESTRIG.UI.Shared.Views"
+                     xmlns:vm="clr-namespace:TESTRIG.UI.Shared.ViewModels"
+                     Title="{Binding Title}"
+                     TitleIcon="BookOpenPageVariantOutline"
+                     Style="{StaticResource ChromeWindow.Style}"
+                     Width="1180" Height="780"
+                     CanMaximize="True"
+                     WindowStartupLocation="CenterOwner">
+    <chrome:ChromeWindow.Resources>
+        <views:SameRefToTrueConverter x:Key="SameRefToTrue"/>
+        <views:CountToVisibilityConverter x:Key="CountToVis"/>
+        <!-- 目录项：扁平行，悬停浅底，选中浅蓝底蓝字 -->
+        <Style x:Key="DocItem" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Padding="12,9" Margin="0,0,0,2" Background="Transparent" CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource Brush.Surface2}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- 锚点项：左侧 2px 竖线占位，悬停变蓝 -->
+        <Style x:Key="AnchorItem" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Padding="20,6,10,6" Background="Transparent"
+                                BorderBrush="Transparent" BorderThickness="2,0,0,0" CornerRadius="0,3,3,0">
+                            <TextBlock x:Name="tx" Text="{TemplateBinding Content}" FontSize="12.5"
+                                       Foreground="{StaticResource Brush.TextWeak}" TextTrimming="CharacterEllipsis"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- 二级导航（### 行）：加大左缩进、字号缩小、更浅，做出层级感 -->
+                            <DataTrigger Binding="{Binding Level}" Value="3">
+                                <Setter TargetName="bd" Property="Padding" Value="36,4,10,4"/>
+                                <Setter TargetName="tx" Property="FontSize" Value="11.5"/>
+                                <Setter TargetName="tx" Property="Foreground" Value="{StaticResource Brush.TextMuted}"/>
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource Brush.PrimaryPale}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Brush.Primary}"/>
+                                <Setter TargetName="tx" Property="Foreground" Value="{StaticResource Brush.PrimaryText}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </chrome:ChromeWindow.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 左：手册目录 + 本篇锚点 -->
+        <Border Grid.Column="0" Background="{StaticResource Brush.Surface}"
+                BorderBrush="{StaticResource Brush.BorderStrong}" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <Border DockPanel.Dock="Top" Padding="15,13" BorderBrush="{StaticResource Brush.Divider}" BorderThickness="0,0,0,1">
+                    <TextBlock Text="手册目录" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource Brush.TextWeak}"/>
+                </Border>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="8">
+                        <ItemsControl ItemsSource="{Binding Docs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type vm:ManualDocItem}">
+                                    <Button Command="{Binding DataContext.SelectDocCommand, RelativeSource={RelativeSource AncestorType=chrome:ChromeWindow}}"
+                                            CommandParameter="{Binding}" Style="{StaticResource DocItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Width="15" Height="15" VerticalAlignment="Center" Kind="FileDocumentOutline">
+                                                <materialDesign:PackIcon.Style>
+                                                    <Style TargetType="materialDesign:PackIcon">
+                                                        <Setter Property="Foreground" Value="{StaticResource Brush.TextMuted}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource SameRefToTrue}">
+                                                                        <Binding/>
+                                                                        <Binding Path="DataContext.SelectedDoc" RelativeSource="{RelativeSource AncestorType=chrome:ChromeWindow}"/>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Foreground" Value="{StaticResource Brush.Primary}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </materialDesign:PackIcon.Style>
+                                            </materialDesign:PackIcon>
+                                            <TextBlock Margin="8,0,0,0" FontSize="13" Text="{Binding Title}" TextTrimming="CharacterEllipsis">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                        <Setter Property="Foreground" Value="{StaticResource Brush.TextWeak}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource SameRefToTrue}">
+                                                                        <Binding/>
+                                                                        <Binding Path="DataContext.SelectedDoc" RelativeSource="{RelativeSource AncestorType=chrome:ChromeWindow}"/>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Foreground" Value="{StaticResource Brush.PrimaryText}"/>
+                                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- 本篇锚点（二级标题） -->
+                        <Border Margin="4,8,4,0" Padding="8,8,0,4" BorderBrush="{StaticResource Brush.Divider}" BorderThickness="0,1,0,0"
+                                Visibility="{Binding Headings.Count, Converter={StaticResource CountToVis}}">
+                            <TextBlock Text="本篇导航" FontSize="11" Foreground="{StaticResource Brush.TextMuted}"/>
+                        </Border>
+                        <ItemsControl ItemsSource="{Binding Headings}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Click="Anchor_Click" Content="{Binding Text}" Style="{StaticResource AnchorItem}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- 右：工具条 + markdown 预览 -->
+        <DockPanel Grid.Column="1">
+            <Border DockPanel.Dock="Top" Padding="20,10" Background="{StaticResource Brush.Surface}"
+                    BorderBrush="{StaticResource Brush.Divider}" BorderThickness="0,0,0,1">
+                <TextBlock FontFamily="{StaticResource Font.Mono}" FontSize="12" VerticalAlignment="Center"
+                           Foreground="{StaticResource Brush.TextMuted}" Text="{Binding SelectedDoc.RelativePath}"/>
+            </Border>
+            <Grid Background="{StaticResource Brush.Surface}">
+                <mdxaml:MarkdownScrollViewer x:Name="MdViewer"
+                                             MarkdownStyleName="GithubLike"
+                                             Padding="28,18"
+                                             VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Auto"/>
+                <!-- 加载缓冲层：首次渲染大文档期间遮罩显示，渲染完成后隐藏 -->
+                <Border Background="{StaticResource Brush.Surface}"
+                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                     Width="42" Height="42" IsIndeterminate="True"
+                                     Foreground="{StaticResource Brush.Primary}"/>
+                        <TextBlock Margin="0,14,0,0" HorizontalAlignment="Center" FontSize="13"
+                                   Foreground="{StaticResource Brush.TextMuted}" Text="正在加载系统介绍…"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</chrome:ChromeWindow>

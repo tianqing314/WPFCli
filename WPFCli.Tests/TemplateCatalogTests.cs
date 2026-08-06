@@ -73,10 +73,12 @@ public sealed class TemplateCatalogTests
         var templateRoot = Path.Combine(LocateWorkspace(), "Template");
         var templates = TemplateCatalog.Discover(templateRoot);
 
-        Assert.Equal(3, templates.Count);
-        Assert.Equal(2, templates.Count(template => !template.Config.Disabled));
+        Assert.Equal(5, templates.Count);
+        Assert.Equal(4, templates.Count(template => !template.Config.Disabled));
         Assert.Contains(templates, template => template.Config.BusinessType == "dynamic" && !template.Config.Disabled);
         Assert.Contains(templates, template => template.Config.BusinessType == "machine" && !template.Config.Disabled);
+        Assert.Contains(templates, template => template.Config.BusinessType == "complete" && !template.Config.Disabled);
+        Assert.Contains(templates, template => template.Config.BusinessType == "inspect" && !template.Config.Disabled);
         Assert.Contains(templates, template => template.Config.BusinessType == "aging" && template.Config.Disabled);
     }
 

@@ -152,6 +152,77 @@ public enum RealtimeLevel
 }
 
 /// <summary>
+/// 人工确认结论（整机模板 ManualStep：操作员观察后点按）。
+/// </summary>
+public enum ManualConfirmResult
+{
+    /// <summary>
+    /// 操作员确认通过。
+    /// </summary>
+    Ok,
+
+    /// <summary>
+    /// 操作员确认不合格。
+    /// </summary>
+    Ng,
+
+    /// <summary>
+    /// 超时未确认（引擎按不合格收尾）。
+    /// </summary>
+    Timeout,
+}
+
+/// <summary>
+/// 人工确认请求事件参数：<see cref="TestRunner"/> 执行到 <c>StepType=Manual</c> 的测试项时发布，
+/// UI 订阅后弹出确认框（说明/操作指引 + OK/NG 按钮 + 可选超时），操作员确认后调 <see cref="Respond"/> 回传。
+/// 该号位暂停等待，不阻塞其他号位。
+/// </summary>
+public sealed class ManualConfirmRequestedEventArgs : EventArgs
+{
+    /// <summary>
+    /// 等待确认的号位。
+    /// </summary>
+    public int PositionIndex { get; }
+
+    /// <summary>
+    /// 等待确认的测试项。
+    /// </summary>
+    public StepDescriptor Step { get; }
+
+    /// <summary>
+    /// 确认超时毫秒数（0 = 不限时）。
+    /// </summary>
+    public int TimeoutMs { get; }
+
+    /// <summary>
+    /// 回传确认结果的通道（UI 调用 <see cref="Respond"/>）。
+    /// </summary>
+    private readonly TaskCompletionSource<ManualConfirmResult> _tcs;
+
+    /// <summary>
+    /// 构造确认事件参数。
+    /// </summary>
+    /// <param name="positionIndex">号位索引。</param>
+    /// <param name="step">测试项。</param>
+    /// <param name="timeoutMs">超时毫秒数。</param>
+    /// <param name="tcs">回传通道。</param>
+    public ManualConfirmRequestedEventArgs(int positionIndex, StepDescriptor step, int timeoutMs,
+        TaskCompletionSource<ManualConfirmResult> tcs)
+    {
+        PositionIndex = positionIndex;
+        Step = step;
+        TimeoutMs = timeoutMs;
+        _tcs = tcs;
+    }
+
+    /// <summary>
+    /// UI 回传人工确认结果（OK/NG；超时由引擎按 TimeoutMs 处理，UI 无需传 Timeout）。
+    /// </summary>
+    /// <param name="result">确认结果。</param>
+    public void Respond(ManualConfirmResult result) => _tcs.TrySetResult(result);
+}
+
+/// <summary>
 /// 测试项结果结论。
 /// </summary>
 public enum StepOutcome

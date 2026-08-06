@@ -1,0 +1,4 @@
+<Project>
+  <!-- Dynamic 业务项目复用 Common 的构建属性（单一来源）-->
+  <Import Project="..\Common\Directory.Build.props" />
+</Project>

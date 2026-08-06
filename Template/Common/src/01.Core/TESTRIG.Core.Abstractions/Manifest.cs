@@ -121,6 +121,17 @@ public sealed record StepDescriptor
     public IReadOnlyList<ConditionDescriptor> Conditions { get; init; } = [];
 
     /// <summary>
+    /// 执行类型：Auto（自动，默认）/ Manual（人工确认步，整机模板用，引擎暂停号位等操作员 OK/NG）/
+    /// Process（过程等待步，如温控，由处理器用 <c>ProcessWaiter</c> 轮询条件并实时上报曲线）。
+    /// </summary>
+    public string StepType { get; init; } = "Auto";
+
+    /// <summary>
+    /// 人工确认 / 过程等待的超时毫秒数（0 或省略 = 不限制）。
+    /// </summary>
+    public int TimeoutMs { get; init; }
+
+    /// <summary>
     /// 测试项 GUID（默认自动生成）。
     /// </summary>
     public string Guid { get; init; } = System.Guid.NewGuid().ToString();

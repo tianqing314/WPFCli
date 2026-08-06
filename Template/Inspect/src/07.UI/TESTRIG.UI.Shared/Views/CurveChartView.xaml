@@ -1,0 +1,48 @@
+<UserControl
+    x:Class="TESTRIG.UI.Shared.Views.CurveChartView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--  根 Border 承接鼠标事件：滚轮缩放、左键拖拽平移、悬停查看点值、双击复位  -->
+    <Border
+        x:Name="Root"
+        Background="White"
+        BorderBrush="#DDD"
+        BorderThickness="1"
+        CornerRadius="3"
+        Cursor="Cross"
+        MouseLeave="OnMouseLeave"
+        MouseLeftButtonDown="OnMouseLeftButtonDown"
+        MouseLeftButtonUp="OnMouseLeftButtonUp"
+        MouseMove="OnMouseMove"
+        MouseWheel="OnMouseWheel">
+        <Grid>
+            <!--  绘图层（曲线/坐标轴/网格），尺寸变化时重绘  -->
+            <Canvas
+                x:Name="PlotCanvas"
+                Background="Transparent"
+                ClipToBounds="True"
+                SizeChanged="OnCanvasSizeChanged" />
+            <!--  悬停覆盖层（十字准线/数据点/浮层），不参与命中避免抢事件  -->
+            <Canvas
+                x:Name="OverlayCanvas"
+                Background="Transparent"
+                ClipToBounds="True"
+                IsHitTestVisible="False" />
+            <TextBlock
+                x:Name="EmptyHint"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="#AAA"
+                Text="（无过程数据）" />
+            <!--  操作提示（右下角淡字）  -->
+            <TextBlock
+                x:Name="HintText"
+                Margin="0,0,6,3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                FontSize="10"
+                Foreground="#CCC"
+                Text="滚轮缩放 · 拖拽平移 · 双击复位" />
+        </Grid>
+    </Border>
+</UserControl>

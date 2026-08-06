@@ -1,0 +1,90 @@
+{
+  "Key": "TemplateUUT_Machine",
+  "DeviceFamily": "TemplateUUT",
+  "BoardName": "TemplateUUT 整机",
+  "Description": "TemplateUUT 整机测试（内置占位：一变体一清单。演示 ManualStep 人工确认步与温控过程项；真实整机产品如 ConST171A 接入时建 ConST171A_Machine 清单并填充整机处理器）",
+  "Dut": {
+    "Name": "TemplateUUT 整机被检",
+    "Model": "TemplateUUT"
+  },
+  "Positions": [
+    {
+      "Index": 1,
+      "Name": "1号位",
+      "Comm": {
+        "Link": "Serial",
+        "PhysicalLink": "123",
+        "Serial": {
+          "Baud": 115200,
+          "DataBits": 8,
+          "StopBits": "One",
+          "Parity": "None"
+        }
+      }
+    }
+  ],
+  "Steps": [
+    {
+      "Key": "MachinePrep",
+      "Kind": "MachinePrep",
+      "Name": "整机准备",
+      "Description": "接线检查、共享标准盒连接并上电就绪。",
+      "StepType": "Auto",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "3f1c9e2a-0001-4a00-9c00-000000000001"
+    },
+    {
+      "Key": "ManualLcdCheck",
+      "Kind": "ManualConfirm",
+      "Name": "LCD 显示检查",
+      "Description": "观察整机 LCD 屏幕：应正常点亮、无坏点缺画、显示内容与当前状态一致。请操作员确认。",
+      "StepType": "Manual",
+      "TimeoutMs": 60000,
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "3f1c9e2a-0002-4a00-9c00-000000000002"
+    },
+    {
+      "Key": "ManualSpeakerCheck",
+      "Kind": "ManualConfirm",
+      "Name": "扬声器声音检查",
+      "Description": "触发整机提示音，操作员确认扬声器发声正常、无杂音/无声。请操作员确认。",
+      "StepType": "Manual",
+      "TimeoutMs": 60000,
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "3f1c9e2a-0003-4a00-9c00-000000000003"
+    },
+    {
+      "Key": "OvenWarmup",
+      "Kind": "OvenProcess",
+      "Name": "高温炉升温",
+      "Description": "高温炉设定目标温度并等待炉温进入目标±波动度区间（过程等待原语，实时曲线显示升温过程）。",
+      "StepType": "Process",
+      "TimeoutMs": 120000,
+      "Settings": {
+        "TargetTemp": "660",
+        "Tolerance": "5",
+        "PollMs": "1000"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "3f1c9e2a-0004-4a00-9c00-000000000004"
+    },
+    {
+      "Key": "MachineFinish",
+      "Kind": "MachineFinish",
+      "Name": "整机结束",
+      "Description": "断电复位，汇总整机测试结果。",
+      "StepType": "Auto",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "3f1c9e2a-0005-4a00-9c00-000000000005"
+    }
+  ]
+}

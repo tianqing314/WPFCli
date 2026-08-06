@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="MaterialDesignThemes" />
+    <PackageReference Include="MdXaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\src\01.Core\TESTRIG.Core.Abstractions\TESTRIG.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\src\01.Core\TESTRIG.Core.Engine\TESTRIG.Core.Engine.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\src\02.Infrastructure\TESTRIG.Infrastructure\TESTRIG.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\src\03.Devices\TESTRIG.Devices\TESTRIG.Devices.csproj" />
+    <ProjectReference Include="..\..\06.Automation\TESTRIG.Automation\TESTRIG.Automation.csproj" />
+    <ProjectReference Include="..\..\05.Jigs\TESTRIG.Jigs\TESTRIG.Jigs.csproj" />
+  </ItemGroup>
+</Project>

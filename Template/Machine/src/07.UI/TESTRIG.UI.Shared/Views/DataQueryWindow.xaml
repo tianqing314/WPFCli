@@ -1,0 +1,396 @@
+<chrome:ChromeWindow
+    x:Class="TESTRIG.UI.Shared.Views.DataQueryWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:chrome="clr-namespace:TESTRIG.UI.Shared.Views.Chrome"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    Title="测试数据查看"
+    Width="1560"
+    Height="740"
+    CanMaximize="True"
+    ShowInTaskbar="False"
+    Style="{StaticResource ChromeWindow.Style}"
+    TitleIcon="DatabaseSearchOutline"
+    WindowStartupLocation="CenterOwner">
+    <chrome:ChromeWindow.Resources>
+        <!--  结果药丸  -->
+        <Style x:Key="ResultPill" TargetType="Border">
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Padding" Value="9,2" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{StaticResource Brush.WaitBg}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ResultText}" Value="通过">
+                    <Setter Property="Background" Value="{StaticResource Brush.SuccessPale}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ResultText}" Value="不合格">
+                    <Setter Property="Background" Value="{StaticResource Brush.DangerPale}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="MonoCell" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource Font.Mono}" />
+        </Style>
+        <!--  「操作」列表头居中，与该列居中的图标按钮对齐（其余列表头仍按全局样式左对齐）  -->
+        <Style
+            x:Key="Header.Center"
+            BasedOn="{StaticResource {x:Type DataGridColumnHeader}}"
+            TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+    </chrome:ChromeWindow.Resources>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  查询条件（按钮独立靠右，条件填充一行）  -->
+        <materialDesign:Card
+            Grid.Row="0"
+            Margin="0,0,0,12"
+            Padding="14,10"
+            Style="{StaticResource Card.Std}">
+            <DockPanel>
+                <Button
+                    Height="34"
+                    Margin="14,0,0,0"
+                    Padding="20,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding QueryCommand}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource Btn.Primary}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon VerticalAlignment="Center" Kind="Magnify" />
+                        <TextBlock Margin="6,0,0,0" Text="查询" />
+                    </StackPanel>
+                </Button>
+                <!--  一键批次报告：按上方批次号汇总生成 HTML 报告并打开  -->
+                <Button
+                    Height="34"
+                    Margin="10,0,0,0"
+                    Padding="16,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding GenerateBatchReportCommand}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource Btn.Secondary}"
+                    ToolTip="按上方「批次号」汇总该批次全部 SN，生成 HTML 生产测试报告（可打印/导出 PDF）">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon VerticalAlignment="Center" Kind="FileChartOutline" />
+                        <TextBlock Margin="6,0,0,0" Text="批次报告" />
+                    </StackPanel>
+                </Button>
+                <!--  数据源开关：本地 SQLite / 远程 MySQL，未配置远程时打开会提示并回退  -->
+                <StackPanel
+                    Margin="14,0,0,0"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
+                    Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Width="16"
+                        Height="16"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource Brush.TextWeak}"
+                        Kind="Cloud" />
+                    <TextBlock
+                        Margin="6,0,8,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource Brush.TextWeak}"
+                        Text="查看远程数据" />
+                    <ToggleButton
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding UseRemote}"
+                        Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                        ToolTip="打开查看远程数据库，关闭查看本地数据库" />
+                </StackPanel>
+                <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <WrapPanel.Resources>
+                        <Style BasedOn="{StaticResource Text.Body}" TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="0,0,5,0" />
+                            <Setter Property="Foreground" Value="{StaticResource Brush.TextWeak}" />
+                        </Style>
+                        <Style BasedOn="{StaticResource {x:Type DatePicker}}" TargetType="DatePicker">
+                            <Setter Property="Width" Value="170" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                            <Setter Property="SelectedDateFormat" Value="Long" />
+                        </Style>
+                        <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
+                            <Setter Property="Margin" Value="0,0,14,0" />
+                            <Setter Property="Height" Value="34" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                        <Style BasedOn="{StaticResource {x:Type materialDesign:TimePicker}}" TargetType="materialDesign:TimePicker">
+                            <Setter Property="Width" Value="92" />
+                            <Setter Property="Margin" Value="0,0,14,0" />
+                        </Style>
+                    </WrapPanel.Resources>
+                    <!--  型号范围：固定为当前测试页的被检型号，查询不跨型号  -->
+                    <TextBlock Text="型号" />
+                    <Border
+                        Margin="0,0,14,0"
+                        Padding="9,3"
+                        VerticalAlignment="Center"
+                        Background="{StaticResource Brush.WaitBg}"
+                        CornerRadius="2"
+                        ToolTip="仅查询当前测试页对应的设备型号数据">
+                        <TextBlock
+                            Margin="0"
+                            FontFamily="{StaticResource Font.Mono}"
+                            Foreground="{StaticResource Brush.Text}"
+                            Text="{Binding ModelScopeText}" />
+                    </Border>
+                    <TextBlock Text="开始" />
+                    <DatePicker SelectedDate="{Binding FromDate}" />
+                    <materialDesign:TimePicker
+                        materialDesign:HintAssist.Hint="时:分:秒"
+                        Is24Hours="True"
+                        SelectedTime="{Binding FromTime}"
+                        WithSeconds="True" />
+                    <TextBlock Text="至" />
+                    <DatePicker SelectedDate="{Binding ToDate}" />
+                    <materialDesign:TimePicker
+                        materialDesign:HintAssist.Hint="时:分:秒"
+                        Is24Hours="True"
+                        SelectedTime="{Binding ToTime}"
+                        WithSeconds="True" />
+                    <TextBlock Text="批次号" />
+                    <TextBox
+                        Width="140"
+                        Margin="0,0,14,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding BatchNo}" />
+                    <TextBlock Text="结果" />
+                    <ComboBox
+                        Width="90"
+                        Margin="0"
+                        ItemsSource="{Binding ResultOptions}"
+                        SelectedIndex="{Binding ResultIndex}" />
+                </WrapPanel>
+            </DockPanel>
+        </materialDesign:Card>
+
+        <!--  主表结果  -->
+        <materialDesign:Card
+            Grid.Row="1"
+            Padding="0"
+            ClipToBounds="True"
+            Style="{StaticResource Card.Std}">
+            <DataGrid ItemsSource="{Binding Records}" PreviewMouseDoubleClick="Record_DoubleClick">
+                <DataGrid.RowStyle>
+                    <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                        <Setter Property="ToolTip" Value="双击查看该 SN 的测试项" />
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="180" Header="设备SN">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.SelectableMono}" Text="{Binding DeviceSn, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="150" Header="批次号">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.SelectableMono}" Text="{Binding BatchNo, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="130" Header="型号">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.Selectable}" Text="{Binding DeviceModel, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="100" Header="结果">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource ResultPill}">
+                                    <TextBox
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        Foreground="{Binding ResultBrush}"
+                                        Style="{StaticResource Cell.Selectable}"
+                                        Text="{Binding ResultText, Mode=OneWay}" />
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="70" Header="重压">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox
+                                    HorizontalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    Foreground="{Binding RePressBrush}"
+                                    Style="{StaticResource Cell.Selectable}"
+                                    Text="{Binding RePressText, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="90" Header="操作员">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.Selectable}" Text="{Binding Operator, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="180" Header="开始时间">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.SelectableMono}" Text="{Binding StartTime, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="180" Header="结束时间">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.SelectableMono}" Text="{Binding EndTime, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--  操作：详情（同双击行）+ 删除（仅 admin 显示，二次确认后连详情一起删）  -->
+                    <DataGridTemplateColumn
+                        Width="90"
+                        Header="操作"
+                        HeaderStyle="{StaticResource Header.Center}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                    <Button
+                                        Width="28"
+                                        Height="28"
+                                        Command="{Binding DataContext.OpenSnRecordCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource Btn.Icon}"
+                                        ToolTip="查看该 SN 的测试项详情">
+                                        <materialDesign:PackIcon
+                                            Width="17"
+                                            Height="17"
+                                            Foreground="{StaticResource Brush.Primary}"
+                                            Kind="EyeOutline" />
+                                    </Button>
+                                    <Button
+                                        Width="28"
+                                        Height="28"
+                                        Margin="4,0,0,0"
+                                        Command="{Binding DataContext.DeleteRecordCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource Btn.Icon}"
+                                        ToolTip="删除该记录及其全部测试详情（不可恢复）"
+                                        Visibility="{Binding DataContext.IsAdmin, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource BoolToVis}}">
+                                        <materialDesign:PackIcon
+                                            Width="17"
+                                            Height="17"
+                                            Foreground="{StaticResource Brush.Danger}"
+                                            Kind="DeleteOutline" />
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </materialDesign:Card>
+
+        <!--  加载缓冲：查询时覆盖表格（spinner + 不定长进度）  -->
+        <Border
+            Grid.Row="1"
+            Background="#B8F4F6FA"
+            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar
+                    Width="46"
+                    Height="46"
+                    HorizontalAlignment="Center"
+                    IsIndeterminate="True"
+                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                    Value="0" />
+                <TextBlock
+                    Margin="0,14,0,0"
+                    HorizontalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Style="{StaticResource Text.Body}"
+                    Text="正在加载数据…" />
+                <TextBlock
+                    Margin="0,4,0,10"
+                    HorizontalAlignment="Center"
+                    FontFamily="{StaticResource Font.Mono}"
+                    Foreground="{StaticResource Brush.TextMuted}"
+                    Style="{StaticResource Text.Caption}"
+                    Text="{Binding SourceHint}" />
+                <ProgressBar
+                    Width="280"
+                    Height="5"
+                    IsIndeterminate="True" />
+            </StackPanel>
+        </Border>
+
+        <!--  分页  -->
+        <DockPanel
+            Grid.Row="2"
+            Margin="0,12,0,0"
+            LastChildFill="False">
+            <StackPanel
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                Orientation="Horizontal">
+                <materialDesign:PackIcon
+                    Width="15"
+                    Height="15"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource Brush.Primary}"
+                    Kind="InformationOutline" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource Brush.Primary}"
+                    Text="{Binding Status}" />
+                <TextBlock
+                    Margin="20,0,6,0"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource Brush.TextWeak}"
+                    Text="每页" />
+                <ComboBox
+                    Width="72"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    ItemsSource="{Binding PageSizeOptions}"
+                    SelectedItem="{Binding PageSize}" />
+            </StackPanel>
+            <Button
+                Height="32"
+                Margin="8,0,0,0"
+                Padding="12,0"
+                Command="{Binding NextPageCommand}"
+                DockPanel.Dock="Right"
+                Style="{StaticResource Btn.Secondary}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="下一页" />
+                    <materialDesign:PackIcon
+                        Margin="3,0,0,0"
+                        VerticalAlignment="Center"
+                        Kind="ChevronRight" />
+                </StackPanel>
+            </Button>
+            <Button
+                Height="32"
+                Padding="12,0"
+                Command="{Binding PrevPageCommand}"
+                DockPanel.Dock="Right"
+                Style="{StaticResource Btn.Secondary}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Margin="0,0,3,0"
+                        VerticalAlignment="Center"
+                        Kind="ChevronLeft" />
+                    <TextBlock Text="上一页" />
+                </StackPanel>
+            </Button>
+        </DockPanel>
+    </Grid>
+</chrome:ChromeWindow>

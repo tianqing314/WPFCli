@@ -1,0 +1,93 @@
+<chrome:ChromeWindow x:Class="TESTRIG.UI.Shared.Views.SnRecordWindow"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                     xmlns:chrome="clr-namespace:TESTRIG.UI.Shared.Views.Chrome"
+                     Title="SN 测试项列表"
+                     TitleIcon="BarcodeScan"
+                     Style="{StaticResource ChromeWindow.Style}"
+                     Width="680" Height="520"
+                     CanMaximize="False"
+                     ResizeMode="NoResize"
+                     ShowInTaskbar="False"
+                     WindowStartupLocation="CenterOwner">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12" VerticalAlignment="Center">
+            <materialDesign:PackIcon Kind="BarcodeScan" VerticalAlignment="Center" Foreground="{StaticResource Brush.Primary}"/>
+            <TextBlock Text="设备SN" Margin="8,0,6,0" VerticalAlignment="Center" Foreground="{StaticResource Brush.TextWeak}"/>
+            <TextBlock Text="{Binding DeviceSn, Mode=OneWay}" FontWeight="SemiBold" FontFamily="Consolas" VerticalAlignment="Center"
+                       Foreground="{StaticResource Brush.Primary}"/>
+            <Button Style="{StaticResource Btn.Text}" Margin="16,0,0,0" VerticalAlignment="Center"
+                    Command="{Binding ExportCommand}"
+                    ToolTip="一键导出所有测试项详细内容到 TXT 文件">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Export" Width="16" Height="16" Foreground="{StaticResource Brush.Primary}"/>
+                    <TextBlock Text="导出" Margin="4,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <materialDesign:Card Grid.Row="1" Style="{StaticResource Card.Std}" Padding="0" ClipToBounds="True">
+            <DataGrid ItemsSource="{Binding Items}" PreviewMouseDoubleClick="Item_DoubleClick">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                        <Setter Property="ToolTip" Value="双击查看该测试项过程信息"/>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="#" Width="34">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.SelectableMono}" Text="{Binding Order, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="测试项" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.Selectable}" Text="{Binding Name, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="状态" Width="90">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding StatusText, Mode=OneWay}" Foreground="{Binding StatusBrush}" FontWeight="SemiBold" HorizontalAlignment="Center" Style="{StaticResource Cell.Selectable}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="开始" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.SelectableMono}" Text="{Binding StartTime, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="结束" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource Cell.SelectableMono}" Text="{Binding EndTime, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="详情" Width="64">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource Btn.Icon}" Width="30" Height="30" ToolTip="查看过程日志/曲线"
+                                        Command="{Binding DataContext.ShowDetailCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}">
+                                    <materialDesign:PackIcon Kind="ChartLine" Width="18" Height="18" Foreground="{StaticResource Brush.Primary}"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </materialDesign:Card>
+    </Grid>
+</chrome:ChromeWindow>

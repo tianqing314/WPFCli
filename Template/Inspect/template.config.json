@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "description": "出厂检验模板（TESTRIG 出厂检验平台：证书/合格证生成预览打印，TemplateUUT 被检）",
+  "businessType": "inspect",
+  "category": "inspect",
+  "disabled": false,
+  "excludeFromCopy": [],
+  "excludeFromReplacement": []
+}

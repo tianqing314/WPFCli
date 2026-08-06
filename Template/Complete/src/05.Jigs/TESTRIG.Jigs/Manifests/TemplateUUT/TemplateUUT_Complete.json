@@ -1,0 +1,92 @@
+{
+  "Key": "TemplateUUT_Complete",
+  "DeviceFamily": "TemplateUUT",
+  "BoardName": "TemplateUUT 组件",
+  "Description": "TemplateUUT 组件测试（内置占位：组件装配/功能检查 + 工装绑定。组件模板专属 UI 为工装/治具管理）",
+  "Dut": {
+    "Name": "TemplateUUT 组件被检",
+    "Model": "TemplateUUT"
+  },
+  "Positions": [
+    {
+      "Index": 1,
+      "Name": "1号位",
+      "Comm": {
+        "Link": "Serial",
+        "PhysicalLink": "123",
+        "Serial": {
+          "Baud": 115200,
+          "DataBits": 8,
+          "StopBits": "One",
+          "Parity": "None"
+        }
+      }
+    }
+  ],
+  "Steps": [
+    {
+      "Key": "CompletePrep",
+      "Kind": "CompletePrep",
+      "Name": "组件准备",
+      "Description": "接线检查、共享标准盒连接并上电就绪。",
+      "StepType": "Auto",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "4a1c9e2a-0001-4a00-9c00-000000000001"
+    },
+    {
+      "Key": "AssemblyCheck",
+      "Kind": "CompleteCheck",
+      "Name": "组件装配检查",
+      "Description": "核对组件装配状态：螺丝紧固、线缆连接、标签贴装。",
+      "StepType": "Auto",
+      "Settings": {
+        "螺丝紧固": "已确认",
+        "线缆连接": "已确认",
+        "标签贴装": "已确认"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "4a1c9e2a-0002-4a00-9c00-000000000002"
+    },
+    {
+      "Key": "FunctionCheck",
+      "Kind": "CompleteCheck",
+      "Name": "组件功能检查",
+      "Description": "组件上电后功能自检：通讯、指示、基本功能。",
+      "StepType": "Auto",
+      "Settings": {
+        "通讯自检": "已确认",
+        "指示灯": "已确认"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "4a1c9e2a-0003-4a00-9c00-000000000003"
+    },
+    {
+      "Key": "ToolingBind",
+      "Kind": "ToolingBind",
+      "Name": "工装绑定",
+      "Description": "记录本次测试使用的工装/治具 SN（台账见「工装管理」）。",
+      "StepType": "Auto",
+      "Settings": {
+        "ToolingSn": "TG-0001"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "4a1c9e2a-0004-4a00-9c00-000000000004"
+    },
+    {
+      "Key": "CompleteFinish",
+      "Kind": "CompleteFinish",
+      "Name": "组件结束",
+      "Description": "断电复位，汇总组件测试结果。",
+      "StepType": "Auto",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "4a1c9e2a-0005-4a00-9c00-000000000005"
+    }
+  ]
+}

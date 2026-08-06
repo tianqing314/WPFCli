@@ -320,6 +320,12 @@ public sealed class TestRunner
     /// </summary>
     public event EventHandler<SampleEventArgs>? SampleReported;
 
+    /// <summary>
+    /// 人工确认请求事件（<c>StepType=Manual</c> 的测试项）：暂停该号位，发布确认请求，
+    /// 等待 UI 弹确认框回传 OK/NG；不阻塞其他号位。整机模板订阅弹 <c>ManualConfirmDialog</c>。
+    /// </summary>
+    public event EventHandler<ManualConfirmRequestedEventArgs>? ManualConfirmRequested;
+
     /// <summary>按 (设备家族, Kind) 解析处理器：设备特有优先，回落通用。</summary>
     private IStepHandler? ResolveHandler(string deviceFamily, string kind)
     {
@@ -436,6 +442,19 @@ public sealed class TestRunner
             TestContext ctx = null!;
             StepResult result;
             var attempt = 0;
+
+            // ---- Manual 人工确认步（整机模板专属）：暂停本号位 → 弹确认框等操作员 OK/NG（可选超时），
+            //      确认只发生一次，不参与自动重试；确认 NG/超时按不合格收尾 ----
+            if (step.StepType.Equals("Manual", StringComparison.OrdinalIgnoreCase))
+            {
+                ctx = new TestContext(provider, pos, step, _evaluator, _logger, StepReport,
+                    s => SampleReported?.Invoke(this, s))
+                { SerialNumber = serialNo };
+                result = await ConfirmManualAsync(ctx, step, ct);
+                serialNo = ctx.SerialNumber ?? serialNo;
+            }
+            else
+            {
             while (true)
             {
                 attempt++;
@@ -500,6 +519,7 @@ public sealed class TestRunner
                     break;
                 }
             }
+            }
 
             records.Add(new StepRecord(step, result, stepStarted, DateTime.Now)
             {
@@ -537,6 +557,62 @@ public sealed class TestRunner
         var endTag = userStopped ? "已停止" : fatalAbort ? "异常中止" : posPassed ? "通过" : "不通过";
         Report(null, $"=== [{pos.Name}] 结束：{endTag} ===", posPassed && !fatalAbort ? RealtimeLevel.Success : RealtimeLevel.Error);
         return new PositionResult(pos, serialNo, records, posPassed);
+    }
+
+    /// <summary>
+    /// 人工确认步（<c>StepType=Manual</c>）：发布「等待人工确认」事件（携带测试项与超时配置），
+    /// 暂停该号位等待操作员确认；OK → 通过，NG → 不合格，超时 → 按不合格收尾。不阻塞其他号位。
+    /// 无 UI 订阅（事件无处理程序）时按异常收尾，避免挂死。
+    /// </summary>
+    /// <param name="ctx">当前测试项上下文。</param>
+    /// <param name="step">测试项。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>确认结果。</returns>
+    private async Task<StepResult> ConfirmManualAsync(TestContext ctx, StepDescriptor step, CancellationToken ct)
+    {
+        if (ManualConfirmRequested is null)
+        {
+            return StepResult.Error($"人工确认步未绑定确认 UI：{step.Key}");
+        }
+
+        var timeoutMs = step.TimeoutMs > 0 ? step.TimeoutMs : 0;
+        var tcs = new TaskCompletionSource<ManualConfirmResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+        ManualConfirmRequested.Invoke(this, new ManualConfirmRequestedEventArgs(ctx.Position.Index, step, timeoutMs, tcs));
+
+        ManualConfirmResult confirm;
+        if (timeoutMs > 0)
+        {
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            try
+            {
+                var completed = await Task.WhenAny(tcs.Task, Task.Delay(timeoutMs, timeoutCts.Token));
+                confirm = completed == tcs.Task ? await tcs.Task : ManualConfirmResult.Timeout;
+                timeoutCts.Cancel();
+            }
+            catch (OperationCanceledException)
+            {
+                // 用户停止：按已停止跳过
+                return StepResult.Skip("测试已停止");
+            }
+        }
+        else
+        {
+            try
+            {
+                confirm = await tcs.Task;
+            }
+            catch (TaskCanceledException)
+            {
+                return StepResult.Skip("测试已停止");
+            }
+        }
+
+        return confirm switch
+        {
+            ManualConfirmResult.Ok => StepResult.Pass($"人工确认通过：{step.Name}"),
+            ManualConfirmResult.Ng => StepResult.Fail($"人工确认不合格：{step.Name}"),
+            _ => StepResult.Fail($"人工确认超时（{timeoutMs}ms）：{step.Name}"),
+        };
     }
 
     /// <summary>

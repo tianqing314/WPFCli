@@ -1,0 +1,360 @@
+<chrome:ChromeWindow
+    x:Class="TESTRIG.UI.Shared.Views.StepDetailWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:chrome="clr-namespace:TESTRIG.UI.Shared.Views.Chrome"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:views="clr-namespace:TESTRIG.UI.Shared.Views"
+    Title="测试项过程信息"
+    Width="750"
+    Height="700"
+    CanMaximize="False"
+    ShowInTaskbar="False"
+    Style="{StaticResource ChromeWindow.Style}"
+    TitleIcon="ChartLine"
+    WindowStartupLocation="CenterOwner">
+    <chrome:ChromeWindow.Resources>
+        <!--  判定药丸：按 Status 切底色/字色  -->
+        <Style x:Key="JudgePill" TargetType="Border">
+            <Setter Property="CornerRadius" Value="3" />
+            <Setter Property="Padding" Value="11,3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{StaticResource Brush.WaitBg}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="通过">
+                    <Setter Property="Background" Value="{StaticResource Brush.SuccessPale}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="不合格">
+                    <Setter Property="Background" Value="{StaticResource Brush.DangerPale}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="JudgePillText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{StaticResource Brush.TextMuted}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="通过">
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="不合格">
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Danger}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!--  区块外框 + 区块头（3px 蓝左标 + 标题）  -->
+        <Style x:Key="Sec" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource Brush.Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderStrong}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+    </chrome:ChromeWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  头：#编号 + 名称 + 判定药丸 + 数据来源  -->
+        <Border
+            Grid.Row="0"
+            Padding="18,13"
+            Background="{StaticResource Brush.Surface}"
+            BorderBrush="{StaticResource Brush.Divider}"
+            BorderThickness="0,0,0,1">
+            <DockPanel>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left"
+                    FontFamily="{StaticResource Font.Mono}"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource Brush.TextMuted}"
+                    Text="{Binding Order, StringFormat='#{0}'}" />
+                <TextBlock
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="{Binding Name}" />
+                <Border
+                    Margin="12,0,0,0"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource JudgePill}">
+                    <TextBlock Style="{StaticResource JudgePillText}" Text="{Binding Status}" />
+                </Border>
+                <Border
+                    Padding="11,4"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource Brush.Surface2}"
+                    BorderBrush="{StaticResource Brush.Divider}"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    DockPanel.Dock="Right">
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="{StaticResource Brush.TextWeak}"
+                        Text="{Binding SourceHint}" />
+                </Border>
+            </DockPanel>
+        </Border>
+
+        <!--  各区块「有则显示 / 无则隐藏」  -->
+        <ScrollViewer
+            Grid.Row="1"
+            Padding="18,14,18,4"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!--  测试项描述  -->
+                <Border>
+                    <Border.Style>
+                        <Style BasedOn="{StaticResource Sec}" TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Description}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <Border
+                            Padding="14,9"
+                            BorderBrush="{StaticResource Brush.Divider}"
+                            BorderThickness="0,0,0,1">
+                            <StackPanel Orientation="Horizontal">
+                                <Border
+                                    Width="3"
+                                    Height="12"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource Brush.Primary}"
+                                    CornerRadius="1" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="12.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Brush.TextWeak}"
+                                    Text="测试项描述" />
+                            </StackPanel>
+                        </Border>
+                        <TextBlock
+                            Margin="14,12"
+                            Foreground="{StaticResource Brush.TextWeak}"
+                            LineHeight="22"
+                            Text="{Binding Description}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!--  条件指标  -->
+                <Border>
+                    <Border.Style>
+                        <Style BasedOn="{StaticResource Sec}" TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ConditionsText}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <Border
+                            Padding="14,9"
+                            BorderBrush="{StaticResource Brush.Divider}"
+                            BorderThickness="0,0,0,1">
+                            <StackPanel Orientation="Horizontal">
+                                <Border
+                                    Width="3"
+                                    Height="12"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource Brush.Primary}"
+                                    CornerRadius="1" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="12.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Brush.TextWeak}"
+                                    Text="指标" />
+                            </StackPanel>
+                        </Border>
+                        <TextBlock
+                            Margin="14,12"
+                            FontFamily="{StaticResource Font.Mono}"
+                            Foreground="{StaticResource Brush.TextWeak}"
+                            Text="{Binding ConditionsText}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!--  过程曲线（无过程数据则隐藏）  -->
+                <Border>
+                    <Border.Style>
+                        <Style BasedOn="{StaticResource Sec}" TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasProcessData}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <Border
+                            Padding="14,9"
+                            BorderBrush="{StaticResource Brush.Divider}"
+                            BorderThickness="0,0,0,1">
+                            <StackPanel Orientation="Horizontal">
+                                <Border
+                                    Width="3"
+                                    Height="12"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource Brush.Primary}"
+                                    CornerRadius="1" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="12.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Brush.TextWeak}"
+                                    Text="过程曲线" />
+                            </StackPanel>
+                        </Border>
+                        <views:CurveChartView
+                            Height="200"
+                            Margin="8"
+                            Series="{Binding Series}" />
+                    </StackPanel>
+                </Border>
+
+                <!--  过程日志（无则隐藏，对齐设计稿条件区块）  -->
+                <Border>
+                    <Border.Style>
+                        <Style BasedOn="{StaticResource Sec}" TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Details.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <Border
+                            Padding="14,9"
+                            BorderBrush="{StaticResource Brush.Divider}"
+                            BorderThickness="0,0,0,1">
+                            <StackPanel Orientation="Horizontal">
+                                <Border
+                                    Width="3"
+                                    Height="12"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource Brush.Primary}"
+                                    CornerRadius="1" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="12.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Brush.TextWeak}"
+                                    Text="过程日志" />
+                            </StackPanel>
+                        </Border>
+                        <ListBox
+                            MaxHeight="220"
+                            Padding="6"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            FontFamily="{StaticResource Font.Mono}"
+                            FontSize="12.5"
+                            ItemsSource="{Binding Details}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="96"
+                                            FontFamily="{StaticResource Font.Mono}"
+                                            Foreground="{StaticResource Brush.PrimaryText}"
+                                            Text="{Binding Time}" />
+                                        <TextBlock
+                                            FontFamily="{StaticResource Font.Mono}"
+                                            Foreground="{Binding Brush}"
+                                            Text="{Binding Message}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+
+                <!--  错误信息（末尾，红色区块；无则隐藏）  -->
+                <Border>
+                    <Border.Style>
+                        <Style BasedOn="{StaticResource Sec}" TargetType="Border">
+                            <Setter Property="BorderBrush" Value="#F3B6B4" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ErrorMessage}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <Border
+                            Padding="14,9"
+                            Background="{StaticResource Brush.DangerPale}"
+                            BorderBrush="#F3B6B4"
+                            BorderThickness="0,0,0,1">
+                            <StackPanel Orientation="Horizontal">
+                                <Border
+                                    Width="3"
+                                    Height="12"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource Brush.Danger}"
+                                    CornerRadius="1" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="12.5"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource Brush.Danger}"
+                                    Text="错误信息" />
+                            </StackPanel>
+                        </Border>
+                        <ScrollViewer
+                            MaxHeight="140"
+                            Margin="0"
+                            VerticalScrollBarVisibility="Auto">
+                            <TextBlock
+                                Margin="14,12"
+                                FontFamily="{StaticResource Font.Mono}"
+                                FontSize="12.5"
+                                Foreground="{StaticResource Brush.Danger}"
+                                LineHeight="20"
+                                Text="{Binding ErrorMessage}"
+                                TextWrapping="Wrap" />
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--  底栏  -->
+        <Border
+            Grid.Row="2"
+            Padding="18,11"
+            Background="{StaticResource Brush.Surface}"
+            BorderBrush="{StaticResource Brush.Divider}"
+            BorderThickness="0,1,0,0">
+            <DockPanel LastChildFill="False">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left"
+                    FontFamily="{StaticResource Font.Mono}"
+                    FontSize="12"
+                    Foreground="{StaticResource Brush.TextMuted}"
+                    Text="{Binding SourceHint}" />
+            </DockPanel>
+        </Border>
+    </Grid>
+</chrome:ChromeWindow>

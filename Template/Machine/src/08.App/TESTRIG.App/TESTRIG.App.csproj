@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- windows10 TFM：可引用 WinRT 蓝牙扫描项目 TESTRIG.Devices.BleWin -->
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>TESTRIG.App</RootNamespace>
+    <AssemblyName>TESTRIG.App</AssemblyName>
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Resources\app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\src\01.Core\TESTRIG.Core.Abstractions\TESTRIG.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\src\01.Core\TESTRIG.Core.Engine\TESTRIG.Core.Engine.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\src\02.Infrastructure\TESTRIG.Infrastructure\TESTRIG.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\src\03.Devices\TESTRIG.Devices\TESTRIG.Devices.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\src\03.Devices\TESTRIG.Devices.BleWin\TESTRIG.Devices.BleWin.csproj" />
+    <ProjectReference Include="..\..\04.TestSteps\TESTRIG.TestSteps\TESTRIG.TestSteps.csproj" />
+    <ProjectReference Include="..\..\06.Automation\TESTRIG.Automation\TESTRIG.Automation.csproj" />
+    <ProjectReference Include="..\..\05.Jigs\TESTRIG.Jigs\TESTRIG.Jigs.csproj" />
+    <ProjectReference Include="..\..\07.UI\TESTRIG.UI.Shared\TESTRIG.UI.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- 软件内可预览的手册（新增测试项目指导等），随程序拷到输出 Docs 目录 -->
+    <None Update="Docs\**\*.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- 系统介绍：引用 Template 根 README.md，拷到输出 Docs\README.md 供软件内预览 -->
+    <None Include="..\..\..\..\README.md" Link="Docs\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
