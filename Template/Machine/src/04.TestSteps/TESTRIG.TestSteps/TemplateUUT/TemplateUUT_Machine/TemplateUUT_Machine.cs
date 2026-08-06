@@ -51,7 +51,7 @@ internal sealed class TemplateUUTMachineOps
 }
 
 /// <summary>
-/// 整机准备（内置占位）：连接共享标准盒并上电就绪。真实产品在此做接线/上电/通讯准备。
+/// 整机准备（内置占位）：接线检查、上电就绪。整机无 ConST326 标准盒（与动态模板的差异）。
 /// </summary>
 public sealed class MachinePrepTemplateUUTHandler : IStepHandler
 {
@@ -64,21 +64,10 @@ public sealed class MachinePrepTemplateUUTHandler : IStepHandler
     /// <param name="ctx">测试项上下文。</param>
     /// <param name="ct">取消令牌。</param>
     /// <returns>测试项结果。</returns>
-    public async Task<StepResult> ExecuteAsync(ITestContext ctx, CancellationToken ct = default)
+    public Task<StepResult> ExecuteAsync(ITestContext ctx, CancellationToken ct = default)
     {
-        var op = new TemplateUUTMachineOps(ctx, ct);
-        op.Report("整机准备：接线检查、共享标准盒连接");
-        try
-        {
-            var box = ctx.GetDevice<IDynamicStandardBox>();
-            await box.ConnectAsync(ct);
-            op.Report($"标准盒已连接：{box.IsConnected}");
-        }
-        catch (Exception ex)
-        {
-            op.Report($"标准盒连接异常（仿真可忽略）：{ex.Message}", RealtimeLevel.Warn);
-        }
-        return StepResult.Pass("整机准备完成");
+        ctx.Report("整机准备：接线检查、上电就绪（整机无共享标准盒）");
+        return Task.FromResult(StepResult.Pass("整机准备完成"));
     }
 }
 

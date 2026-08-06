@@ -141,7 +141,7 @@ public partial class App : Application
                     VersionVerifyBaseUrl = ctx.Configuration["Pcba:VersionVerify:BaseUrl"] ?? "http://192.168.0.134:10001",
                 };
 
-                // 共享标准盒/PLC + 被检驱动注册表
+                // 标准模块注册表 + 被检驱动注册表
                 services.AddPcbaDevices(hw);
                 services.AddSingleton(hw);
                 if (hw.UseReal || Environment.GetEnvironmentVariable("TESTRIG_REAL_HARDWARE") == "1")
@@ -310,7 +310,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// 自动化冒烟：打开指定板，连接标准盒并手动单次运行，写结果文件，按需退出。
+    /// 自动化冒烟：打开指定板并手动单次运行，写结果文件，按需退出。
     /// </summary>
     /// <param name="mainVm">主壳视图模型。</param>
     /// <param name="boardKey">板 Key。</param>
@@ -320,8 +320,7 @@ public partial class App : Application
         await mainVm.OpenBoardCommand.ExecuteAsync(item);
         if (mainVm.CurrentContent is TestRunViewModel vm)
         {
-            // 满足开始前校验：连接标准盒 + 填批次号
-            await _host!.Services.GetRequiredService<ConnectionManager>().ConnectBoxAsync();
+            // 满足开始前校验：填批次号
             vm.BatchNumber = "AUTORUN";
 
             // 整机模板始终手动单次，不接 PLC

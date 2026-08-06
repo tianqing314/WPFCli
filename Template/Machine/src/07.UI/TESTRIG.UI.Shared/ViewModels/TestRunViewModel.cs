@@ -131,7 +131,6 @@ public partial class TestRunViewModel : ObservableObject
             p.ShowLog = Positions.Count == 1;
         }
 
-        BoxConnected = conn.IsBoxConnected;
         _counters.Changed += () => _dispatcher.Invoke(RefreshCounters);
 
         _runner.StepChanged += OnStepChanged;
@@ -293,32 +292,18 @@ public partial class TestRunViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 开始任务前置校验：自动连接共享设备（标准盒），连接失败才提示去手动配置；
-    /// 再校验批次号。通过返回 true。
+    /// 开始任务前置校验：校验批次号（整机无共享标准盒需先连）。通过返回 true。
     /// </summary>
     /// <returns>校验通过返回 true。</returns>
-    private async Task<bool> ValidateBeforeStartAsync()
+    private Task<bool> ValidateBeforeStartAsync()
     {
-        // 1. 自动连接共享设备（标准盒）
-        try { await _conn.ConnectBoxAsync(); } catch { }
-
-        BoxConnected = _conn.IsBoxConnected;
-
-        if (!_conn.IsBoxConnected)
-        {
-            AppDialog.Error("无法开始测试",
-                "共享设备（标准盒）连接失败，当前共享设备连接配置信息可能无效。\n" +
-                "请打开【连接配置】手动配置正确后再连接。");
-            return false;
-        }
-
-        // 2. 校验批次号
+        // 1. 校验批次号
         if (string.IsNullOrWhiteSpace(BatchNumber))
         {
             AppDialog.Info("无法开始测试", "请先填写批次号（手动输入）。");
-            return false;
+            return Task.FromResult(false);
         }
-        return true;
+        return Task.FromResult(true);
     }
 
     /// <summary>
@@ -336,7 +321,7 @@ public partial class TestRunViewModel : ObservableObject
             return;
         }
 
-        // 开始前校验：自动连接共享设备（标准盒）+ 批次号
+        // 开始前校验：批次号
         if (!await ValidateBeforeStartAsync())
         {
             return;
@@ -400,9 +385,7 @@ public partial class TestRunViewModel : ObservableObject
         _runCts = new CancellationTokenSource();
         var ct = _runCts.Token;
 
-        // 单测不经整跑前置校验：先确保共享标准盒已连（碰继电器/326 的单测需要）；被检由驱动惰性自连
-        try { await _conn.ConnectBoxAsync(); } catch { }
-        BoxConnected = _conn.IsBoxConnected;
+        // 单测不经整跑前置校验：被检由驱动惰性自连
 
         var options = new RunOptions { Positions = [cell.PositionIndex], StepKeys = [cell.Key] };
         try { await Task.Run(() => _runner.RunAsync(_manifest, options, ct)); }
@@ -419,12 +402,7 @@ public partial class TestRunViewModel : ObservableObject
     /// </summary>
     public IBoardToolbarExtra? BoardToolbarExtra { get; }
 
-    // 顶部连接状态栏
-
-    /// <summary>
-    /// 标准盒是否已连接。
-    /// </summary>
-    [ObservableProperty] private bool _boxConnected;
+    // 顶部连接状态栏（整机无共享标准盒；状态见连接配置窗口）
 
     /// <summary>
     /// 整体测试后：在应用关闭前执行，委托给引擎的 <see cref="TestRunner.RunPostTestAsync"/>。
@@ -454,8 +432,7 @@ public partial class TestRunViewModel : ObservableObject
         var vm = new ConnectionConfigViewModel(_connStore, _scanner, _conn, _manifest);
         new ConnectionConfigWindow(vm) { Owner = Application.Current.MainWindow }.ShowDialog();
 
-        // 与配置窗口内的连接动作关联：关闭后同步顶部状态栏
-        BoxConnected = _conn.IsBoxConnected;
+        // 与配置窗口内的连接动作关联：关闭后同步（整机无共享标准盒状态栏）
     }
 
     /// <summary>

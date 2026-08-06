@@ -51,16 +51,7 @@ public static class DevicesServiceCollectionExtensions
         // 真机开关：配置 Pcba:Hardware:UseReal 或环境变量 TESTRIG_REAL_HARDWARE=1
         var useReal = (hw?.UseReal ?? false) || Environment.GetEnvironmentVariable("TESTRIG_REAL_HARDWARE") == "1";
 
-        // 标准盒：真机走 Xmas11 RealStandardBox，否则仿真。两者都实现 IDynamicStandardBox。
-        if (useReal)
-        {
-            services.AddSingleton<IDynamicStandardBox, StandardBox.StandardBox>();
-        }
-        else
-        {
-            services.AddSingleton<IDynamicStandardBox, SimulatedStandardBox>();
-        }
-        services.AddSingleton<IStandardBox>(sp => sp.GetRequiredService<IDynamicStandardBox>());
+        // 整机模板共享设备 = 标准模块（正压/真空），无 ConST326 标准盒（与动态模板的差异）
 
         // 蓝牙扫描兜底（真机由 App 注册 Win10 实现覆盖）
         services.TryAddSingleton<IBleScanner, Comm.NoOpBleScanner>();

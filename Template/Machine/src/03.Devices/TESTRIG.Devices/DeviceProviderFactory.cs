@@ -7,18 +7,13 @@ using TESTRIG.Devices.StandardBox;
 namespace TESTRIG.Devices;
 
 /// <summary>
-/// 按号位创建设备提供者：标准盒取**全局共享单例**（纠正第一轮 per-module scoped 的错误），
-/// 被检按 manifest 的型号经 <see cref="DutDriverRegistry"/> 创建；
-/// 标准模块（Tool 设备，如 DPSEX1/DPSEX2）按 manifest <c>ToolDevices</c> 经
+/// 按号位创建设备提供者：被检按 manifest 的型号经 <see cref="DutDriverRegistry"/> 创建；
+/// 标准模块（共享设备，如 DPSEX1 正压 / DPSEX2 真空）按 manifest <c>ToolDevices</c> 经
 /// <see cref="StandardModuleRegistry"/> 每号位创建实例，处理器按 DeviceKey 获取。
+/// 整机模板无 ConST326 标准盒（与动态模板的差异）。
 /// </summary>
 public sealed class DeviceProviderFactory : IDeviceProviderFactory
 {
-    /// <summary>
-    /// 全局共享标准盒。
-    /// </summary>
-    private readonly IStandardBox _standardBox;
-
     /// <summary>
     /// 被检驱动注册表。
     /// </summary>
@@ -35,23 +30,21 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
     private readonly ConnectionSettings _connections;
 
     /// <summary>
-    /// 连接解析器：把被检串口物理链路号解析成当前实际 COM。
+    /// 连接解析器：把被检/标准模块串口物理链路号解析成当前实际 COM。
     /// </summary>
     private readonly IConnectionResolver _resolver;
 
     /// <summary>
     /// 构造设备提供者工厂。
     /// </summary>
-    /// <param name="standardBox">全局共享标准盒。</param>
     /// <param name="registry">被检驱动注册表。</param>
     /// <param name="stdRegistry">标准模块注册表。</param>
     /// <param name="connections">连接配置。</param>
     /// <param name="resolver">连接解析器（串口物理链路 → 当前 COM）。</param>
-    public DeviceProviderFactory(IStandardBox standardBox, DutDriverRegistry registry, StandardModuleRegistry stdRegistry,
+    public DeviceProviderFactory(DutDriverRegistry registry, StandardModuleRegistry stdRegistry,
         ConnectionSettings connections,
         IConnectionResolver resolver)
     {
-        _standardBox = standardBox;
         _registry = registry;
         _stdRegistry = stdRegistry;
         _connections = connections;
@@ -59,7 +52,7 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
     }
 
     /// <summary>
-    /// 为某号位创建设备提供者：共享标准盒 + 该号位专属被检实例（端点按优先级解析）。
+    /// 为某号位创建设备提供者：该号位专属被检实例 + 标准模块实例（端点按解析/覆盖处理）。
     /// </summary>
     /// <param name="manifest">针床清单。</param>
     /// <param name="position">号位。</param>
@@ -89,7 +82,7 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
 
         var dut = comm is not null ? manifest.Dut with { Comm = comm } : manifest.Dut;
 
-        // 标准模块（Tool 设备）：按 manifest.ToolDevices 每号位创建实例，处理器按 DeviceKey 获取
+        // 标准模块（共享设备）：按 manifest.ToolDevices 每号位创建实例，处理器按 DeviceKey 获取
         var tools = new Dictionary<string, IStandardModule>(StringComparer.OrdinalIgnoreCase);
         foreach (var tool in manifest.ToolDevices)
         {
@@ -105,7 +98,7 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
             var descriptor = new DeviceDescriptor(tool.Name, tool.Model) { Comm = toolComm };
             tools[tool.Key] = _stdRegistry.Create(descriptor);
         }
-        return new DeviceProvider(_standardBox, _registry.Create(dut), tools);
+        return new DeviceProvider(_registry.Create(dut), tools);
     }
 
     /// <summary>
@@ -113,11 +106,6 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
     /// </summary>
     private sealed class DeviceProvider : IDeviceProvider
     {
-        /// <summary>
-        /// 共享标准盒。
-        /// </summary>
-        private readonly IStandardBox _box;
-
         /// <summary>
         /// 该号位被检。
         /// </summary>
@@ -131,18 +119,16 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
         /// <summary>
         /// 构造设备提供者。
         /// </summary>
-        /// <param name="box">共享标准盒。</param>
         /// <param name="dut">该号位被检。</param>
         /// <param name="tools">该号位标准模块实例表。</param>
-        public DeviceProvider(IStandardBox box, IDutDevice dut, IReadOnlyDictionary<string, IStandardModule> tools)
+        public DeviceProvider(IDutDevice dut, IReadOnlyDictionary<string, IStandardModule> tools)
         {
-            _box = box;
             _dut = dut;
             _tools = tools;
         }
 
         /// <summary>
-        /// 按类型解析设备（标准盒或被检）。
+        /// 按类型解析设备（该号位被检）。
         /// </summary>
         /// <typeparam name="T">设备接口类型。</typeparam>
         /// <returns>设备实例。</returns>
@@ -150,11 +136,6 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
         public T GetDevice<T>()
             where T : class, IDevice
         {
-            if (_box is T box)
-            {
-                return box;
-            }
-
             if (_dut is T dut)
             {
                 return dut;

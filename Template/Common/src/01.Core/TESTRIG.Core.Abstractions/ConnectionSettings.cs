@@ -32,6 +32,12 @@ public sealed class ConnectionSettings
     /// 不触发重建、不影响任何现有连接，故无需提升 SchemaVersion。
     /// </summary>
     public Dictionary<string, List<CommEndpoint>> Fixtures { get; set; } = new();
+
+    /// <summary>
+    /// 标准模块（共享设备，整机模板：DPSEX1 正压 / DPSEX2 真空）端点覆盖：
+    /// manifest <c>ToolDevices</c> 的 Key → 连接端点（串口）。**加法字段**：旧配置缺此项反序列化为空字典，不触发重建。
+    /// </summary>
+    public Dictionary<string, CommEndpoint> StandardModules { get; set; } = new();
 }
 
 /// <summary>

@@ -269,17 +269,17 @@
                 <TabItem Header="共享设备（通用）">
                     <ScrollViewer Padding="14,12,14,0" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <!--  标准盒  -->
+                            <!--  标准模块（共享设备：正压/真空标准模块）  -->
                             <StackPanel Margin="15,4,0,4" Orientation="Horizontal">
                                 <materialDesign:PackIcon
                                     VerticalAlignment="Center"
                                     Foreground="{StaticResource Brush.Primary}"
-                                    Kind="ToyBrickOutline" />
+                                    Kind="GaugeOutline" />
                                 <TextBlock
                                     Margin="6,0,0,0"
                                     VerticalAlignment="Center"
                                     Style="{StaticResource Text.Subtitle}"
-                                    Text="标准盒（内部子设备）" />
+                                    Text="标准模块（正压 / 真空）" />
                                 <StackPanel
                                     Margin="12,0,0,0"
                                     VerticalAlignment="Center"
@@ -293,7 +293,7 @@
                                             <Style TargetType="materialDesign:PackIcon">
                                                 <Setter Property="Foreground" Value="#C2C7CE" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding BoxConnected}" Value="True">
+                                                    <DataTrigger Binding="{Binding StandardConnected}" Value="True">
                                                         <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -309,7 +309,7 @@
                                                 <Setter Property="Foreground" Value="{StaticResource Brush.TextWeak}" />
                                                 <Setter Property="Text" Value="未连接" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding BoxConnected}" Value="True">
+                                                    <DataTrigger Binding="{Binding StandardConnected}" Value="True">
                                                         <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
                                                         <Setter Property="Text" Value="已连接" />
                                                     </DataTrigger>
@@ -322,7 +322,7 @@
                                     Height="30"
                                     Margin="14,0,0,0"
                                     Padding="12,0"
-                                    Command="{Binding ConnectBoxCommand}"
+                                    Command="{Binding ConnectStandardCommand}"
                                     Style="{StaticResource Btn.Primary}">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon VerticalAlignment="Center">
@@ -330,18 +330,18 @@
                                                 <Style TargetType="materialDesign:PackIcon">
                                                     <Setter Property="Kind" Value="LanConnect" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding BoxConnected}" Value="True">
+                                                        <DataTrigger Binding="{Binding StandardConnected}" Value="True">
                                                             <Setter Property="Kind" Value="LanDisconnect" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </materialDesign:PackIcon.Style>
                                         </materialDesign:PackIcon>
-                                        <TextBlock Margin="5,0,0,0" Text="{Binding ConnectBoxLabel}" />
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding ConnectStandardLabel}" />
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
-                            <ItemsControl ItemTemplate="{StaticResource CommRow}" ItemsSource="{Binding StandardBox}" />
+                            <ItemsControl ItemTemplate="{StaticResource CommRow}" ItemsSource="{Binding StandardModules}" />
 
                         </StackPanel>
                     </ScrollViewer>

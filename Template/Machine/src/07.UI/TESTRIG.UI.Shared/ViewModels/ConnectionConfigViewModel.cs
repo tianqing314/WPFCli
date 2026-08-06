@@ -65,10 +65,9 @@ public partial class ConnectionConfigViewModel : ObservableObject
     private readonly DeviceDescriptor _dut;
 
     /// <summary>
-    /// 针床工装模式：板声明了 <see cref="JigManifest.FixtureDevices"/>（如 A20）时为 true——「被检连接」页改呈现
-    /// 针床工装子设备（串口）、隐藏按号位被检行，端点落 <see cref="ConnectionSettings.Fixtures"/>。
+    /// 标准模块型号表（manifest ToolDevices Key → Model，连通性测试用）。
     /// </summary>
-    private readonly bool _isFixtureMode;
+    private readonly Dictionary<string, string> _toolModel = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// 构造连接配置视图模型：按当前配置与 manifest 号位构建各连接行，并后台扫描设备。
@@ -87,55 +86,33 @@ public partial class ConnectionConfigViewModel : ObservableObject
         _dut = manifest.Dut;
         var c = store.Current;
 
-        // 标准盒子设备（通讯方式定死：ConST326 串口，其余网络），各自一行带连接/断开
-        foreach (var sub in c.StandardBox)
+        // 标准模块（共享设备：正压/真空标准模块，来自 manifest.ToolDevices；已存 StandardModules 覆盖优先）
+        // 通讯方式定死串口（DPSEX 4800/Two/None），各自一行带连接/断开（真连探活）
+        foreach (var tool in manifest.ToolDevices)
         {
-            var links = sub.Key == "ConST326" ? SerialOnly : EthernetOnly;
-            StandardBox.Add(new CommRowViewModel(sub.Name, sub.Comm, SerialOptions, UsbOptions, conn, links)
+            _toolModel[tool.Key] = tool.Model;
+            var ep = c.StandardModules.TryGetValue(tool.Key, out var se)
+                ? se
+                : tool.Comm ?? CommEndpoint.OfSerial("COM2", new SerialParams(4800, 8, "Two", "None"));
+            StandardModules.Add(new CommRowViewModel(tool.Name, ep, SerialOptions, UsbOptions, conn, SerialOnly)
             {
-                IsConnected = conn.IsBoxConnected,
-                ToggleHandler = ToggleRowAsync,
-                DeviceKey = sub.Key,
+                ToggleHandler = ToggleStandardModuleRowAsync,
+                DeviceKey = tool.Key,
             });
         }
 
-        // 被检 / 针床工装：板若声明了 FixtureDevices（如 A20），本页呈现「针床工装」子设备（串口）并隐藏按号位被检行；
-        // 否则沿用「按号位被检」行。两模式共用同一 Duts 集合与 UI 模板，Save 时按模式分别落 Fixtures / Duts。
-        _isFixtureMode = manifest.FixtureDevices.Count > 0;
-        if (_isFixtureMode)
+        // 被检：按号位展开，默认取 manifest 号位 Comm，已存配置优先；每号位带连接/断开（真连探活）
+        var saved = c.Duts.TryGetValue(_boardKey, out var l) ? l : null;
+        for (var i = 0; i < manifest.Positions.Count; i++)
         {
-            // 针床工装子设备：顺序与 manifest.FixtureDevices 一致，已存 Fixtures 配置优先，串口固定。
-            // 端点数与 manifest 子设备数不一致＝针床接线形态变过（如 A20 的继电器 D/E 由两个 COM 合并为一条
-            // RS485 总线、子设备由 3 个变 2 个），旧值按序回填会错位到别的设备上，故整份丢弃、回落 manifest
-            // 默认（空物理链路），由「一键连接」重新识别。
-            var savedList = c.Fixtures.TryGetValue(_boardKey, out var fl) ? fl : null;
-            var savedFx = savedList is not null && savedList.Count == manifest.FixtureDevices.Count ? savedList : null;
-            for (var i = 0; i < manifest.FixtureDevices.Count; i++)
+            var pos = manifest.Positions[i];
+            var ep = saved is not null && i < saved.Count
+                ? saved[i]
+                : pos.Comm ?? CommEndpoint.OfEthernet("192.168.40.107", 1030);
+            Duts.Add(new CommRowViewModel($"{pos.Name} 被检", ep, SerialOptions, UsbOptions, conn, AllLinks)
             {
-                var dev = manifest.FixtureDevices[i];
-                var ep = savedFx is not null && i < savedFx.Count ? savedFx[i] : dev.Comm;
-                Duts.Add(new CommRowViewModel(dev.Name, ep, SerialOptions, UsbOptions, conn, SerialOnly)
-                {
-                    ToggleHandler = ToggleFixtureRowAsync,
-                    FixtureKey = dev.Key,
-                });
-            }
-        }
-        else
-        {
-            // 被检：按号位展开，默认取 manifest 号位 Comm，已存配置优先；每号位带连接/断开（真连探活）
-            var saved = c.Duts.TryGetValue(_boardKey, out var l) ? l : null;
-            for (var i = 0; i < manifest.Positions.Count; i++)
-            {
-                var pos = manifest.Positions[i];
-                var ep = saved is not null && i < saved.Count
-                    ? saved[i]
-                    : pos.Comm ?? CommEndpoint.OfEthernet("192.168.40.107", 1030);
-                Duts.Add(new CommRowViewModel($"{pos.Name} 被检", ep, SerialOptions, UsbOptions, conn, AllLinks)
-                {
-                    ToggleHandler = ToggleDutRowAsync,
-                });
-            }
+                ToggleHandler = ToggleDutRowAsync,
+            });
         }
 
         RecomputeGroupStatus();
@@ -160,9 +137,9 @@ public partial class ConnectionConfigViewModel : ObservableObject
     public ObservableCollection<DiscoveredUsb> UsbOptions { get; } = [];
 
     /// <summary>
-    /// 标准盒子子设备连接行集合。
+    /// 标准模块（共享设备：正压/真空）连接行集合。
     /// </summary>
-    public ObservableCollection<CommRowViewModel> StandardBox { get; } = [];
+    public ObservableCollection<CommRowViewModel> StandardModules { get; } = [];
 
     /// <summary>
     /// 被检连接行集合（按号位）；针床工装模式下承载针床工装子设备行。
@@ -170,27 +147,14 @@ public partial class ConnectionConfigViewModel : ObservableObject
     public ObservableCollection<CommRowViewModel> Duts { get; } = [];
 
     /// <summary>
-    /// 是否针床工装模式（板声明了 <c>FixtureDevices</c>）。决定「被检连接」页呈现针床子设备还是按号位被检行。
+    /// 「被检连接」页标题（整机无针床工装，恒为按号位被检）。
     /// </summary>
-    public bool IsFixtureMode => _isFixtureMode;
-
-    /// <summary>
-    /// 是否显示「一键连接（识别）」。**必须同时满足**：针床工装模式 + 板 Key 是 A20——
-    /// 识别器探的是 A20 针床特有的设备组合（BNRC16 继电器总线 + ZH44023D 2 路电流计）、回填也按 A20 的子设备 Key 匹配，
-    /// 换别的板即便声明了 <c>FixtureDevices</c> 也套不上（只会全行报「未识别到」，还白探一遍串口）。
-    /// 故这里按板收紧，不跟着 <see cref="IsFixtureMode"/> 一起放开。
-    /// </summary>
-    public bool CanIdentifyFixture => false;
-
-    /// <summary>
-    /// 「被检连接」页标题：针床工装模式显示「针床工装」，否则「被检连接（按号位）」。
-    /// </summary>
-    public string DutTabHeader => _isFixtureMode ? "针床工装" : "被检连接（按号位）";
+    public string DutTabHeader => "被检连接（按号位）";
 
     /// <summary>
     /// 「被检连接」页副标题。
     /// </summary>
-    public string DutTabSubtitle => _isFixtureMode ? "针床工装子设备（继电器 / 电流计，串口）" : "被检（按号位 = 拼版数）";
+    public string DutTabSubtitle => "被检（按号位 = 拼版数）";
 
     /// <summary>
     /// 状态栏文字（扫描/连接进度）。
@@ -198,28 +162,16 @@ public partial class ConnectionConfigViewModel : ObservableObject
     [ObservableProperty] private string _status = "";
 
     /// <summary>
-    /// 标准盒组连接状态（组内全部连接才为 true）——与主页面顶部状态栏关联。
+    /// 标准模块组连接状态（组内全部连接才为 true）。
     /// </summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ConnectBoxLabel))]
-    private bool _boxConnected;
+    [NotifyPropertyChangedFor(nameof(ConnectStandardLabel))]
+    private bool _standardConnected;
 
     /// <summary>
-    /// 针床工装组连接状态（针床工装模式下：各子设备行全部连接才为 true）。
+    /// 标准模块一键连接/断开 按钮文字（随连接状态切换）。
     /// </summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ConnectFixtureLabel))]
-    private bool _fixtureConnected;
-
-    /// <summary>
-    /// 标准盒一键连接/断开 按钮文字（随连接状态切换）。
-    /// </summary>
-    public string ConnectBoxLabel => BoxConnected ? "一键断开" : "一键连接";
-
-    /// <summary>
-    /// 针床工装一键连接/断开 按钮文字（随连接状态切换）。
-    /// </summary>
-    public string ConnectFixtureLabel => FixtureConnected ? "一键断开" : "一键连接";
+    public string ConnectStandardLabel => StandardConnected ? "一键断开" : "一键连接";
 
     /// <summary>
     /// 请求关闭窗口事件（保存/取消后触发）。
@@ -286,12 +238,12 @@ public partial class ConnectionConfigViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 枚举全部连接行（标准盒子设备 + 各号位被检）。
+    /// 枚举全部连接行（标准模块 + 各号位被检）。
     /// </summary>
     /// <returns>连接行序列。</returns>
     private IEnumerable<CommRowViewModel> AllRows()
     {
-        foreach (var r in StandardBox)
+        foreach (var r in StandardModules)
         {
             yield return r;
         }
@@ -302,10 +254,10 @@ public partial class ConnectionConfigViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 标准盒「一键连接/断开」：已连接则断开所有子设备，否则连接所有。
+    /// 标准模块「一键连接/断开」：已连接则断开所有，否则真连探活所有。
     /// </summary>
     [RelayCommand]
-    private async Task ConnectBox()
+    private async Task ConnectStandard()
     {
         if (IsBusy)
         {
@@ -315,25 +267,25 @@ public partial class ConnectionConfigViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            if (BoxConnected)
+            if (StandardConnected)
             {
-                BusyHint = "断开标准盒各子设备";
-                foreach (var r in StandardBox) { r.IsConnected = false; r.TestResult = "已断开"; }
-                await SyncRealDevicesAsync();
-                Status = "标准盒已全部断开";
+                BusyHint = "断开标准模块";
+                foreach (var r in StandardModules) { r.IsConnected = false; r.TestResult = "已断开"; }
+                RecomputeGroupStatus();
+                Status = "标准模块已全部断开";
             }
             else
             {
-                BusyHint = "连接标准盒各子设备";
-                Status = "正在连接标准盒各子设备…";
-                foreach (var r in StandardBox)
+                BusyHint = "连接标准模块（真连探活）";
+                Status = "正在连接标准模块…";
+                foreach (var r in StandardModules)
                 {
-                    var (ok, msg) = await _conn.TestBoxSubDeviceAsync(r.DeviceKey ?? "", r.ToEndpoint());
+                    var (ok, msg) = await ConnectStandardModuleAsync(r);
                     r.IsConnected = ok;
                     r.TestResult = (ok ? "✓ " : "✗ ") + msg;
                 }
-                await SyncRealDevicesAsync();
-                Status = BoxConnected ? "标准盒已全部连接" : "标准盒部分设备连接失败";
+                RecomputeGroupStatus();
+                Status = StandardConnected ? "标准模块已全部连接" : "标准模块部分连接失败";
             }
         }
         finally
@@ -343,7 +295,40 @@ public partial class ConnectionConfigViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 单设备「连接/断开」：标准盒子设备走**真连**（Open/IsExist），其它走物理链路解析；再同步组状态。
+    /// 标准模块行「连接/断开」：真连探活（按型号建驱动 ConnectAsync），再同步组状态。
+    /// </summary>
+    /// <param name="row">标准模块连接行。</param>
+    private async Task ToggleStandardModuleRowAsync(CommRowViewModel row)
+    {
+        if (row.IsConnected)
+        {
+            row.IsConnected = false;
+            row.TestResult = "已断开";
+        }
+        else
+        {
+            row.TestResult = "正在连接…";
+            var (ok, msg) = await ConnectStandardModuleAsync(row);
+            row.IsConnected = ok;
+            row.TestResult = (ok ? "✓ " : "✗ ") + msg;
+        }
+        RecomputeGroupStatus();
+    }
+
+    /// <summary>
+    /// 真连探活一个标准模块（按 DeviceKey 取型号，建驱动 ConnectAsync，测完关闭）。
+    /// </summary>
+    /// <param name="row">标准模块连接行。</param>
+    /// <returns>(是否连通, 说明)。</returns>
+    private Task<(bool Ok, string Message)> ConnectStandardModuleAsync(CommRowViewModel row)
+    {
+        var key = row.DeviceKey ?? "";
+        var model = _toolModel.TryGetValue(key, out var m) ? m : key;
+        return _conn.TestStandardModuleAsync(key, row.Name, model, row.ToEndpoint());
+    }
+
+    /// <summary>
+    /// 单设备「连接/断开」（被检外其它设备）：物理链路/网络解析；再同步组状态。
     /// </summary>
     /// <param name="row">目标连接行。</param>
     private async Task ToggleRowAsync(CommRowViewModel row)
@@ -352,14 +337,6 @@ public partial class ConnectionConfigViewModel : ObservableObject
         {
             row.IsConnected = false;
             row.TestResult = "已断开";
-        }
-        else if (row.DeviceKey is not null)
-        {
-            // 标准盒子设备：真调驱动 Open()（+ConST326 IsExist()）
-            row.TestResult = "正在连接…";
-            var (ok, msg) = await _conn.TestBoxSubDeviceAsync(row.DeviceKey, row.ToEndpoint());
-            row.IsConnected = ok;
-            row.TestResult = (ok ? "✓ " : "✗ ") + msg;
         }
         else
         {
@@ -392,96 +369,44 @@ public partial class ConnectionConfigViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 针床工装子设备行「连接/断开」：串口物理链路解析 + 端口占用探测（针床继电器/电流计为串口）。
-    /// 不参与标准盒/PLC 组状态。
+    /// 重算组状态（标准模块行连接状态即真实连接，无全局单例需对齐）。
     /// </summary>
-    /// <param name="row">针床工装连接行。</param>
-    private async Task ToggleFixtureRowAsync(CommRowViewModel row)
+    private Task SyncRealDevicesAsync()
     {
-        if (row.IsConnected)
-        {
-            row.IsConnected = false;
-            row.TestResult = "已断开";
-            RecomputeFixtureStatus();
-            return;
-        }
-
-        row.TestResult = "正在连接…";
-        var (ok, msg) = await _conn.TestFixtureAsync(row.ToEndpoint());
-        row.IsConnected = ok;
-        row.TestResult = (ok ? "✓ " : "✗ ") + msg;
-        RecomputeFixtureStatus();
-    }
-
-    /// <summary>
-    /// 针床工装「一键连接/断开」命令桩：TemplateUUT 模板不含针床工装（A20/PS02）识别，
-    /// 保留命令桩以免 XAML 绑定失败。新增针床工装被检时在此实现识别逻辑。
-    /// </summary>
-    [RelayCommand]
-    private Task ConnectFixture()
-    {
+        RecomputeGroupStatus();
         return Task.CompletedTask;
     }
 
     /// <summary>
-    /// 依各针床工装行连接状态重算针床工装组状态（非针床工装模式恒为 false）。
-    /// </summary>
-    private void RecomputeFixtureStatus()
-    {
-        FixtureConnected = _isFixtureMode && Duts.Count > 0 && Duts.All(r => r.IsConnected);
-    }
-
-    /// <summary>
-    /// 重算组状态并把真实共享设备（标准盒）对齐到组状态，保证与主页面一致。
-    /// </summary>
-    private async Task SyncRealDevicesAsync()
-    {
-        RecomputeGroupStatus();
-
-        if (BoxConnected && !_conn.IsBoxConnected)
-        {
-            await _conn.ConnectBoxAsync();
-        }
-        else if (!BoxConnected && _conn.IsBoxConnected)
-        {
-            await _conn.StandardBox.DisposeAsync();
-        }
-    }
-
-    /// <summary>
-    /// 依据各行连接状态重算标准盒组连接状态。
+    /// 依据各行连接状态重算标准模块组连接状态。
     /// </summary>
     private void RecomputeGroupStatus()
     {
-        BoxConnected = StandardBox.Count > 0 && StandardBox.All(r => r.IsConnected);
+        StandardConnected = StandardModules.Count > 0 && StandardModules.All(r => r.IsConnected);
     }
 
     /// <summary>
-    /// 保存标准盒/被检连接配置到仓储并关闭窗口。
+    /// 保存标准模块/被检连接配置到仓储并关闭窗口。
     /// </summary>
     [RelayCommand]
     private void Save()
     {
         var c = _store.Current;
-        for (var i = 0; i < c.StandardBox.Count && i < StandardBox.Count; i++)
+        foreach (var r in StandardModules)
         {
-            c.StandardBox[i].Comm = StandardBox[i].ToEndpoint();
+            if (r.DeviceKey is not null)
+            {
+                c.StandardModules[r.DeviceKey] = r.ToEndpoint();
+            }
         }
 
-        if (_isFixtureMode)
-        {
-            c.Fixtures[_boardKey] = Duts.Select(d => d.ToEndpoint()).ToList();
-        }
-        else
-        {
-            c.Duts[_boardKey] = Duts.Select(d => d.ToEndpoint()).ToList();
-        }
+        c.Duts[_boardKey] = Duts.Select(d => d.ToEndpoint()).ToList();
         _store.Save();
         Status = "已保存";
 
         // 先关窗再弹 Toast：此时主窗恢复为活动窗口，Toast 落在主窗右上，不随配置窗一起消失
         RequestClose?.Invoke(this, EventArgs.Empty);
-        AppToast.Success("配置已保存", "PLC / 标准盒 / 被检连接参数已写入本地配置");
+        AppToast.Success("配置已保存", "标准模块 / 被检连接参数已写入本地配置");
     }
 
     /// <summary>
@@ -618,14 +543,13 @@ public partial class CommRowViewModel : ObservableObject
     public Func<CommRowViewModel, Task>? ToggleHandler { get; set; }
 
     /// <summary>
-    /// 标准盒子设备键（ConST326/BNRC32A/…/DAM6803D）。非空表示此行连接走真机驱动 Open()；
-    /// PLC/被检等为 null，走物理链路解析。
+    /// 设备实例键（标准模块行 = manifest ToolDevices 的 Key，如 DPSEX1/DPSEX2）；被检行为 null。
     /// </summary>
     public string? DeviceKey { get; init; }
 
     /// <summary>
-    /// 针床工装子设备键（取自 manifest <c>FixtureDevices[i].Key</c>）。仅针床工装模式的行有值，
-    /// 供「一键连接（识别）」按 Key 回填识别结果，不依赖行顺序。
+    /// 标准模块实例键（manifest <c>ToolDevices[i].Key</c>，如 DPSEX1/DPSEX2），标准模块行有值，
+    /// 供「一键连接」按 Key 取型号真连探活。
     /// </summary>
     public string? FixtureKey { get; init; }
 

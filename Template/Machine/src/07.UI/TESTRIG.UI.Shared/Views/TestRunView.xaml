@@ -231,35 +231,6 @@
                         </Button.Template>
                     </Button>
 
-                    <!-- 标准盒 chip -->
-                    <Border DockPanel.Dock="Left" Style="{StaticResource ConnChip}">
-                        <StackPanel Orientation="Horizontal">
-                            <Border>
-                                <Border.Style>
-                                    <Style TargetType="Border" BasedOn="{StaticResource Led.Halo}">
-                                        <Style.Triggers><DataTrigger Binding="{Binding BoxConnected}" Value="True"><Setter Property="Background" Value="#2616A34A"/></DataTrigger></Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <Border>
-                                    <Border.Style>
-                                        <Style TargetType="Border" BasedOn="{StaticResource Led.Dot}">
-                                            <Style.Triggers><DataTrigger Binding="{Binding BoxConnected}" Value="True"><Setter Property="Background" Value="{StaticResource Brush.Success}"/></DataTrigger></Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                </Border>
-                            </Border>
-                            <TextBlock Text="标准盒" Margin="7,0,6,0" VerticalAlignment="Center" FontSize="13" Foreground="{StaticResource Brush.TextWeak}"/>
-                            <TextBlock VerticalAlignment="Center" FontSize="13">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock"><Setter Property="Text" Value="未连接"/><Setter Property="Foreground" Value="{StaticResource Brush.TextMuted}"/>
-                                        <Style.Triggers><DataTrigger Binding="{Binding BoxConnected}" Value="True"><Setter Property="Text" Value="已连接"/><Setter Property="Foreground" Value="{StaticResource Brush.Success}"/></DataTrigger></Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- PLC chip -->
                     <!-- 右侧：连接配置 / 数据查看 -->
                     <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Ghost}" Command="{Binding OpenDataQueryCommand}" Margin="8,0,0,0">
                         <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="DatabaseSearchOutline" VerticalAlignment="Center"/><TextBlock Text="数据查看" Margin="5,0,0,0"/></StackPanel>

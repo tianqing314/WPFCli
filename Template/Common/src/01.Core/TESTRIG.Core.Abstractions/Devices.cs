@@ -43,11 +43,13 @@ public interface IDeviceProvider : IAsyncDisposable
 
     /// <summary>
     /// 按类型 + 实例键解析设备（标准模块等多实例设备：如 DPSEX1 / DPSEX2）。
+    /// 默认实现：不支持按键解析的提供者（如动态工装模板）直接抛异常；支持者覆盖实现。
     /// </summary>
     /// <typeparam name="T">设备接口类型。</typeparam>
     /// <param name="deviceKey">实例键（manifest ToolDevices 的 Key）。</param>
     /// <returns>设备实例。</returns>
-    T GetDevice<T>(string deviceKey) where T : class, IDevice;
+    T GetDevice<T>(string deviceKey) where T : class, IDevice
+        => throw new InvalidOperationException($"该提供者不支持按实例键解析设备（{typeof(T).Name}）");
 }
 
 /// <summary>
