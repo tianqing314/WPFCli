@@ -86,7 +86,7 @@ internal static class Program
         Console.WriteLine("    --output <目录>                          指定输出目录");
         Console.WriteLine("    --version <版本>                         指定版本，默认模板 patch +1");
         Console.WriteLine("    --dut <被检类型>                         被检类型（如 PS02），仅动态工装模板");
-        Console.WriteLine("    --references-root <目录>                  References 适配根目录（默认模板根同级 References）");
+        Console.WriteLine("    --references-root <目录>                  References 适配根目录（默认模板根同级 References，其下 Dynamic 子目录对接具体设备文件夹）");
         Console.WriteLine("    --force                                  完整构建成功后替换已有输出");
         Console.WriteLine("    --dry-run                                在临时目录预演，不发布输出");
         Console.WriteLine("    --no-build                               只生成，不执行 dotnet build");

@@ -62,7 +62,7 @@ public class BuildOptions
     /// <summary>被检类型（如 PS02），仅动态工装模板需要。空值表示不替换被检占位符。</summary>
     public string DutType { get; set; } = "";
 
-    /// <summary>References 适配根目录（含 References\{被检类型}\ 子目录）。空值默认取模板根目录同级的 References。</summary>
+    /// <summary>References 适配根目录（含 References\Dynamic\{被检类型}\ 子目录）。空值默认取模板根目录同级的 References。</summary>
     public string ReferencesRoot { get; set; } = "";
 
     /// <summary>主项目名（替换占位符后，如 PT01.App）。</summary>

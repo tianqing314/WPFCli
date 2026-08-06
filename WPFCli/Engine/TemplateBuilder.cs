@@ -101,7 +101,7 @@ public static class TemplateBuilder
         var deleted = DeleteConfiguredPaths(opts.OutputDir, deletePaths);
         if (deleted > 0) onProgress?.Invoke($"  按业务配置删除: {deleted}");
 
-        // 2.5 References 适配注入（仅动态工装模板；找到 References\{被检类型} 时，
+        // 2.5 References 适配注入（仅动态工装模板；找到 References\Dynamic\{被检类型} 时，
         //     从旧 Bots.TestBench 体系转换生成新 PCBA 体系产物并替换内置被检占位）
         var dutPlaceholder = opts.BusinessTemplate.DutPlaceholder;
         var hasDut = !string.IsNullOrWhiteSpace(dutPlaceholder);

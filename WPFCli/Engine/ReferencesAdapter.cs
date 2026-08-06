@@ -15,7 +15,7 @@ public sealed record ReferencesAdapterResult(
     IReadOnlyList<string> TodoItems);
 
 /// <summary>
-/// References 适配器 —— 动态工装模板构建时，从 <c>References\{被检类型}\</c> 拉取旧 Bots.TestBench
+/// References 适配器 —— 动态工装模板构建时，从 <c>References\Dynamic\{被检类型}\</c> 拉取旧 Bots.TestBench
 /// 体系资源（Xmas11 dll / Uut 设备类 / TestSteps 脚本 / Jigs 配置），自动转换为新 TESTRIG 体系产物并
 /// 注入 staging 输出目录，替换模板内置被检占位（如 ConST171）。
 ///
@@ -123,7 +123,7 @@ public static class ReferencesAdapter
     private static readonly Regex TrimCurrentsPattern = new(
         @"currents\s*=\s*ScriptHelperKVP\.TrimCurrents\(currents\);", RegexOptions.Compiled);
 
-    /// <summary>按被检类型解析 References 根目录（默认工作区根\References）。</summary>
+    /// <summary>按被检类型解析 References 根目录（默认工作区根\References，其下 Dynamic 子目录再对接具体设备文件夹）。</summary>
     public static string ResolveReferencesRoot(BuildOptions opts)
     {
         if (!string.IsNullOrWhiteSpace(opts.ReferencesRoot))
@@ -133,7 +133,7 @@ public static class ReferencesAdapter
     }
 
     /// <summary>
-    /// 向 staging 输出目录注入 References 适配产物。找不到 References\{被检类型} 时仅警告并继续。
+    /// 向 staging 输出目录注入 References 适配产物。找不到 References\Dynamic\{被检类型} 时仅警告并继续。
     /// </summary>
     public static ReferencesAdapterResult Inject(
         BuildOptions opts, string dutValue, string outputDir, Action<string>? onProgress = null)
@@ -143,16 +143,16 @@ public static class ReferencesAdapter
         var removed = new List<string>();
         var todos = new List<string>();
 
-        var refDir = Path.Combine(ResolveReferencesRoot(opts), dutValue);
+        var refDir = Path.Combine(ResolveReferencesRoot(opts), "Dynamic", dutValue);
         if (!Directory.Exists(refDir))
         {
-            var msg = $"未找到 References\\{dutValue}，跳过 References 适配（保留模板内置占位 {opts.BusinessTemplate.DutPlaceholder}）";
+            var msg = $"未找到 References\\Dynamic\\{dutValue}，跳过 References 适配（保留模板内置占位 {opts.BusinessTemplate.DutPlaceholder}）";
             onProgress?.Invoke(msg);
             report.Add($"> {msg}");
             WriteReport(outputDir, report, generated, removed, todos);
             return new ReferencesAdapterResult(false, 0, 0, generated, removed, todos);
         }
-        onProgress?.Invoke($"找到 References\\{dutValue}，开始适配注入");
+        onProgress?.Invoke($"找到 References\\Dynamic\\{dutValue}，开始适配注入");
 
         var placeholder = opts.BusinessTemplate.DutPlaceholder;
         var dllCopied = 0;
@@ -968,7 +968,7 @@ public static class ReferencesAdapter
             ["Key"] = $"{dut}_ControlBoard",
             ["DeviceFamily"] = dut,
             ["BoardName"] = boardName,
-            ["Description"] = $"{dut} 主板动态测试（自动转换自 References\\{dut}\\Jigs，旧 {boardName}）",
+            ["Description"] = $"{dut} 主板动态测试（自动转换自 References\\Dynamic\\{dut}\\Jigs，旧 {boardName}）",
             ["Dut"] = new Dictionary<string, object?> { ["Name"] = deviceName, ["Model"] = dut },
             ["Positions"] = new object[]
             {

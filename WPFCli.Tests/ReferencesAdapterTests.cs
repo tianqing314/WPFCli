@@ -6,7 +6,7 @@ namespace WPFCli.Tests;
 
 /// <summary>
 /// ReferencesAdapter 转换器测试：旧 Bots.TestBench 体系 → 新 PCBA 体系 的自动转换行为。
-/// 使用构造的最小样本（真实数据在仓库 References\ConST221，测试保持自包含）。
+/// 使用构造的最小样本（真实数据在仓库 References\Dynamic\ConST221，测试保持自包含）。
 /// </summary>
 public sealed class ReferencesAdapterTests
 {
@@ -39,7 +39,7 @@ public sealed class ReferencesAdapterTests
         var parent = CreateTempDirectory();
         try
         {
-            var refs = Path.Combine(parent, "References", "ConST221");
+            var refs = Path.Combine(parent, "References", "Dynamic", "ConST221");
             var uutDir = Path.Combine(refs, "Uut");
             Directory.CreateDirectory(uutDir);
             File.WriteAllText(Path.Combine(uutDir, "ConST221.cs"), SampleUutSource);
@@ -80,7 +80,7 @@ public sealed class ReferencesAdapterTests
         var parent = CreateTempDirectory();
         try
         {
-            var refs = Path.Combine(parent, "References", "ConST221");
+            var refs = Path.Combine(parent, "References", "Dynamic", "ConST221");
             Directory.CreateDirectory(Path.Combine(refs, "TestSteps"));
             Directory.CreateDirectory(Path.Combine(refs, "Jigs"));
             File.WriteAllText(Path.Combine(refs, "TestSteps", "ConST221_MainBoard_Auto.cs"), SampleScriptSource);
@@ -131,7 +131,7 @@ public sealed class ReferencesAdapterTests
         var parent = CreateTempDirectory();
         try
         {
-            var refs = Path.Combine(parent, "References", "ConST221");
+            var refs = Path.Combine(parent, "References", "Dynamic", "ConST221");
             var x11 = Path.Combine(refs, "Xmas11");
             Directory.CreateDirectory(x11);
             File.WriteAllBytes(Path.Combine(x11, "Xmas11.Comm.Devices.DPCEX.dll"), new byte[] { 0x4D, 0x5A });
@@ -169,7 +169,7 @@ public sealed class ReferencesAdapterTests
         var parent = CreateTempDirectory();
         try
         {
-            var refs = Path.Combine(parent, "References", "ConST221");
+            var refs = Path.Combine(parent, "References", "Dynamic", "ConST221");
             Directory.CreateDirectory(Path.Combine(refs, "Uut"));
             File.WriteAllText(Path.Combine(refs, "Uut", "ConST221.cs"), SampleUutSource);
             var output = Path.Combine(parent, "out");
@@ -204,7 +204,7 @@ public sealed class ReferencesAdapterTests
         var parent = CreateTempDirectory();
         try
         {
-            var refs = Path.Combine(parent, "References", "ConST221");
+            var refs = Path.Combine(parent, "References", "Dynamic", "ConST221");
             Directory.CreateDirectory(Path.Combine(refs, "TestSteps"));
             Directory.CreateDirectory(Path.Combine(refs, "Jigs"));
             // 脚本含一条无法映射的语句
