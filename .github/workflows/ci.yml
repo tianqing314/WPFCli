@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+          cache: true
+          cache-dependency-path: |
+            **/*.csproj
+            **/Directory.Packages.props
+
+      - name: Test CLI
+        run: dotnet test .\WPFCli.Tests\WPFCli.Tests.csproj --nologo
+
+      - name: Generate and build machine template
+        shell: pwsh
+        run: |
+          $machineOutput = Join-Path $env:RUNNER_TEMP "machine-template"
+          dotnet run --project .\WPFCli\WPFCli.csproj -- --biz machine --code MachineSmoke --output $machineOutput
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build DeviceLink
+        run: dotnet build .\Template\Common\src\libs\DeviceLink\DeviceLink.sln --nologo -m:1
+
+      - name: Pack and smoke-test installed tool
+        shell: pwsh
+        run: |
+          $packageDir = Join-Path $env:RUNNER_TEMP "testrig-packages"
+          $toolDir = Join-Path $env:RUNNER_TEMP "testrig-tool"
+          $smokeDir = Join-Path $env:RUNNER_TEMP "testrig-smoke"
+          New-Item -ItemType Directory -Force $packageDir, $toolDir, $smokeDir | Out-Null
+
+          dotnet pack .\WPFCli\WPFCli.csproj -c Release -o $packageDir --nologo
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          dotnet tool install --tool-path $toolDir --add-source $packageDir TestRigCli --version 2.0.0
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          Push-Location $smokeDir
+          try {
+            & (Join-Path $toolDir "testrig-cli.exe") --list-templates
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+            & (Join-Path $toolDir "testrig-cli.exe") --biz machine --code SmokeApp --dry-run --no-build
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          finally {
+            Pop-Location
+          }

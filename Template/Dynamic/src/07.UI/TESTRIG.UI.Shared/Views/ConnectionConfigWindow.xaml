@@ -1,0 +1,477 @@
+<chrome:ChromeWindow
+    x:Class="TESTRIG.UI.Shared.Views.ConnectionConfigWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:chrome="clr-namespace:TESTRIG.UI.Shared.Views.Chrome"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:vm="clr-namespace:TESTRIG.UI.Shared.ViewModels"
+    Title="设备连接配置"
+    Width="1180"
+    Height="640"
+    CanMaximize="True"
+    ShowInTaskbar="False"
+    Style="{StaticResource ChromeWindow.Style}"
+    TitleIcon="CogOutline"
+    WindowStartupLocation="CenterOwner">
+    <chrome:ChromeWindow.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <!--  单个设备连接行  -->
+        <DataTemplate x:Key="CommRow" DataType="{x:Type vm:CommRowViewModel}">
+            <Border
+                Padding="4,12"
+                BorderBrush="{StaticResource Brush.Divider}"
+                BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="190" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <!--  字段区统一标签/控件样式（含固定行内间距）  -->
+                        <Style
+                            x:Key="Lbl"
+                            BasedOn="{StaticResource Text.Body}"
+                            TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                            <Setter Property="Foreground" Value="{StaticResource Brush.TextWeak}" />
+                        </Style>
+                        <Style
+                            x:Key="Fld"
+                            BasedOn="{StaticResource {x:Type ComboBox}}"
+                            TargetType="ComboBox">
+                            <Setter Property="Margin" Value="0,0,20,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="FontFamily" Value="{StaticResource Font.Mono}" />
+                        </Style>
+                        <Style
+                            x:Key="FldTb"
+                            BasedOn="{StaticResource {x:Type TextBox}}"
+                            TargetType="TextBox">
+                            <Setter Property="Margin" Value="0,0,20,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="FontFamily" Value="{StaticResource Font.Mono}" />
+                        </Style>
+                    </Grid.Resources>
+
+                    <!--  名称（加左边距，与卡片留白）  -->
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="12,0,0,0"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Text="{Binding Name}" />
+
+                    <!--  通讯方式（与名称列拉开间距）  -->
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="16,0,24,0"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Lbl}" Text="通讯方式" />
+                        <ComboBox
+                            Width="88"
+                            VerticalAlignment="Center"
+                            DisplayMemberPath="Label"
+                            IsEnabled="{Binding LinkEditable}"
+                            ItemsSource="{Binding LinkOptions}"
+                            SelectedValue="{Binding Link}"
+                            SelectedValuePath="Value" />
+                    </StackPanel>
+
+                    <!--  字段区：网络 1 行 / 串口 2 行 / USB 2 行（固定不换行）  -->
+                    <Grid Grid.Column="2" VerticalAlignment="Center">
+                        <!--  网络  -->
+                        <StackPanel
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Visibility="{Binding IsEthernet, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Style="{StaticResource Lbl}" Text="IP" />
+                            <TextBox
+                                Width="150"
+                                Style="{StaticResource FldTb}"
+                                Text="{Binding Ip, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource Lbl}" Text="端口" />
+                            <TextBox
+                                Width="80"
+                                VerticalAlignment="Center"
+                                FontFamily="{StaticResource Font.Mono}"
+                                Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <!--  串口：两行固定  -->
+                        <StackPanel Visibility="{Binding IsSerial, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Lbl}" Text="物理链路" />
+                                <ComboBox
+                                    Width="196"
+                                    DisplayMemberPath="Label"
+                                    ItemsSource="{Binding SerialOptions}"
+                                    SelectedValue="{Binding PhysicalLink}"
+                                    SelectedValuePath="PortChain"
+                                    Style="{StaticResource Fld}" />
+                                <TextBlock Style="{StaticResource Lbl}" Text="端口" />
+                                <ComboBox
+                                    Width="96"
+                                    DisplayMemberPath="Com"
+                                    ItemsSource="{Binding SerialOptions}"
+                                    SelectedValue="{Binding Com}"
+                                    SelectedValuePath="Com"
+                                    Style="{StaticResource Fld}" />
+                                <TextBlock Style="{StaticResource Lbl}" Text="波特率" />
+                                <ComboBox
+                                    Width="96"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource Font.Mono}"
+                                    ItemsSource="{Binding BaudOptions}"
+                                    SelectedItem="{Binding Baud}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Lbl}" Text="数据位" />
+                                <ComboBox
+                                    Width="70"
+                                    ItemsSource="{Binding DataBitsOptions}"
+                                    SelectedItem="{Binding DataBits}"
+                                    Style="{StaticResource Fld}" />
+                                <TextBlock Style="{StaticResource Lbl}" Text="停止位" />
+                                <ComboBox
+                                    Width="76"
+                                    DisplayMemberPath="Label"
+                                    ItemsSource="{Binding StopBitsOptions}"
+                                    SelectedValue="{Binding StopBits}"
+                                    SelectedValuePath="Value"
+                                    Style="{StaticResource Fld}" />
+                                <TextBlock Style="{StaticResource Lbl}" Text="校验位" />
+                                <ComboBox
+                                    Width="84"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource Font.Mono}"
+                                    DisplayMemberPath="Label"
+                                    ItemsSource="{Binding ParityOptions}"
+                                    SelectedValue="{Binding Parity}"
+                                    SelectedValuePath="Value" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!--  USB：两行固定  -->
+                        <StackPanel Visibility="{Binding IsUsb, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Lbl}" Text="USB设备" />
+                                <ComboBox
+                                    Width="340"
+                                    DisplayMemberPath="Label"
+                                    ItemsSource="{Binding UsbOptions}"
+                                    SelectedItem="{Binding SelectedUsb}"
+                                    Style="{StaticResource Fld}" />
+                                <TextBlock Style="{StaticResource Lbl}" Text="物理链路" />
+                                <TextBox
+                                    Width="130"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource Font.Mono}"
+                                    Text="{Binding PhysicalLink, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTip="USB端口链 如 1-1.1.4" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Lbl}" Text="VID" />
+                                <TextBox
+                                    Width="70"
+                                    Style="{StaticResource FldTb}"
+                                    Text="{Binding Vid, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Style="{StaticResource Lbl}" Text="PID" />
+                                <TextBox
+                                    Width="70"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource Font.Mono}"
+                                    Text="{Binding Pid, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <!--  右侧：连接/断开按钮靠右 + 结果在下方  -->
+                    <StackPanel
+                        Grid.Column="3"
+                        Margin="16,0,4,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
+                        <Button
+                            Height="30"
+                            MinWidth="76"
+                            Padding="10,0"
+                            HorizontalAlignment="Right"
+                            Command="{Binding ToggleConnectCommand}"
+                            Content="{Binding ConnectLabel}"
+                            FontSize="12"
+                            Style="{StaticResource Btn.Secondary}"
+                            Visibility="{Binding ShowConnect, Converter={StaticResource BoolToVis}}" />
+                        <TextBlock
+                            MaxWidth="200"
+                            Margin="0,4,0,0"
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource Text.Caption}"
+                            Text="{Binding TestResult}"
+                            TextAlignment="Right"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </chrome:ChromeWindow.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  顶部操作  -->
+        <DockPanel
+            Grid.Row="0"
+            Margin="0,0,0,12"
+            LastChildFill="False">
+            <Button
+                Height="32"
+                Padding="14,0"
+                Command="{Binding RefreshDevicesCommand}"
+                DockPanel.Dock="Left"
+                Style="{StaticResource Btn.Secondary}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Center" Kind="Refresh" />
+                    <TextBlock Margin="5,0,0,0" Text="刷新设备" />
+                </StackPanel>
+            </Button>
+            <!--  状态栏：一键识别的逐口日志较长，超出宽度会被截断，故悬停用 ToolTip 显示完整内容  -->
+            <TextBlock
+                VerticalAlignment="Center"
+                DockPanel.Dock="Right"
+                Foreground="{StaticResource Brush.Primary}"
+                Text="{Binding Status}"
+                TextTrimming="CharacterEllipsis"
+                ToolTipService.ShowDuration="60000">
+                <TextBlock.ToolTip>
+                    <ToolTip MaxWidth="720">
+                        <TextBlock Text="{Binding Status}" TextWrapping="Wrap" />
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+        </DockPanel>
+
+        <!--  两个 Tab  -->
+        <materialDesign:Card
+            Grid.Row="1"
+            Padding="0"
+            ClipToBounds="True"
+            Style="{StaticResource Card.Std}">
+            <TabControl Background="Transparent">
+                <TabItem Header="共享设备（通用）">
+                    <ScrollViewer Padding="14,12,14,0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <!--  标准盒  -->
+                            <StackPanel Margin="15,4,0,4" Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource Brush.Primary}"
+                                    Kind="ToyBrickOutline" />
+                                <TextBlock
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Text.Subtitle}"
+                                    Text="标准盒（内部子设备）" />
+                                <StackPanel
+                                    Margin="12,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="12"
+                                        Height="12"
+                                        VerticalAlignment="Center"
+                                        Kind="SquareRounded">
+                                        <materialDesign:PackIcon.Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Foreground" Value="#C2C7CE" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding BoxConnected}" Value="True">
+                                                        <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:PackIcon.Style>
+                                    </materialDesign:PackIcon>
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource Text.Body}" TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{StaticResource Brush.TextWeak}" />
+                                                <Setter Property="Text" Value="未连接" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding BoxConnected}" Value="True">
+                                                        <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
+                                                        <Setter Property="Text" Value="已连接" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                                <Button
+                                    Height="30"
+                                    Margin="14,0,0,0"
+                                    Padding="12,0"
+                                    Command="{Binding ConnectBoxCommand}"
+                                    Style="{StaticResource Btn.Primary}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon VerticalAlignment="Center">
+                                            <materialDesign:PackIcon.Style>
+                                                <Style TargetType="materialDesign:PackIcon">
+                                                    <Setter Property="Kind" Value="LanConnect" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding BoxConnected}" Value="True">
+                                                            <Setter Property="Kind" Value="LanDisconnect" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </materialDesign:PackIcon.Style>
+                                        </materialDesign:PackIcon>
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding ConnectBoxLabel}" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <ItemsControl ItemTemplate="{StaticResource CommRow}" ItemsSource="{Binding StandardBox}" />
+
+                            <!--  PLC  -->
+                            <StackPanel Margin="15,18,0,4" Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource Brush.Primary}"
+                                    Kind="RobotIndustrialOutline" />
+                                <TextBlock
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Text.Subtitle}"
+                                    Text="PLC（国锐 · 固定网络）" />
+                                <StackPanel
+                                    Margin="12,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="12"
+                                        Height="12"
+                                        VerticalAlignment="Center"
+                                        Kind="SquareRounded">
+                                        <materialDesign:PackIcon.Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Foreground" Value="#C2C7CE" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PlcConnected}" Value="True">
+                                                        <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:PackIcon.Style>
+                                    </materialDesign:PackIcon>
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource Text.Body}" TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{StaticResource Brush.TextWeak}" />
+                                                <Setter Property="Text" Value="未连接" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PlcConnected}" Value="True">
+                                                        <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
+                                                        <Setter Property="Text" Value="已连接" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            <ContentControl Content="{Binding Plc}" ContentTemplate="{StaticResource CommRow}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="{Binding DutTabHeader}">
+                    <ScrollViewer Padding="14,12,14,0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <StackPanel Margin="15,4,0,4" Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource Brush.Primary}"
+                                    Kind="Chip" />
+                                <TextBlock
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Text.Subtitle}"
+                                    Text="{Binding DutTabSubtitle}" />
+                            </StackPanel>
+                            <ItemsControl ItemTemplate="{StaticResource CommRow}" ItemsSource="{Binding Duts}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </materialDesign:Card>
+
+        <!--  覆盖式加载缓冲：扫描设备 / 一键连接标准盒 时覆盖  -->
+        <Border
+            Grid.Row="1"
+            Background="#C6F4F6FA"
+            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar
+                    Width="46"
+                    Height="46"
+                    HorizontalAlignment="Center"
+                    IsIndeterminate="True"
+                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                    Value="0" />
+                <TextBlock
+                    Margin="0,14,0,0"
+                    HorizontalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Style="{StaticResource Text.Body}"
+                    Text="{Binding Status}" />
+                <TextBlock
+                    Margin="0,4,0,10"
+                    HorizontalAlignment="Center"
+                    FontFamily="{StaticResource Font.Mono}"
+                    Foreground="{StaticResource Brush.TextMuted}"
+                    Style="{StaticResource Text.Caption}"
+                    Text="{Binding BusyHint}" />
+                <ProgressBar
+                    Width="280"
+                    Height="5"
+                    IsIndeterminate="True" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel
+            Grid.Row="2"
+            Margin="0,14,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                Width="104"
+                Margin="0,0,10,0"
+                Command="{Binding SaveCommand}"
+                Style="{StaticResource Btn.Primary}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Center" Kind="ContentSave" />
+                    <TextBlock Margin="5,0,0,0" Text="保存" />
+                </StackPanel>
+            </Button>
+            <Button
+                Width="92"
+                Command="{Binding CancelCommand}"
+                Content="取消"
+                Style="{StaticResource Btn.Secondary}" />
+        </StackPanel>
+    </Grid>
+</chrome:ChromeWindow>

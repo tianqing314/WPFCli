@@ -1,0 +1,23 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+
+# Publish output (发布产物，脚本 publish.ps1 生成)
+/publish/
+
+# Installer output (离线安装包，脚本 make-installer.ps1 生成)
+/installer/out/
+
+# Keep third-party dependency folders that the build relies on (committed by design)
+!15.DLL/
+!packages/
+bash.exe.stackdump
+/shots
+/tools
+/.reasonix
+/debug_images
+/node_modules
+/package-lock.json
+/package.json

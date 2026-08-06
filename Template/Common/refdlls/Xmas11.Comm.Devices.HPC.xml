@@ -1,0 +1,5055 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xmas11.Comm.Devices.HPC</name>
+    </assembly>
+    <members>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.ChannelInfo.SN">
+            <summary>
+            SN号
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.ChannelInfo.Lrv">
+            <summary>
+            下限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.ChannelInfo.Urv">
+            <summary>
+            上限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.ChannelInfo.ChannelUnit">
+            <summary>
+            通道单位
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.ChannelInfo.ChannelName">
+            <summary>
+            通道名称
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerInfo.SampleAmount">
+            <summary>
+            设置采数总个数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerInfo.Interval">
+            <summary>
+            采数间隔ms
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerInfo.ChannelNum">
+            <summary>
+            通道个数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerInfo.RecordTime">
+            <summary>
+            采数开始时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerInfo.ChannelInfos">
+            <summary>
+            通道信息集合
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.Guid">
+            <summary>
+            唯一标识（guid.datalogger）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.StartTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.LoggerName">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.LoggerOperator">
+            <summary>
+            操作员
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.Notes">
+            <summary>
+            备注信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.SetSamples">
+            <summary>
+            设定采样个数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.SetInterval">
+            <summary>
+            设定采样间隔
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.LoggerFilePath">
+            <summary>
+            文件路径
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DataLogger.LoggerSqliteBriefInfo.DataLength">
+            <summary>
+            数据长度（指令用到）
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.Data.AutoStepInfo">
+            <summary>
+            自动阶跃信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.Low">
+            <summary>
+            量程下限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.Up">
+            <summary>
+            量程上限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.Unit">
+            <summary>
+            量程单位
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.StepMode">
+            <summary>
+            阶跃模式
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.StepPoint">
+            <summary>
+            阶跃点数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.StepPercent">
+            <summary>
+            阶跃百分比
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.StepValue">
+            <summary>
+            阶跃值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.StepRunType">
+            <summary>
+            上下回程类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.StopTime">
+            <summary>
+            驻留时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.AutoStepInfo.LoopSum">
+            <summary>
+            循环次数
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.Data.StartupLogosModel">
+            <summary>
+            开机图片模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.Data.StartupLogosModel.AdditelPictrue">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.Data.StartupLogosModel.ConSTPictrue">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.Data.SystemCalbrationTimeInfo">
+            <summary>
+            设备校准日期信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.SystemCalbrationTimeInfo.CalbrationTime">
+            <summary>
+            校准日期
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.SystemCalbrationTimeInfo.CalbrationCycleTime">
+            <summary>
+            校准周期
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Data.SystemCalbrationTimeInfo.IsOutDuePrompt">
+            <summary>
+            过期是否提示
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.Data.SystemThemeModel">
+            <summary>
+            系统主题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.Data.SystemThemeModel.Unknow">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.Data.SystemThemeModel.Dark">
+            <summary>
+            暗
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.Data.SystemThemeModel.Light">
+            <summary>
+            亮
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.P27DeviceType">
+            <summary>
+            ConST810A
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.P27DeviceType.Unknow">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.P27DeviceType.P27A">
+            <summary>
+            ConST810A,ConST810A-S
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.P27DeviceType.P27B">
+            <summary>
+            ConST810A-E
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCBase">
+            <summary>
+            P06通讯库(从P02拷贝过来，还未调试)
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.#ctor(System.UInt16,System.UInt16,System.String)">
+            <summary>
+            构造函数（USB通讯方式适用）
+            </summary>
+            <param name="vid"></param>
+            <param name="pid"></param>
+            <param name="location"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ConstructDefaultInfo">
+            <summary>
+            配置构造函数默认信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCBase.FW_IPM">
+            <summary>
+            内部控压模块（转发）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCBase.EPMType_A">
+            <summary>
+            外部控制模块A类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCBase.FW_EPM_A">
+            <summary>
+            外部控制模块A（转发）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCBase.EPMType_B">
+            <summary>
+            外部控制模块B类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCBase.FW_EPM_B">
+            <summary>
+            外部控制模块B（转发）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCBase.VID">
+            <summary>
+            VID
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCBase.PID">
+            <summary>
+            PID
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAllOnlineUSBDevices">
+            <summary>
+            寻找所有USB连接的设备
+            </summary>
+            <param name="vid"></param>
+            <param name="pid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ClearRegister">
+            <summary>
+            清空寄存器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion">
+            <summary>
+            获取版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSerialNumber">
+            <summary>
+            获取序列号 -25-9-24 适配810/810A获取序列号；
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSerialNumber(System.String)">
+            <summary>
+            设置序列号
+            </summary>
+            <param name="SN">SerialNumber</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDevType">
+            <summary>
+            获取设备类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDevType(System.String)">
+            <summary>
+            设置仪表类型
+            </summary>
+            <param name="devType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetiVersion_Controller">
+            <summary>
+            获取控制板固件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_Controller">
+            <summary>
+            获取控制板固件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHardiVersion_Controller">
+            <summary>
+            获取控制板硬件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHardVersion_Controller">
+            <summary>
+            获取控制板硬件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetiVersion_Electricity">
+            <summary>
+            读取电测板固件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_Electricity">
+            <summary>
+            读取电测板固件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHardiVersion_Electricity">
+            <summary>
+            读取电测板硬件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHardVersion_Electricity">
+            <summary>
+            读取电测板硬件版本编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetiVersion_Application">
+            <summary>
+            获得主程序的软件版本号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_IPM">
+            <summary>
+            获取内部模块版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_EPM_A">
+            <summary>
+            获取外部A模块版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_EPM_B">
+            <summary>
+            获取外部B模块版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_Core">
+            <summary>
+            核心板固件版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHardVersion_Core">
+            <summary>
+            核心板硬件版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_DD_ByReadFile">
+            <summary>
+            获取DD库版本(读文件方式)
+            </summary>
+            <returns></returns>810A-25-12-23新增获取DD库版本支持，临时采用读文件方式
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVersion_DD">
+            <summary>
+            获取DD库版本(暂未启用，等新版本)810A-25-12-23新增获取DD库版本支持
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSystemDate">
+            <summary>
+            获取设备系统日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSystemDate(System.DateTime)">
+            <summary>
+            设置系统日期
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSystemTime">
+            <summary>
+            获取设备系统时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSystemTime(System.DateTime)">
+            <summary>
+            设置系统时间
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetManufactureDate(System.DateTime)">
+            <summary>
+            设置设备生产日期
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetManufactureDate">
+            <summary>
+            获取设备生产日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSystemCalbrationTimeInfo">
+            <summary>
+            获取设备的校准日期信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSystemDateTime">
+            <summary>
+            获取设备系统日期和时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSystemDateTime(System.DateTime)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.RTCCheck(System.DateTime)">
+            <summary>
+            RTC检测
+            </summary>
+            <param name="time"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDeviceModel">
+            <summary>
+            读取设备型号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetKeyboardState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置屏幕上功能操作键盘启用状态
+            </summary>
+            <param name="state">开关</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.LockKeyboard">
+            <summary>
+            锁定屏幕上功能操作键盘
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.UnlockKeyboard">
+            <summary>
+            解锁定屏幕上功能操作键盘
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetKeyboardState">
+            <summary>
+            获取屏幕上功能操作键盘启用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsKeyboardLocked">
+            <summary>
+            判断屏幕上功能操作键盘是否为禁用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsKeyboardUnlocked">
+            <summary>
+            判断屏幕上功能操作键盘是否为启用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Reset">
+            <summary>
+            系统复位（仅重启主程序）
+            ***此指令为单向指令，不进行准确性判断
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDeviceSwitchState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置自动开关机
+            </summary>
+            <param name="switchState"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDeviceSwitchState">
+            <summary>
+            获取开关机状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressure_IPM">
+            <summary>
+            获取内部模块压力
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressure_EPM_A">
+            <summary>
+            获取外部A模块压力
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressure_EPM_B">
+            <summary>
+            获取外部B模块压力
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSupplyPressure">
+            <summary>
+            获取正压气源压力
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVacuumPressure">
+            <summary>
+            获取负压气源压力
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAtmos">
+            <summary>
+            获取大气压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAtmosSensorSN">
+            <summary>
+            获取大气压模块编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlRange_UpperLimit">
+            <summary>
+            读取输出压力的设定点上限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlRange_LowerLimit">
+            <summary>
+            读取输出压力的设定点下限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlSettingRange_UpperLimit">
+            <summary>
+            获取设定的压力控制量程范围的上限值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlSettingRange_LowerLimit">
+            <summary>
+            获取设定的压力控制量程范围的下限值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlSettingRange">
+            <summary>
+            获取设定的压力控制量程范围
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureControlSettingRange_UpperLimit(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            设置压力控制量程范围的上限值
+            </summary>
+            <param name="p">压力值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureControlSettingRange_LowerLimit(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            设置压力控制量程范围的下限值
+            </summary>
+            <param name="p">压力值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureControlSettingRange(Xmas11.Domain.Mechanics.PressureRange)">
+            <summary>
+            设置压力控制量程范围（仅设置不自动生效）
+            </summary>
+            <param name="range">压力范围值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlSettingRangeEnableState">
+            <summary>
+            获取设定的压力控制量程范围是否生效
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsPressureControlSettingRangeEnable">
+            <summary>
+            设定的压力控制量程范围是否生效
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureControlSettingRangeEnableState(System.Boolean)">
+            <summary>
+            设置设定的压力控制量程范围是否生效
+            </summary>
+            <param name="enable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDiagnosticABSolutep(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置压力类型切换
+            </summary>
+            <param name="enable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDiagnosticABSolutep">
+            <summary>
+            查询压力类型切换
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSensorSupplyMode(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置进气压力传感器类型
+            </summary>
+            <param name="pt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSensorSupplyMode">
+            <summary>
+            获取进气压力传感器类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureType_IPM">
+            <summary>
+            读取内部模块的压力类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureType_EPM_A">
+            <summary>
+            读取外部模块A的压力类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureType_EPM_B">
+            <summary>
+            读取外部模块B的压力类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureType_IPM(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置内部模块压力类型
+            </summary>
+            <param name="type">压力类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckSupportSwitchPressureType">
+            <summary>
+            获取是否支持表、绝压切换
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureType_EPM_A(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置外部模块A压力类型
+            </summary>
+            <param name="type">压力类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureType_EPM_B(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置外部压力B压力类型
+            </summary>
+            <param name="type">压力类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDisplayWidth(System.Int32)">
+            <summary>
+            获取模块的显示位宽
+            </summary>
+            <param name="model">1:IPM; 2:EPM_A; 3:EMP_B</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDisplayWidth_IPM(System.Int32)">
+            <summary>
+            设置内部模块压力显示位宽
+            </summary>
+            <param name="digit">宽位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDisplayWidth_EPM_A(System.Int32)">
+            <summary>
+            设置外部压力模块A显示位宽
+            </summary>
+            <param name="digit">宽位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDisplayWidth_EPM_B(System.Int32)">
+            <summary>
+            设置外部压力模块B显示位宽
+            </summary>
+            <param name="digit">宽位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlRange">
+            <summary>
+            读取压力控制量程范围
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureControlRange(Xmas11.Domain.Mechanics.PressureRange)">
+            <summary>
+            设置压力控制量程范围（设置并自动生效）
+            </summary>
+            <param name="range">控压范围</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureUpper_IPM">
+            <summary>
+            读取内部模块的量程上限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureLowerer_IPM">
+            <summary>
+            读取内部模块的量程下限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRange_IPM">
+            <summary>
+            获取内部模块压力量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureLowerer_EMP_A">
+            <summary>
+            读取外部模块A的量程下限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureUpper_EMP_A">
+            <summary>
+            读取外部模块A的量程上限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRange_EMP_A">
+            <summary>
+            获取外部模块A压力量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureLowerer_EMP_B">
+            <summary>
+            读取外部模块B的量程下限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureUpper_EMP_B">
+            <summary>
+            读取外部模块B的量程上限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRange_EMP_B">
+            <summary>
+            获取外部模块B压力量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetCurrentModulePressureUpper">
+            <summary>
+            读取当前模块的量程上限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetCurrentModulePressureLower">
+            <summary>
+            读取当前模块的量程下限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetCurrentModulePressureRange">
+            <summary>
+            获取当前模块压力量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureZero_IPM">
+            <summary>
+            内部模块压力清零
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureZero_EPM_A">
+            <summary>
+            外部模块A压力清零
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureZero_EPM_B">
+            <summary>
+            外部模块B压力清零
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAutoZeroState">
+            <summary>
+            获取自动清零状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetAutoZeroState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置自动清零状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetModuleConnectState(System.Int32)">
+            <summary>
+            读取模块的连接状态
+            </summary>
+            <i>1：内部模块；2：外部模块A；3：外部模块B</i>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsOnLine_IPM">
+            <summary>
+            内部模块是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsOnLine_EPM_A">
+            <summary>
+            外部模块A是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsOnLine_EPM_B">
+            <summary>
+            外部模块B是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureUnit_IPM">
+            <summary>
+            获取内部模块压力单位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureUnit_EPM_A">
+            <summary>
+            获取外部模块A压力单位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureUnit__EPM_B">
+            <summary>
+            获取外部模块B压力单位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureUnit_IPM(Xmas11.Domain.Unit)">
+            <summary>
+            设定内部模块压力单位
+            </summary>
+            <param name="pressureUnit">压力单位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureUnit_EPM_A(Xmas11.Domain.Unit)">
+            <summary>
+            设定外部模块A压力单位
+            </summary>
+            <param name="pressureUnit">压力单位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureUnit_EPM_B(Xmas11.Domain.Unit)">
+            <summary>
+            设定外部模块B压力单位
+            </summary>
+            <param name="pressureUnit">压力单位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTargetPressure">
+            <summary>
+            获取目标压力值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetTargetPressure(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            设定目标压力并输出
+            </summary>
+            <param name="pressure">压力</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRate">
+            <summary>
+            读取控压速率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRateRange">
+            <summary>
+            读取控压速率范围
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRateLower">
+            <summary>
+            读取控压速率下限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRateUpper">
+            <summary>
+            读取控压速率上限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlMode">
+            <summary>
+            读取当前控制状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureControlMode(Xmas11.Comm.Data.Common.PressureControlMode)">
+            <summary>
+            设置当前控制状态
+            </summary>
+            <param name="mode">控制状态</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToPressureControl">
+            <summary>
+            设置控制器控制模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToPressureMeasure">
+            <summary>
+            设置控制器测量模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetVentMode">
+            <summary>
+            设置控制器排空模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureStableState">
+            <summary>
+            读取压力稳定状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMainboardPowerState">
+            <summary>
+            测试主板电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsPressureStable">
+            <summary>
+            压力是否稳定
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureRate(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            设置控压速率
+            </summary>
+            <param name="rate">控压速率</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureRateType(Xmas11.Comm.Data.HPC.PressureRateType)">
+            <summary>
+            设置控压速率类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureRateType">
+            <summary>
+            读取控压速率类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureStability(System.Double)">
+            <summary>
+            设置压力稳定度
+            </summary>
+            <param name="stability"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureStability">
+            <summary>
+            读取压力稳定度
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVentPressure">
+            <summary>
+            读取排空压力
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetVentPressure(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            设置排空压力并输出
+            </summary>
+            <param name="pressure">压力</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControllerData_AllData">
+            <summary>
+            读取压力控制器全部过程数据与状态的结构
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetQuickReadingPressureMode(System.Boolean)">
+            <summary>
+            开启高速采样读取压力值模式（默认周期 40ms 个数20）
+            </summary>
+            <param name="enable">是否启用</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMultiPressure">
+            <summary>
+            获取当前压力值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetOpenSystemMaintenance">
+            <summary>
+            设置气源排空
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetCloseSystemMaintenance">
+            <summary>
+            退出气源排空模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSystemMaintenanceState">
+            <summary>
+            获取当前气源排空状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.FinishSupplyVent">
+            <summary>
+            执行气源排空
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetVentPressure(System.Double)">
+            <summary>
+            设置排空压力
+            </summary>
+            <param name="value">数值，单位为当前设备压力单位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetAirStigma(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            使能气柱头校正
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SwitchZero">
+            <summary>
+            开关状态清零
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMeasureValue_Switch">
+            <summary>
+            开关通断状态检测
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsSwitchOpen">
+            <summary>
+            判断开关是否为打开状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsSwitchClose">
+            <summary>
+            判断开关是否为关闭状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPNPSwitchState">
+            <summary>
+            PNP开关通断状态检测
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsPNPSwitchOpen">
+            <summary>
+            判断PNP开关是否为打开状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsPNPSwitchClose">
+            <summary>
+            判断PNP开关是否为关闭状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetNPNSwitchState">
+            <summary>
+            NPN开关通断状态检测
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsNPNSwitchOpen">
+            <summary>
+            判断NPN开关是否为打开状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsNPNSwitchClose">
+            <summary>
+            判断NPN开关是否为关闭状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSwitchAutoCalibrationPressureRange(System.Double,System.Double)">
+            <summary>
+            设置压力开关自动检校的量程上下限
+            </summary>
+            <param name="pressureRangeDown">压力量程下限（要求单位kPa）</param>
+            <param name="pressureRangeUp">压力量程上限（要求单位kPa）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSwitchAutoCalibrationPressureRange(Xmas11.Domain.Mechanics.PressureRange)">
+            <summary>
+            设置压力开关自动检校的压力量程
+            </summary>
+            <param name="pressureRange">压力量程</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSwitchAutoCalibrationState(Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationState)">
+            <summary>
+            设置压力开关自动检校状态
+            </summary>
+            <param name="state">工作状态（0 停止  1 开始  2 停止衰减）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSwitchAutoCalibrationState(Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationState,Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationMode)">
+            <summary>
+            设置压力开关自动检校状态
+            </summary>
+            <param name="state">工作状态（0 停止  1 开始  2 停止衰减）</param>
+            <param name="mode">工作模式（ 默认设 1）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToMeasure_mA">
+            <summary>
+            切换到电流测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToMeasure_V">
+            <summary>
+            切换到电压测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToMeasure_Switch">
+            <summary>
+            切换到开关测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToMeasure_PNPSwitch">
+            <summary>
+            切换到PNP开关测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToMeasure_NPNSwitch">
+            <summary>
+            切换到NPN开关测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetMeasureItem(Xmas11.Comm.Data.HPC.MeasureItem)">
+            <summary>
+            设置电测测量项目
+            </summary>
+            <param name="item">电测项目</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CloseMeasureItem">
+            <summary>
+            关闭电测测试项
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ChangeToSource_mA">
+            <summary>
+            切换到电流输出
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSourceItem(Xmas11.Comm.Data.HPC.SourceItem)">
+            <summary>
+            设置电测输出项目
+            </summary>
+            <param name="item">电测项目</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMeasureValue">
+            <summary>
+            读取当前测量值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetOriginalMeasureValue">
+            <summary>
+            读取当前原始测量值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetOriginalMeasure_mA">
+            <summary>
+            获取电流原始值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetOriginalMeasure_V">
+            <summary>
+            获取电压原始值（V）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetCurrent">
+            <summary>
+            读取电流
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVoltage">
+            <summary>
+            读取电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPresentElECtricityItemZero">
+            <summary>
+            对当前项的电测值清零
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMeasure_V_VoltageRange">
+            <summary>
+            获取V电压测量量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMeasureCurrentRange">
+            <summary>
+            获取当前电流测量量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Set24VState(Xmas11.Comm.Data.Common.Power24VState)">
+            <summary>
+            设置24V输出状态
+            </summary>
+            <param name="state">输出状态</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Open24V">
+            <summary>
+            打开24V
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Close24V">
+            <summary>
+            关闭24V
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Get24VState">
+            <summary>
+            获取24V启用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Is24VOpen">
+            <summary>
+            判断24V是否为启用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Is24VClose">
+            <summary>
+            判断24V是否为禁用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetCurrentSourceModeAndValue(Xmas11.Domain.Electricity.Current,Xmas11.Comm.Data.HPC.SourceMode)">
+            <summary>
+            设置电流输出值和电流输出模式
+            </summary>
+            <param name="value">电流输出值</param>
+            <param name="sourceMode">输出电流模式</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetCurrent(Xmas11.Domain.Electricity.Current)">
+            <summary>
+            设定电流输出值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetOriginalCurrent(Xmas11.Domain.Electricity.Current)">
+            <summary>
+            设定原始电流输出值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSourceCurrent">
+            <summary>
+            读取输出电流
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ECal_ResumeCalData(Xmas11.Comm.Data.HPC.CalItem)">
+            <summary>
+            电校准——恢复厂家校准数据
+            ***此指令为单向指令，不进行准确性判断
+            </summary>
+            <param name="item">校准项</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetElectricityCalibrationData(Xmas11.Comm.Data.HPC.DataType,Xmas11.Comm.Data.HPC.CalItem,Xmas11.Domain.Unit,System.Collections.Generic.List{System.Double},System.Collections.Generic.List{System.Double})">
+            <summary>
+            写入电测校准数据
+            </summary>
+            <param name="dataType">数据类型</param>
+            <param name="calItem">校准项目</param>
+            <param name="unit">当前项目的单位</param>
+            <param name="calPointsList">校准点列表(从小到大):逗号分隔</param>
+            <param name="actuallyPointsList">实际值列表(从小到大,与校准点列表对应):逗号分隔</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SearchHart(Xmas11.Comm.Data.HPC.SearchState)">
+            <summary>
+            搜索HART
+            </summary>
+            <param name="state">搜索状态</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetHartSupplyMode(Xmas11.Comm.Data.Common.PowerSupplyMode)">
+            <summary>
+            设置Hart供电模式
+            </summary>
+            <param name="mode">供电方式</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartSupplyMode">
+            <summary>
+            读取Hart供电模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartDevices">
+            <summary>
+            获取HART设备列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ConnectHartDevice(System.Int32)">
+            <summary>
+            连接HART设备
+            </summary>
+            <param name="address">地址</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartDeviceInfo">
+            <summary>
+            获取HART设备信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartDeviceSensorInfo">
+            <summary>
+            获取HART设备传感器信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartDeviceOutputInfo">
+            <summary>
+            获取Hart设备输出信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartDeviceAllInfo">
+            <summary>
+            获取Hart设备所有信息（ACal中使用）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartDeviceProcess">
+            <summary>
+            获取HART设备过程量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetHartDeviceProcess(Xmas11.Comm.Data.HPC.HartProcessItem)">
+            <summary>
+            设置HART设备过程量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHartDeviceProcessInfo(Xmas11.Comm.Data.HPC.HartProcessItem)">
+            <summary>
+            获取HART设备过程量信息
+            </summary>
+            <param name="item">过程项</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.StartRemoteMode(Xmas11.Comm.HartProtocal.PowerSupplyMode)">
+            <summary>
+            切换远程透传模式
+            </summary>
+            <param name="supplyMode">变送器电源电阻模式</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Polling">
+            <summary>
+            轮询0地址上的设备
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDeviceInfo(Xmas11.Comm.HartProtocal.HartIdentifier)">
+            <summary>
+            获取Hart设备信息
+            </summary>
+            <param name="identifier"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetHARTProcessValue(Xmas11.Comm.HartProtocal.HartIdentifier,Xmas11.Comm.Data.Common.HartProcessItem)">
+            <summary>
+            获取主变量
+            </summary>
+            <param name="identifier"></param>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAutoStepInfo">
+            <summary>
+            获取自动阶跃信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetAutoStepInfo(Xmas11.Comm.Devices.Data.AutoStepInfo)">
+            <summary>
+            设置自动阶跃参数
+            </summary>
+            <param name="info"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPowerVoltage">
+            <summary>
+            读取P06总电源电压（控制板）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Get8_8VPowerVoltage">
+            <summary>
+            读取8.8V电源电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPlus8VPowerVoltage">
+            <summary>
+            读取+8V电源电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPlus5VPowerVoltage">
+            <summary>
+            读取正5V电源电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMinus5VPowerVoltage">
+            <summary>
+            读取负5V电源电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMotorCurrent">
+            <summary>
+            读取马达电流
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBMP280_OriginalAtmosphere">
+            <summary>
+            读取BMP280大气压原始值（kPa）,厂家标定后运算的值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBMP280_Atmosphere">
+            <summary>
+            读取BMP280大气压（kPa）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBMP280_Temperature">
+            <summary>
+            读取BMP280温度
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMotor_Temperature">
+            <summary>
+            读取电机温度
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetValveStateValue">
+            <summary>
+            读取阀的状态值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetValveStata(System.Int32)">
+            <summary>
+            设定阀状态
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Xmas11.Comm.Devices.HPCBase.SetReleaseStata(System.Int32)" -->
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetControlPanelPowerState">
+            <summary>
+            查询控制板电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Open8VAnd8_8VPower">
+            <summary>
+            打开8V和8.8V电源
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Close8VAnd8_8VPower">
+            <summary>
+            关闭8V和8.8V电源
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Get8_8VPowerState">
+            <summary>
+            查询控制板8.8V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPlus8VPowerState">
+            <summary>
+            查询控制板+8V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPlus5VPowerState">
+            <summary>
+            查询控制板+5V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMinus5VPowerState">
+            <summary>
+            查询控制板-5V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Get3_3VPowerState">
+            <summary>
+            查询控制板3.3V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetTouchSoundState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置按键音状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetTipsSoundState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置提示音状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetBreathingLight(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置呼吸灯开关
+            </summary>
+            <param name="stata"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBatteryCapacity">
+            <summary>
+            查询电池剩余电量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBatteryVoltage">
+            <summary>
+            查询电池电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBatteryCurrent">
+            <summary>
+            查询电池电流
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBatteryCheckStata">
+            <summary>
+            电池状态自检
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Check24VPower">
+            <summary>
+            检查24V电源故障
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckAnalog5VPower">
+            <summary>
+            检查模拟5V电源故障
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckDigital5VPower">
+            <summary>
+            检查数字5V电源故障
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckAnalog2_5VPower">
+            <summary>
+            检查模拟2.5V电源故障
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckAnalogNegative2_5VPower">
+            <summary>
+            检查模拟-2.5V电源故障
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckAD5700">
+            <summary>
+            检查AD5700自发自收自检错误
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckAD7190">
+            <summary>
+            AD7190检测不到
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckAD7190WithOutInterruptDriven">
+            <summary>
+            AD7190能检测到，但无中断触发
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckAD7190ReSet">
+            <summary>
+            AD7190由于干扰重新复位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckMemory">
+            <summary>
+            检测存储
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckCalData">
+            <summary>
+            有存储，但无校准数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CheckCRC">
+            <summary>
+            有存储，有校准数据，但校准数据CRC校验错误
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.TestMemory_Controller(System.Int32)">
+            <summary>
+            控制存储器测试
+            </summary>
+            <param name="index">存储器序号（0，1）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.FactoryReset">
+            <summary>
+            恢复出厂设置
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Get3_3VPowerStata">
+            <summary>
+            获取3.3V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Get4_2VPowerStata">
+            <summary>
+            获取4.2V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Get5VPowerStata">
+            <summary>
+            获取5V电源状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBatteryVoltageWithMainboard">
+            <summary>
+            获取电池电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPowerAdapterVoltage">
+            <summary>
+            获取DC电源适配器电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMainBoard8V">
+            <summary>
+            获取主板8V电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPowerAdapterCheck">
+            <summary>
+            适配器供电检查
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetMainBoardCheckStata">
+            <summary>
+            主板电源状态自检
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetEnergyCheckStata">
+            <summary>
+            整机功耗自检自检
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPowerCheckStata">
+            <summary>
+            电源状态自检
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetVoltageCheckStata">
+             <summary>
+            电压测量自检
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetCurrentCheckStata">
+             <summary>
+            电流测量自检
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSourceCurrentCheckStata">
+             <summary>
+            输出电流测量自检
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSwitchCheckStata">
+             <summary>
+            开关测量自检
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetCheckStata_EPM">
+             <summary>
+            外接压力模块自检
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSDCardCheckStata">
+             <summary>
+            SD卡自检
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSDSize">
+            <summary>
+            获取SD卡磁盘大小
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DataAddtoStorageCard(System.String,System.String,Xmas11.Comm.Data.HPC.FileWriteType)">
+            <summary>
+            向SD添加文件数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DataReadtoStorageCard(System.String)">
+            <summary>
+            从sd卡中读取文件
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.OpenDisplayTest(Xmas11.Comm.Data.HPC.DisplayTest)">
+            <summary>
+            开启屏幕测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CloseDisplayTest(Xmas11.Comm.Data.HPC.DisplayTest)">
+            <summary>
+            关闭屏幕测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDisplayTest">
+            <summary>
+            获取屏幕测试结果，0未检，1成功，2失败
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.OpenDisplayTouchCal">
+            <summary>
+            开启屏幕触摸校准
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDisplayLevel(System.Int32)">
+            <summary>
+            设置液晶屏亮度
+            </summary>
+            <param name="level">1~8</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetBackLight(System.Int32)">
+            <summary>
+            设置自动关背光
+            </summary>
+            <param name="level">0~6(从不 15s 30s 1min 5min 15min 30min)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetBackShutDown(System.Int32)">
+            <summary>
+            设置关背光后自动关机
+            </summary>
+            <param name="level">0~5(从不 5min 15min 30min 1h 2h)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SearchFile(System.String)">
+            <summary>
+            查询文件
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SearchStorageCardFile(System.String)">
+            <summary>
+            查询SD卡文件
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SearchDirectory(System.String)">
+            <summary>
+            查询路径
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.WriteFileData(System.String,System.String,System.IO.FileMode)">
+            <summary>
+            写入文件数据
+            </summary>
+            <param name="path">文件地址</param>
+            <param name="data">数据</param>
+            <param name="fileMode">操作方式</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ReadFileData(System.String)">
+            <summary>
+            读取文件数据
+            </summary>
+            <param name="path">路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteFile(System.String)">
+            <summary>
+            删除文件
+            </summary>
+            <param name="path">路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteStorageCardFile(System.String)">
+            <summary>
+            删除SD卡文件
+            </summary>
+            <param name="path">路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.RunProgram(System.String)">
+            <summary>
+            运行文件
+            </summary>
+            <param name="ProgramPath">路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ExitProgram(System.String)">
+            <summary>
+            停止运行文件
+            </summary>
+            <param name="ProgramPath">路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetProgramState(System.String)">
+            <summary>
+            获取运行状态
+            </summary>
+            <param name="ProgramPath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetBuzzerState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置蜂鸣器开关状态
+            </summary>
+            <param name="state">开启或关闭</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.OpenBuzzer">
+            <summary>
+            开启蜂鸣器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CloseBuzzer">
+            <summary>
+            关闭蜂鸣器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsBuzzerOpen">
+            <summary>
+            判断蜂鸣器是否为打开状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsBuzzerClose">
+            <summary>
+            判断蜂鸣器是否为关闭状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetBuzzerState">
+            <summary>
+            查询蜂鸣器状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.OpenBLE">
+            <summary>
+            打开蓝牙功能(非开启蓝牙)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ConsultBLEStatusAndMACAddress">
+            <summary>
+            获取蓝牙当前状态和物理地址
+            </summary>
+            <returns>True或False,MAC地址(冒号隔开)</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.TestWifi">
+            <summary>
+            测试设备是否连接WIFI
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DisconnectWifi">
+            <summary>
+            断开WIFI
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetWifiDHCPState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置WIFI DHCP状态
+            </summary>
+            <param name="state">DHCP状态,1，ON:打开DHCP;0，OFF:关闭DHCP</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.OpenWifiDHCP">
+            <summary>
+            打开WIFI DHCP
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CloseWifiDHCP">
+            <summary>
+            关闭WIFI DHCP
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetWifiDHCPState">
+            <summary>
+            查询WIFI DHCP状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetWifiSleepState">
+            <summary>
+            查询wifi睡眠模式状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetWifiSleepState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置wifi睡眠模式状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsWifiDHCPOpen">
+            <summary>
+            判断WIFI DHCP是否为打开状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsWifiDHCPClose">
+            <summary>
+            判断WIFI DHCP是否为关闭状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetWifiState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置WIFI状态
+            </summary>
+            <param name="state">WIFI状态,1，ON:打开WIFI;0，OFF:关闭WIFI</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.OpenWifi">
+            <summary>
+            打开WIFI
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CloseWifi">
+            <summary>
+            关闭WIFI
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetWifiState">
+            <summary>
+            查询WIFI状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsWifiOpen">
+            <summary>
+            判断WIFI是否为打开状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsWifiClose">
+            <summary>
+            判断WIFI是否为关闭状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetWifiList">
+            <summary>
+            获取搜索到的WIFI列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetWifiConnect(System.String,System.String,System.String)">
+            <summary>
+            连接WIFI到指定热点(带密码)
+            ***此指令为单向指令，不进行准确性判断
+            </summary>
+            <param name="ssid">热点名称</param>
+            <param name="encryptionMode">加密方式OPEN|WPA|WPA2</param>
+            <param name="password">密码</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetWifiConnect(System.String,System.String)">
+            <summary>
+            连接WIFI到指定热点(不带密码)
+            ***此指令为单向指令，不进行准确性判断
+            </summary>
+            <param name="ssid">热点名称</param>
+            <param name="encryptionMode">加密方式OPEN|WPA|WPA2</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetWifiConnectState">
+            <summary>
+            询问WIFI连接状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsWifiOnline">
+            <summary>
+            判断WIFI是否为在线状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsWifiOffline">
+            <summary>
+            判断WIFI是否为离线状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetWifiIPAddress">
+            <summary>
+            查询WIFI的IP地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetWifiMACAddress">
+            <summary>
+            查询WIFI的mac地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetUSBType">
+            <summary>
+            读取USB接口模式(主模式=插U盘；从模式=USB线)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetUSBType(Xmas11.Comm.Data.HPC.USBType)">
+            <summary>
+            设置USB接口模式
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetTestMode">
+            <summary>
+            设置控制器测试模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureControlModeEX">
+            <summary>
+            读取当前控制状态
+            </summary>
+            自检专用
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPumpState">
+            <summary>
+            读取气泵状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLanguageSource">
+            <summary>
+            获取机器当前语言
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetLanguageSource(Xmas11.Comm.Data.HPC.MachineLanguages)">
+            <summary>
+            设置机器当前语言
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetLanguageSource(Xmas11.Comm.Data.HPC.MachineLanguages810A)">
+            <summary>
+            设置机器当前语言-810A
+            </summary>
+            <param name="lange"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLanguages">
+            <summary>
+            获取机器所有可用语言
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetLanguages(Xmas11.Comm.Data.Common.OpenCloseState,Xmas11.Comm.Data.HPC.MachineLanguages)">
+            <summary>
+            设置机器语言开关
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.OpenLanguage(Xmas11.Comm.Data.HPC.MachineLanguages)">
+            <summary>
+            开启设备语言
+            </summary>
+            <param name="language">要开启的语言</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.CloseLanguage(Xmas11.Comm.Data.HPC.MachineLanguages)">
+            <summary>
+            关闭设备语言
+            </summary>
+            <param name="language">要关闭的语言</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetMachineLanguage">
+            <summary>
+            设置机器语言(暂定有简体中文，英文，德语，法语，西班牙语，葡萄牙语，意大利语，日语)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAvailableStartupPictures">
+            <summary>
+            获取机器内的所有图片
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetStartupLogo(Xmas11.Comm.Devices.Data.StartupLogosModel)">
+            <summary>
+            设置开机图片
+            </summary>
+            <param name="logosModel">图片名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskCount">
+            <summary>
+            查询任务数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetQueryTaskCount(Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions)">
+            <summary>
+            查询筛选条件下的任务数
+            </summary>
+            <param name="conditions">任务筛选条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetQueryResultCount(Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions)">
+            <summary>
+            查询筛选条件下的结果数
+            </summary>
+            <param name="conditions">结果筛选条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskHeader(System.UInt32,System.UInt16)">
+            <summary>
+            查询任务表头
+            </summary>
+            <param name="index">起始位置</param>
+            <param name="count">数量0-10</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskInstrument(System.Guid)">
+            <summary>
+            查询某个任务
+            </summary>
+            <param name="instrumentId">任务的GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskInstrument(System.String)">
+            <summary>
+            查询某个任务
+            </summary>
+            <param name="deviceName">任务的DeviceName</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskInstrumentResultCount(System.Guid)">
+            <summary>
+            查询某个任务的结果数量
+            </summary>
+            <param name="instrumentId">任务的GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetQueryTaskBriefInfo(Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions,System.Int32,System.Int32)">
+            <summary>
+            查询筛选条件下的任务简要信息
+            </summary>
+            <param name="conditions">任务筛选条件</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量0-25</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskInstrumentResultHeader(System.Guid,System.UInt32,System.UInt16)">
+            <summary>
+            查询某个任务的结果表头
+            </summary>
+            <param name="instrumentId">任务的GUID</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量0-10</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetQueryResultBriefInfo(Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions,System.Int32,System.Int32)">
+            <summary>
+            查询筛选条件下的结果简要信息
+            </summary>
+            <param name="conditions">结果条件</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量0-20</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskInstrumentResult(System.Guid,System.UInt32)">
+            <summary>
+            查询某任务结果
+            </summary>
+            <param name="instrumentId">任务GUID</param>
+            <param name="index">任务序号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetTaskAResult(System.Guid)">
+            <summary>
+            查询任务某个结果
+            </summary>
+            <param name="resultId">结果GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ClearTaskResults(System.Guid)">
+            <summary>
+            清空某任务下结果
+            </summary>
+            <param name="instrumentId">任务GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ClearTaskResults(System.String)">
+            <summary>
+            清空某任务下结果
+            </summary>
+            <param name="instrumentName">任务名</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteTaskInstruments(System.Collections.Generic.List{System.Guid})">
+            <summary>
+            删除数个任务
+            </summary>
+            <param name="instrumentGuids">任务GUIDs</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteTaskResults(System.Collections.Generic.List{System.Guid})">
+            <summary>
+            删除数个任务结果
+            </summary>
+            <param name="resultIds">结果GUIDs</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteAllInstruments">
+            <summary>
+            删除所有任务及结果
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteAllResult">
+            <summary>
+            删除所有任务下的结果
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.AddTaskInstrument(Xmas11.Comm.Devices.HPCTask.DIInstrument)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="instrument">任务对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.AddTaskResult(Xmas11.Comm.Devices.HPCTask.DITestResultInfo)">
+            <summary>
+            添加结果
+            </summary>
+            <param name="instrument">任务对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetFunctionState(Xmas11.Comm.Data.HPC.FunctionType)">
+            <summary>
+            查询功能开启状态
+            </summary>
+            <param name="FUCtype">功能</param>
+            <returns>若参数为“FunctionType.All”，则结果分别对应“HART,TASK,DATALogging”的开启状态
+            [0|1|2|3|ALL|HART|TASK|DATALogging| WLAN|BLE]</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetFunctionState(Xmas11.Comm.Data.HPC.FunctionType,System.Boolean)">
+             <summary>
+            设置功能状态
+             </summary>
+             <param name="FUCtype">功能</param>
+             <param name="isOpen">是否打开任务项</param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDataLoggerCount">
+            <summary>
+            获取数据记录个数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDataLoggerBriefInfo(System.Int32,System.UInt32)">
+            <summary>
+            读取数据记录简要信息
+            </summary>
+            <param name="index">起始位置</param>
+            <param name="count">长度0-5</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDataLoggerInfo(System.Guid)">
+            <summary>
+            读取某条记录的通讯信息
+            </summary>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSTATistical(System.Guid)">
+            <summary>
+            获取某条记录的统计信息
+            </summary>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDataLoggerDatas(System.Guid,System.Int32)">
+            <summary>
+            读取记录数据
+            </summary>
+            <param name="guid">记录的GUID</param>
+            <param name="length">数据长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteDataLogger(System.Guid)">
+            <summary>
+            删除某条记录
+            </summary>
+            <param name="dataId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteAllDataLoggers">
+            <summary>
+            删除所有记录
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetQueryLoggerCount(Xmas11.Comm.Devices.DataLogger.LoggerQueryConditions)">
+            <summary>
+            读取筛选条件下记录数量
+            </summary>
+            <param name="conditions">条件类</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetQueryLoggerBrieInfo(Xmas11.Comm.Devices.DataLogger.LoggerQueryConditions,System.Int32,System.Int32)">
+            <summary>
+            读取筛选条件下记录简要信息
+            </summary>
+            <param name="conditions">条件类</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量0-5</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.TestPump(Xmas11.Comm.Data.HPC.PumpTestItem)">
+            <summary>
+            泵测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPumpTestState">
+            <summary>
+            气泵测试状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPumpCurrent">
+            <summary>
+            读取泵电流
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLeakTaskCount">
+            <summary>
+            查询任务数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLeakTaskHeader(System.Int32,System.Int32)">
+            <summary>
+            查询任务表头
+            </summary>
+            <param name="index">起始位置</param>
+            <param name="count">数量0-5</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLeakTaskResultHeader(System.String)">
+            <summary>
+            查询任务结果
+            </summary>
+            <param name="guid">guid</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLeakTaskDataLength(System.String)">
+            <summary>
+            查询任务数据长度
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLeakTaskData(System.String,System.Int32,System.Int32)">
+            <summary>
+            查询任务结果
+            </summary>
+            <param name="guid"></param>
+            <param name="startIndex"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteLeakTask(System.String)">
+            <summary>
+            删除某个泄露任务
+            </summary>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DeleteAllLeakTask">
+            <summary>
+            删除全部泄露任务
+            </summary>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.StartSelfTuning">
+            <summary>
+            启动自整定
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.StopSelfTuning">
+            <summary>
+            停止自整定
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSelfTuningState(Xmas11.Comm.Data.HPC.SelfTuningMessage@)">
+            <summary>
+            读取自整定状态
+            </summary>
+            <param name="selfTuningMessage">自整定过程信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSelfTuningTime(System.DateTime)">
+            <summary>
+            设置自整定时间
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSelfTuningTime">
+            <summary>
+            获取自整定时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAtmosSensor">
+            <summary>
+            获取大气压传感器值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAtmosSerialNumber">
+            <summary>
+            获取大气压传感器编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetAtmosSerialNumber(System.String)">
+            <summary>
+            设置大气压传感器编号
+            </summary>
+            <param name="SN">SerialNumber</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.PCalAtmos_Cal(System.Double,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            执行大气压传感器校准——厂家校准
+            </summary>
+            <param name="point1">校准点1</param>
+            <param name="p1">标准压力1</param>
+            <param name="pint2">校准点2</param>
+            <param name="p2">标准压力2</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.PCalAtmos_CancelCal">
+            <summary>
+            取消厂家校准
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAtmosPCalData">
+            <summary>
+            获取大气压传感器校准值
+            </summary>
+            <returns>标准值1,校准值1,标准值2,校准值2,年,月,日</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.PCalAtmos_UserCal(System.Double,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            执行大气压传感器校准——用户校准
+            </summary>
+            <param name="point1">校准点1</param>
+            <param name="p1">标准压力1</param>
+            <param name="pint2">校准点2</param>
+            <param name="p2">标准压力2</param>
+            <param name="yy">年</param>
+            <param name="mm">月</param>
+            <param name="dd">日</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.PCalAtmos_UserCancelCal">
+            <summary>
+            取消用户校准
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAtmosUsaerPCalData">
+            <summary>
+            获取大气压传感器校准值
+            </summary>
+            <returns>标准值1,校准值1,标准值2,校准值2,年,月,日</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAtmosResourcePressure">
+            <summary>
+            获取大气压传感器原始值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetATMRange">
+            <summary>
+            获取大气压模块量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SensorCalibration(Xmas11.Comm.Data.HPC.SensorCalibrationItem)">
+            <summary>
+            校准气源传感器
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSensorCalibrationState(Xmas11.Comm.Data.HPC.SensorCalibrationItem,Xmas11.Comm.Data.HPC.SensorCaliMessage@)">
+            <summary>
+            获得传感器校准状态
+            </summary>
+            <param name="item">传感器类型</param>
+            <param name="message">传感器信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSensorTime(System.DateTime,Xmas11.Comm.Data.HPC.SensorCalibrationItem)">
+            <summary>
+            设置传感器时间
+            </summary>
+            <param name="dateTime">测试日期</param>
+            <param name="item">传感器测试项目</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.EnterIntoUpdateState">
+            <summary>
+             进入升级状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SaveFileToMemory(System.String,System.String)">
+            <summary>
+            向HPC中存储文件(文件越大写入所需要的时间越长，小文件不需了解进度的可直接使用该方法，需要了解进度的将解析文件的过程写在上层即可)
+            </summary>
+            <param name="fileName">要存储的文件名称</param>
+            <param name="fileSavePath">存储到HPC设备中的全路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SendDataToDevice(System.String,System.Byte[])">
+            <summary>
+            向设备指定路径中存储数据
+            </summary>
+            <param name="fileSavePath">存储位置</param>
+            <param name="Data">数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.DecompressionZip(System.String,System.String)">
+            <summary>
+            解压HPC存储器中的压缩文件
+            </summary>
+            <param name="fileName">压缩文件全路径</param>
+            <param name="fileDecompressPath">解压路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.UpdateAndReboot(System.String)">
+            <summary>
+            自动升级并解压
+            </summary>
+            <param name="fileDecompressPath">解压后的升级文件径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAllModulesValue">
+            <summary>
+            获得所有模块的值,返回--值,单位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetAllModulesInfo">
+            <summary>
+            获得所有模块信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetControlModuleInfo">
+            <summary>
+            获取控制(内部)模块信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.StringToChinaDouble(System.String,System.Double@)">
+            <summary>
+            将数字字符串转换成double（支持所有国家和地区不同小数点string-double的转换）
+            </summary>
+            <param name="str">待转换字符串</param>
+            <param name="data">转换后的double值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetModuleRangeLimits(Xmas11.Comm.Data.HPC.DeviceModel)">
+            <summary>
+            返回指定机型的量程限制范围
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetModuleRangeLimitsNew(Xmas11.Comm.Data.HPC.DeviceModel)">
+            <summary>
+            返回指定机型的量程限制范围(New:V1.0.0.22以后版本使用，包含22)
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetDeviceIsShowMainForm">
+            <summary>
+            查询设备是否在主界面上
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDeviceGoBackToMainForm">
+            <summary>
+            回到主界面（目前只支持从Setup（设置）中返回主界面（除了Setup-Services只支持到这一级目录，其他支持所有设置的子目录））
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSystemTheme(Xmas11.Comm.Devices.Data.SystemThemeModel,System.Boolean)">
+            <summary>
+            设置系统主题
+            </summary>
+            <param name="model"></param>
+            <param name="restart">是否立即重启</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsSupportedCommand(System.String)">
+            <summary>
+            是否支持指令
+            </summary>
+            <param name="commandRegx">发送指令的正则</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetRangeLimitsState">
+            <summary>
+            查询是否启用了模块量程限制功能
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetRangeLimitsState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否启用模块量程限制
+            </summary>
+            <param name="state">限制状态</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetRangeLimitsValue(Xmas11.Comm.Data.HPC.DeviceModel,System.Double,System.Double)">
+            <summary>
+            设置量程限制范围
+            </summary>
+            <param name="model">机型</param>
+            <param name="low">量程限制最小值</param>
+            <param name="up">量程限制最大值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSetPointLimitState">
+            <summary>
+            获取设定点限制状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSetPointLimitState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置设定点限制状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetDataProtectState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置数据保护状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLiveDataCom">
+            <summary>
+            GetLiveDataCom
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetLiveData">
+            <summary>
+            GetLiveData
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Initialize">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetName">
+            <summary>
+            获取设备名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSN">
+            <summary>
+            获取设备编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetString(System.String[])">
+            <summary>
+            内部方法——获取字符串结果，直接返回通讯指令所返回的字符串
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetInt32(System.String[])">
+            <summary>
+            内部方法——获取整型结果，直接将返回字符串转为int
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetiVersion(System.String)">
+            <summary>
+            内部方法——获取iVersion版本结构，并验证是否为HPC版本
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetPressure(System.String)">
+            <summary>
+            内部方法——获取压力值，通讯指令返回结构为 值，单位
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetMultiPressure(System.String)">
+            <summary>
+            内部方法——获取压力值集合，通讯指令返回结构为 值，单位
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetPressurebyUnit(Xmas11.Domain.Unit,System.String)">
+            <summary>
+            内部方法——获取压力值（固定某一单位），通讯指令返回结构为 仅值
+            </summary>
+            <param name="unit"></param>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerSetPressure(Xmas11.Domain.Mechanics.Pressure,System.String[])">
+            <summary>
+            内部方法——设置压力值，通讯指令返回值结构为 值，单位
+            </summary>
+            <param name="p">用于比对返回值的目标压力值</param>
+            <param name="cmd">指令</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetPressureRange(System.String,System.String)">
+            <summary>
+            内部方法——获取压力量程，通讯指令返回值结构为 下限，单位，上限，单位
+            </summary>
+            <param name="cmd1">读取量程下限命令</param>
+            <param name="cmd2">读取量程上限命令</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerSetParameter(System.String,System.String[])">
+            <summary>
+            内部方法——设定一个参量，通讯指令返回值结构为 参量
+            </summary>
+            <param name="p">用于比对返回值的参量</param>
+            <param name="cmd">指令</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetOpenCloseState(System.String)">
+            <summary>
+            内部方法——读取打开关闭状态
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetCheckState(System.String)">
+            <summary>
+            内部方法——判断检测是否通过
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SolutionInstrumentCondition(Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions)">
+            <summary>
+            内部方法——归纳任务筛选条件
+            </summary>
+            <param name="conditions">任务条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SolutionResultCondition(Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions)">
+            <summary>
+            内部方法——归纳结果筛选条件
+            </summary>
+            <param name="conditions">结果条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSDSizeNew">
+            <summary>
+            获取SD卡磁盘大小(新版本)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetElectricityState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置电测板功能开关
+            </summary>
+            <param name="state">开/关</param>
+            <returns>设置结果</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetElectricityState">
+            <summary>
+            获取电测板功能开关状态
+            </summary>
+            <returns>状态结果</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetP27DeviceProductKey">
+            <summary>
+            获取P27ProductKey
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetP27SerialNumber">
+            <summary>
+            获取P27 SerialNumber
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetLanguages(Xmas11.Comm.Data.Common.OpenCloseState,Xmas11.Comm.Data.HPC.MachineLanguages810A)">
+            <summary>
+            设置语言种类810A用
+            </summary>
+            <param name="state"></param>
+            <param name="language"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetMachineLanguage_810A">
+            <summary>
+            设置语言种类810A用，设置所有支持的语言
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetP27PressureControllerData_AllData(System.Boolean)">
+            <summary>
+            读取压力控制器全部过程数据与状态的结构
+            </summary>
+            <param name="isReadElectic"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.InnerGetBoolean(System.String[])">
+            <summary>
+            内部方法——获取整型结果，直接将返回字符串转为int
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetEquipmentVPID">
+            <summary>
+            读取设备PID、VID
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressure(Xmas11.Comm.Data.HPC.PressureModel)">
+            <summary>
+            读取设备指定模块压力值
+            </summary>
+            <param name="model">要读取的压力模块</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSafePressure(Xmas11.Comm.Data.HPC.PressureModel)">
+            <summary>
+            读取设备指定模块压力值(安全容错版)
+            1.如果压力模块不在线解析异常，返回0kPa；
+            2.如果压力模块解析异常，返回0kPa。
+            </summary>
+            <param name="model">要读取的压力模块</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetSwitchValveState(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            设置V1~V6开关阀状态(0关,1开)
+            </summary>
+            <param name="v1">V1阀</param>
+            <param name="v2">V2阀</param>
+            <param name="v3">V3阀</param>
+            <param name="v4">V4阀</param>
+            <param name="v5">V5阀</param>
+            <param name="v6">V6阀</param>
+            <returns>计算出的指令数值 (0-255)</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetSwitchValveState">
+            <summary>
+            读取V1~V6阀的开关状态(0关,1开)
+            </summary>
+            <returns>返回阀状态字符串，例如V1阀打开，其他阀关闭：1,0,0,0,0,0</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetControlValveState(System.Double)">
+            <summary>
+            设置控制阀的开度状态(支持-1~1范围内的double值)
+            当state在[-1,0)区间：放气阀(OUT)打开，进气阀(IN)关闭；
+            当state在(0,1]区间：进气阀(IN)打开，放气阀(OUT)关闭；
+            当state等于0：两个阀都关闭。
+            </summary>
+            <param name="state">开关程度</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPumpOpenCloseState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+             设置泵的状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ReadDatatoUSB(System.String)">
+            <summary>
+            从U盘中读取文件内容
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.AddDatatoUSB(System.String,System.String,Xmas11.Comm.Data.HPC.FileWriteType)">
+            <summary>
+            向U盘里添加文件
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.StorageCardState">
+            <summary>
+            判断sd卡是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.USBdriveState">
+            <summary>
+            判断是否存在U盘
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ParseToBool(System.String)">
+            <summary>
+            将字符串转换为布尔值。
+            支持的输入值包括："1"、"0"、"true"、"false"（不区分大小写，前后可有空格）。
+            如果无法识别输入，则返回 false。
+            </summary>
+            <param name="value">待转换的字符串值。</param>
+            <returns>转换结果，"1" 或 "true" 返回 true，"0" 或 "false" 返回 false，其它情况返回 false。</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.Delfile(System.String)">
+            <summary>
+             删除文件
+            </summary>
+            <param name="fileName">文件路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.IsSupportGA">
+            <summary>
+            是否支持表绝压切换功能(false:不支持,true:支持)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetPressureType">
+            <summary>
+            读取压力类型
+            </summary>
+            <returns>压力类型枚举</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.SetPressureType(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置压力类型
+            </summary>
+            <param name="pressType">压力类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ParsePressureTypeToStr(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            将压力类型枚举值转换为对应的字符串
+            </summary>
+            <param name="pressTypeEnum">压力类型枚举值</param>
+            <returns>压力类型枚举值字符串表示</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.ParsePressureTypeToEnum(System.String)">
+            <summary>
+            将压力类型字符串转换为对应枚举值
+            </summary>
+            <param name="pressTypeStr">压力类型字符串</param>
+            <returns>压力类型字符串枚举值表示</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCBase.GetUSBLocation">
+            <summary>
+            根据pid vid获取usb location
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPC">
+            <summary>
+            P02通讯库
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPC.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPC.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPC.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPC.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPC.#ctor(System.UInt16,System.UInt16,System.String)">
+            <summary>
+            构造函数（USB通讯方式适用）
+            </summary>
+            <param name="vid"></param>
+            <param name="pid"></param>
+            <param name="location"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPC.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPC.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Moduel.ModuleDetails.IsValid">
+            <summary>
+            数据是否有效
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Moduel.ModuleDetails.Up">
+            <summary>
+            上限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Moduel.ModuleDetails.Down">
+            <summary>
+            下限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Moduel.ModuleDetails.Unit">
+            <summary>
+            单位
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Moduel.ModuleDetails.SN">
+            <summary>
+            SN
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.Moduel.ModuleDetails.ModuleVersion">
+            <summary>
+            版本
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.Moduel.ModuleDetails.#ctor(System.Boolean)">
+            <summary>
+            无效的数据
+            </summary>
+            <param name="isvalid"></param>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIDeviceIO.IOType">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DITaskHeader.DeviceName">
+            <summary>
+            设备名称(唯一)
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DITaskHeader.SN">
+            <summary>
+            设备序列号
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DITestResultInfoHeader.ResultType">
+            <summary>
+            任务结果类型(As Found/As Left)
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.Id">
+            <summary>
+            ID
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.Name">
+            <summary>
+            App中显示的名称
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.Alias">
+            <summary>
+            别名
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.Official">
+            <summary>
+            官方名称
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.UnitType">
+            <summary>
+            单位类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.IsCustomized">
+            <summary>
+            是否为自定义单位.
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.ReferenceUnitId">
+            <summary>
+            标准单位
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIUnit.Factor">
+            <summary>
+            计算系数
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCTask.DIInstrumentBriefInfo">
+            <summary>
+            任务简要信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentBriefInfo.Name">
+            <summary>
+            任务名
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentBriefInfo.InstrumentID">
+            <summary>
+            任务ID
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIInstrumentBriefInfo.#ctor(System.String,System.String,Xmas11.Comm.Devices.HPCTask.InstrumentCategory)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="name"></param>
+            <param name="guid"></param>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.DeviceName">
+            <summary>
+            设备名称(唯一)
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.SN">
+            <summary>
+            设备序列号
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.Location">
+            <summary>
+            安装位置信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.Notes">
+            <summary>
+            备注信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.Owner">
+            <summary>
+            送检单位
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.InputInfo">
+            <summary>
+            输入信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.OutputInfo">
+            <summary>
+            输出信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.AccuracyFS">
+            <summary>
+            准确度等级(单位：%)
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.Repeats">
+            <summary>
+            运行重复次数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrument.ProcessMode">
+            <summary>
+            运行方式
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressure.PressType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureDialGauge.ReadoutFormat">
+            <summary>
+            指针表显示方式
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureDialGauge.TapEnable">
+            <summary>
+            是否轻敲
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureSwitch.SetPoint">
+            <summary>
+            设定点信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureSwitch.SwitchType">
+            <summary>
+            设定状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureSwitch.DeadbandMin">
+            <summary>
+            死区下限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureSwitch.DeadbandMax">
+            <summary>
+            死区上限
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureTransmitter.TransmitterType">
+            <summary>
+            压力变送器类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIInstrumentPressureTransmitter.TransmitterProcessType">
+            <summary>
+            过程量类型
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions">
+            <summary>
+            任务查询条件
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.Category">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.CreateStartTime">
+            <summary>
+            创建起始时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.CreateEndTime">
+            <summary>
+            创建结束时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.UpdateStartTime">
+            <summary>
+            更新起始时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.UpdateEndTime">
+            <summary>
+            更新结束时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.LatestCount">
+            <summary>
+            最新数条数据
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.CreationFlagEnable">
+            <summary>
+            是否启用创建标识查询
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.CreationFlag">
+            <summary>
+            创建标识
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.#ctor(System.Collections.Generic.List{Xmas11.Comm.Devices.HPCTask.InstrumentCategory},System.String,System.String,System.String,System.String,System.Int32,System.Boolean,Xmas11.Comm.Devices.HPCTask.TaskCreationFlags)">
+            <summary>
+            按照TaskCreationFlags查询
+            </summary>
+            <param name="category"></param>
+            <param name="createStartTime"></param>
+            <param name="createEndTime"></param>
+            <param name="updateStartTime"></param>
+            <param name="updateEndTime"></param>
+            <param name="latestCount"></param>
+            <param name="creationFlagEnable"></param>
+            <param name="creationFlag"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.#ctor(System.Collections.Generic.List{Xmas11.Comm.Devices.HPCTask.InstrumentCategory},System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="category"></param>
+            <param name="createStartTime"></param>
+            <param name="createEndTime"></param>
+            <param name="updateStartTime"></param>
+            <param name="updateEndTime"></param>
+            <param name="latestCount"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.#ctor(System.Collections.Generic.List{Xmas11.Comm.Devices.HPCTask.InstrumentCategory},System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="category"></param>
+            <param name="createStartTime"></param>
+            <param name="createEndTime"></param>
+            <param name="updateStartTime"></param>
+            <param name="updateEndTime"></param>
+            <param name="latestCount"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIQueryInstumentConditions.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions">
+            <summary>
+            结果查询条件
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.ResultType">
+            <summary>
+            结果类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.LatestCount">
+            <summary>
+            最新数条数据
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.IsPassed">
+            <summary>
+            是否通过校准
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.Operators">
+            <summary>
+            操作员
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.ExecuteDateStartTime">
+            <summary>
+            执行起始时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.ExecuteDateEndTime">
+            <summary>
+            执行结束时间
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.#ctor(Xmas11.Comm.Devices.HPCTask.TaskResultTypes,System.String,System.String,Xmas11.Comm.Devices.HPCTask.IsPassedType,System.String[],System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="resultType"></param>
+            <param name="executeDateStratTime"></param>
+            <param name="executeDateEndTime"></param>
+            <param name="isPassed"></param>
+            <param name="operators"></param>
+            <param name="latestCount"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIQueryResultConditions.#ctor(Xmas11.Comm.Devices.HPCTask.TaskResultTypes,System.DateTime,System.DateTime,Xmas11.Comm.Devices.HPCTask.IsPassedType,System.String[],System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="resultType"></param>
+            <param name="executeDateStratTime"></param>
+            <param name="executeDateEndTime"></param>
+            <param name="isPassed"></param>
+            <param name="operators"></param>
+            <param name="latestCount"></param>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCTask.DIResultBriefInfo">
+            <summary>
+            结果简要信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIResultBriefInfo.ResultID">
+            <summary>
+            结果ID
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DIResultBriefInfo.InstrumentID">
+            <summary>
+            任务ID
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIResultBriefInfo.#ctor(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="resultID"></param>
+            <param name="instrumentID"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIResultBriefInfo.#ctor(System.Guid,System.Guid)">
+            <summary>
+            
+            </summary>
+            <param name="resultID"></param>
+            <param name="instrumentID"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.HPCTask.DIResultBriefInfo.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCTask.IsPassedType">
+            <summary>
+            是否通过校准
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.HPCTask.IsPassedType.NotPassed">
+            <summary>
+            未通过
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.HPCTask.IsPassedType.Passed">
+            <summary>
+            通过
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.HPCTask.IsPassedType.Unknown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCTask.DITestProcessData">
+            <summary>
+            单个测试行程的过程数据（包含输入/输出数据）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DITestResultInfo.ResultType">
+            <summary>
+            任务结果类型(As Found/As Left)
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DITestResultInfo.Humidity">
+            <summary>
+            相对湿度0-100， (%)
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DITestResultInfo.CalPoints">
+            <summary>
+            校准点列表
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.HPCTask.DITestResultInfo.ProcessDatas">
+            <summary>
+            测试过程数据，最多3个循环(即数组最大长度为3)
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.HPCTask.IOType">
+            <summary>
+            被检输入输出类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.HPCTask.TaskCreationFlags.AMS">
+            <summary>
+            用于标识此任务由AMS软件创建
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.BarometerCalData">
+            <summary>
+            大气压模块校准值数据结构
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.#ctor(Xmas11.Domain.Mechanics.Pressure,Xmas11.Domain.Mechanics.Pressure,System.DateTime)">
+            <summary>
+            初始化
+            </summary>
+            <param name="diff">偏移量</param>
+            <param name="atmos">大气压</param>
+            <param name="calDate">校准日期</param>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.#ctor(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            初始化
+            </summary>
+            <param name="atmos">大气压</param>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.BarometerCalData.Diff">
+            <summary>
+            偏移量
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.BarometerCalData.Atmos">
+            <summary>
+            大气压
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.BarometerCalData.CalDate">
+            <summary>
+            校准日期
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.BarometerCalData.Empty">
+            <summary>
+            空数据
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.IsEmpty">
+            <summary>
+            是否是空值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.IsEmpty(Xmas11.Comm.Data.HPC.BarometerCalData)">
+            <summary>
+            是否是空值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.ToString">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.Equals(Xmas11.Comm.Data.HPC.BarometerCalData)">
+             <summary>
+            
+             </summary>
+             <param name="obj"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.Equals(System.Object)">
+             <summary>
+            
+             </summary>
+             <param name="obj"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.GetHashCode">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.op_Inequality(Xmas11.Comm.Data.HPC.BarometerCalData,Xmas11.Comm.Data.HPC.BarometerCalData)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.BarometerCalData.op_Equality(Xmas11.Comm.Data.HPC.BarometerCalData,Xmas11.Comm.Data.HPC.BarometerCalData)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.CalibrationDataStruct">
+            <summary>
+            校准数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalibrationDataStruct.ListPoints">
+            <summary>
+            校准点列表
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalibrationDataStruct.ListStands">
+            <summary>
+            标准值列表
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalibrationDataStruct.Year">
+            <summary>
+            年
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalibrationDataStruct.Month">
+            <summary>
+            月
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalibrationDataStruct.Day">
+            <summary>
+            日
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.CalItem">
+            <summary>
+            校准项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalItem.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalItem.MeasureCal_mA">
+            <summary>
+            mA测量校准
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalItem.MeasureCal_V">
+            <summary>
+            V测量校准
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CalItem.SourceCal_mA">
+            <summary>
+            mA输出校准
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.DataType">
+            <summary>
+            数据类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DataType.ManufacturerData">
+            <summary>
+            厂家数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DataType.UserData">
+            <summary>
+            用户数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.DeviceModel">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DeviceModel.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DeviceModel.LLP">
+            <summary>
+            810微压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DeviceModel.DP">
+            <summary>
+            810差压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DeviceModel.MP">
+            <summary>
+            810气压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DeviceModel.ALL">
+            <summary>
+            所有类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DeviceModel.CURRENT">
+            <summary>
+            当前机型
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.DisplayTest">
+            <summary>
+            屏幕测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DisplayTest.DeadPixelTest">
+            <summary>
+            坏点测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DisplayTest.TouchTest">
+            <summary>
+            触摸测试
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.DOType">
+            <summary>
+            DO(1,2)输出状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.UnKnown">
+            <summary>
+            未知状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.OFF">
+            <summary>
+            闭合DO
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.STABle">
+            <summary>
+            压力稳定
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.MEASure">
+            <summary>
+            压力测量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.CONTrol">
+            <summary>
+            压力控制
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.VENT">
+            <summary>
+            压力排空
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.VACuum">
+            <summary>
+            压力真空泵
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.DOType.OVERrange">
+            <summary>
+            压力超量程
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.CheckStata">
+            <summary>
+            检查状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CheckStata.OK">
+            <summary>
+            通过
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CheckStata.Fault">
+            <summary>
+            故障
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.CheckStata.UnKnown">
+            <summary>
+            未知状态
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.FileWriteType">
+            <summary>
+            文件写入方式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FileWriteType.APPend">
+            <summary>
+            往文件尾追加数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FileWriteType.TRUNcate">
+            <summary>
+            文件内容将被删除，然后从文件头开始写入数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.FunctionType">
+            <summary>
+            数据类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.ALL">
+            <summary>
+            所有功能
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.HART">
+            <summary>
+            HART
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.TASK">
+            <summary>
+            任务功能
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.DATALogging">
+            <summary>
+            数据记录
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.WLAN">
+            <summary>
+            wifi功能
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.BLE">
+            <summary>
+            蓝牙功能
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.USBSLAVE">
+            <summary>
+            USB从功能
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.FunctionType.HARTCommunicator">
+            <summary>
+            Modbus功能
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.GetSourceState">
+            <summary>
+            控制板电源状态自检
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.GetSourceState.Power10VResult">
+            <summary>
+            10V电压状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.GetSourceState.Power8_8VResult">
+            <summary>
+            8.8V电压状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.GetSourceState.Power8VResult">
+            <summary>
+            8V电压状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.GetSourceState.Power5VResult">
+            <summary>
+            5V电压状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.GetSourceState.PowerNegative5VResult">
+            <summary>
+            -5V电压状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.GetSourceState.Power3_3VResult">
+            <summary>
+            3.3V电压状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.GetSourceState.SourcePowerResult">
+            <summary>
+            控制板自检状态
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.GetSourceState.AnalyseSourceState(System.String[])">
+            <summary>
+            查询控制板自检状态
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.HartProcessItem">
+            <summary>
+            HART过程项
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.PV">
+            <summary>
+            主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.AO">
+            <summary>
+            模拟电流值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.Percent">
+            <summary>
+            量程百分比
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.SV">
+            <summary>
+            第二主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.TV">
+            <summary>
+            第三主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.FV">
+            <summary>
+            第四主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.HartProcessItem.LoopCurrent">
+            <summary>
+            环路电流
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.MachineLanguages">
+            <summary>
+            语言种类(810专用)
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.en_US">
+            <summary>
+            英语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.ca_ES">
+            <summary>
+            简体中文
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.en_PH">
+            <summary>
+            日语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.es_EC">
+            <summary>
+            俄语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.es_ES">
+            <summary>
+            西班牙语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.en_JM">
+            <summary>
+            繁体中文
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.de_DE">
+            <summary>
+            德语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.fr_FR">
+            <summary>
+            法语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.pt_PT">
+            <summary>
+            葡萄牙语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.it_IT">
+            <summary>
+            意大利语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages.Un_Know">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.MachineLanguages810A">
+            <summary>
+            810A语言种类
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.en_US">
+            <summary>
+            英语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.zh_CN">
+            <summary>
+            简体中文
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.ja_JP">
+            <summary>
+            日语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.ru_RU">
+            <summary>
+            俄语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.es_ES">
+            <summary>
+            西班牙语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.zh_TW">
+            <summary>
+            繁体中文
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.de_DE">
+            <summary>
+            德语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.fr_FR">
+            <summary>
+            法语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.pt_PT">
+            <summary>
+            葡萄牙语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.it_IT">
+            <summary>
+            意大利语
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MachineLanguages810A.Un_Know">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.MaintainState">
+            <summary>
+            维护状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MaintainState.UnKnown">
+            <summary>
+            未知状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MaintainState.AdvanceMaintain">
+            <summary>
+            预维护状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MaintainState.NotAdvanceMaintain">
+            <summary>
+            非预维护状态
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.ModuleRangeLimitsNew">
+            <summary>
+            模块量程限制
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimitsNew.DeviceType">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimitsNew.LowLimit">
+            <summary>
+            量程下限绝对值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimitsNew.HighLimit">
+            <summary>
+            量程上线绝对值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.ModuleRangeLimits">
+            <summary>
+            模块量程限制
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimits.DeviceType">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimits.DownMinVal">
+            <summary>
+            量程下线最小值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimits.DownMaxVal">
+            <summary>
+            量程下线最大值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimits.UpMinVal">
+            <summary>
+            量程上限最小值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.ModuleRangeLimits.UpMaxVal">
+            <summary>
+            量程上限最大值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.MultimeterCalData">
+            <summary>
+            电测表校准值数据结构
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.#ctor(Xmas11.Comm.Data.HPC.DataType,Xmas11.Comm.Data.HPC.CalItem,System.Int32,System.Collections.Generic.List{System.Double},System.Collections.Generic.List{System.Double},System.DateTime)">
+            <summary>
+            初始化
+            </summary>
+            <param name="item">测量项</param>
+            <param name="count">校准点数，现阶段默认为3点校准</param>
+            <param name="calPoints">校准点</param>
+            <param name="actuals">测量值</param>
+            <param name="calDate">校准日期</param>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.MultimeterCalData.DataType">
+            <summary>
+            数据类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.MultimeterCalData.Item">
+            <summary>
+            校准项
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.MultimeterCalData.CalPointCount">
+            <summary>
+            校准点数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.MultimeterCalData.CalPoints">
+            <summary>
+            校准点
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.MultimeterCalData.Actuals">
+            <summary>
+            测量值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.MultimeterCalData.CalDate">
+            <summary>
+            校准日期
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.IsEmpty">
+            <summary>
+            是否是空值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.IsEmpty(Xmas11.Comm.Data.HPC.MultimeterCalData)">
+            <summary>
+            是否是空值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.ToString">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.Equals(Xmas11.Comm.Data.HPC.MultimeterCalData)">
+             <summary>
+            
+             </summary>
+             <param name="obj"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.Equals(System.Object)">
+             <summary>
+            
+             </summary>
+             <param name="obj"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.GetHashCode">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.op_Inequality(Xmas11.Comm.Data.HPC.MultimeterCalData,Xmas11.Comm.Data.HPC.MultimeterCalData)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.MultimeterCalData.op_Equality(Xmas11.Comm.Data.HPC.MultimeterCalData,Xmas11.Comm.Data.HPC.MultimeterCalData)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PAProcessItem">
+            <summary>
+            PA过程项
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PAProcessItem.TRANS1_PRIMARY_VALUE">
+            <summary>
+            PrimaryValue
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PAProcessItem.TRANS1_SENSOR_VALUE">
+            <summary>
+            SensorValue
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PAProcessItem.TRANS1_SECONDARY_VALUE_1">
+            <summary>
+            SecondaryValue1
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PAProcessItem.TRANS1_TRIMMED_VALUE">
+            <summary>
+            TrimmedValue
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PAProcessItem.TRANS1_SECONDARY_VALUE_2">
+            <summary>
+            SecondaryValue2
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PAProcessItem.TRANS1_STATIC_PRESS_VALUE">
+            <summary>
+            StaticPressValue
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PASupplyMode">
+            <summary>
+            PA供电模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PASupplyMode.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PASupplyMode.PA">
+            <summary>
+            PA
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PASupplyMode.Normal">
+            <summary>
+            正常
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PowerState">
+            <summary>
+            电源状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PowerState.UnKnown">
+            <summary>
+            未知状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PowerState.Normal">
+            <summary>
+            正常
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PowerState.Abnormal">
+            <summary>
+            非正常
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PressureModel">
+            <summary>
+            压力模块安装位置
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModel.AllPressure">
+            <summary>
+            0：全部压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModel.ControllerModule">
+            <summary>
+            1：控制模块(内部模块)压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModel.ExternalAPressure">
+            <summary>
+            2：外接A
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModel.ExternalBPressure">
+            <summary>
+            3：外接B
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModel.PositivePressure">
+            <summary>
+            4：正压气源
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModel.NegativePressure">
+            <summary>
+            5：负压气源
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModel.AtmosPressure">
+            <summary>
+            6：大气压值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PressureModuleType">
+            <summary>
+            压力模块类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModuleType.UnKnown">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModuleType.CDP">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModuleType.CDPH">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModuleType.DPS100">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureModuleType.DPSEX">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PressureRangeState">
+            <summary>
+            压力量程状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureRangeState.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureRangeState.High">
+            <summary>
+            高压量程
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureRangeState.Low">
+            <summary>
+            低压量程
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PressureRateType">
+            <summary>
+            控压速率类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureRateType.UnKnown">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureRateType.Max">
+            <summary>
+            最大
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureRateType.Custom">
+            <summary>
+            自定义
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PressureStabilityType">
+            <summary>
+            控压速率类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureStabilityType.UnKnown">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureStabilityType.Fixed">
+            <summary>
+            固定
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureStabilityType.Optimal">
+            <summary>
+            最优
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationMode">
+            <summary>
+            压力开关自动检校工作模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationMode.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationMode.Mode1">
+            <summary>
+            工作模式1
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationState">
+            <summary>
+            压力开关自动检校工作状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationState.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationState.Stop">
+            <summary>
+            停止
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationState.Start">
+            <summary>
+            开始
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PressureSwitchAutoCalibrationState.StopNarrow">
+            <summary>
+            停止衰减
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.ProgramState">
+            <summary>
+            程序状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.ProgramState.Running">
+             <summary>
+            正在运行
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.ProgramState.Exited">
+            <summary>
+            已停止运行
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.ProgramState.Unknown">
+            <summary>
+            未知状态
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PumpState">
+            <summary>
+            气泵状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PumpState.Start">
+            <summary>
+            启动状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PumpState.Stop">
+            <summary>
+            停止状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PumpState.Unknown">
+            <summary>
+            未知状态
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.PumpTestItem">
+            <summary>
+            气泵测试项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PumpTestItem.Positive">
+            <summary>
+            正压测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PumpTestItem.Negative">
+            <summary>
+            负压测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.PumpTestItem.Stop">
+            <summary>
+            终止测试
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.SearchState">
+            <summary>
+            搜索状态（HART/PA使用）
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SearchState.Start">
+            <summary>
+            开始搜索
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SearchState.Stop">
+            <summary>
+            停止搜索
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SearchState.Zero">
+            <summary>
+            只搜索0地址
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.SelfTuningMessage">
+            <summary>
+            自检信息状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.SelfTuningMessage.SetPoint">
+            <summary>
+            设定点
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.SelfTuningMessage.InValveValue">
+            <summary>
+            进气阀控制量
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.SelfTuningMessage.OutValveValue">
+            <summary>
+            放气阀控制量
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.SensorCalibrationItem">
+            <summary>
+            传感器测试项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SensorCalibrationItem.SupplySensorCali">
+            <summary>
+            正压传感器
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SensorCalibrationItem.VacuumSensorCali">
+            <summary>
+            真空传感器
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.SourceItem">
+            <summary>
+            电测输出项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SourceItem.UnKnown">
+            <summary>
+            未知项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SourceItem.mA">
+            <summary>
+            毫安输出
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.SourceMode">
+            <summary>
+            电测输出模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SourceMode.UnKnown">
+            <summary>
+            位置
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SourceMode.ORIGINAL">
+            <summary>
+            输出原始值模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.SourceMode.CalAfter">
+            <summary>
+            输出校准后的最终值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.TestState">
+            <summary>
+            测试状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.PositivePresTestFailed">
+            <summary>
+            正压测试失败
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.Completed">
+            <summary>
+            完成
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.InProgress">
+            <summary>
+            测试中
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.NegativePresTestFailed">
+            <summary>
+            负压测试失败
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.PositivePersSensorOverproof">
+            <summary>
+            正压气源传感器超差
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.NegativePresSensorOverproof">
+            <summary>
+            负压气源传感器超差
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.Exception">
+            <summary>
+            异常
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.TestState.UnKnown">
+            <summary>
+            未知状态
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.UnitIDConverter">
+            <summary>
+            单位ID转换器
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.UnitIDConverter.UnitStringDictionary">
+            <summary>
+            MPC 单位字典 MPC适用 将标准单位映射到MPC指令集可识别的单位字串
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.UnitIDConverter.UnitCodeDictionary">
+            <summary>
+            MPC 单位字典 MPC适用 将标准单位映射到MPC指令集可识别的单位ID
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.USBType.Unknown">
+            <summary>
+            无
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.USBType.Host">
+            <summary>
+            主
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.USBType.Slave">
+            <summary>
+            从
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.WIFIConnector">
+            <summary>
+            wifi连接类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.WIFIConnector.Unknow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.WIFIConnector.OPEN">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.WIFIConnector.WPA">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.WIFIConnector.WPA2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.WifiNameAndConnector">
+            <summary>
+            获取设备搜索到的WIFI名称和连接方式
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.WifiNameAndConnector.#ctor(System.String,Xmas11.Comm.Data.HPC.WIFIConnector)">
+            <summary>
+            测量或输出数据
+            </summary>
+            <param name="name"></param>
+            <param name="wificonnector"></param>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.WifiNameAndConnector.WifiName">
+            <summary>
+            wifi名称
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.WifiNameAndConnector.WifiConnector">
+            <summary>
+            wifi连接方式
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.WifiNameAndConnector.Empty">
+            <summary>
+            空数据
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Data.HPC.WifiNameAndConnector.ToString">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.MeasureItem">
+            <summary>
+            电测测量项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MeasureItem.UnKnown">
+            <summary>
+            未知项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MeasureItem.mA">
+            <summary>
+            毫安测量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MeasureItem.V">
+            <summary>
+            伏特测量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MeasureItem.Switch">
+            <summary>
+            开关
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MeasureItem.PNPSwitch">
+            <summary>
+            PNP开关
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Data.HPC.MeasureItem.NPNSwitch">
+            <summary>
+            NPN开关
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Data.HPC.SensorCaliMessage">
+            <summary>
+            传感器校准信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.SensorCaliMessage.AtmosphericValue">
+            <summary>
+            当前大气压值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.SensorCaliMessage.SensorPressureValue">
+            <summary>
+            传感器原始值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Data.HPC.SensorCaliMessage.SensorState">
+            <summary>
+            传感器状态
+            </summary>
+        </member>
+    </members>
+</doc>

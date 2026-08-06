@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "description": "老化模板",
+  "businessType": "aging",
+  "category": "aging",
+  "disabled": true,
+  "excludeFromCopy": [],
+  "excludeFromReplacement": []
+}

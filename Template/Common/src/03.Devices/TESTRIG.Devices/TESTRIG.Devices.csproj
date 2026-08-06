@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- WMI(System.Management) 仅 Windows；CA1416。NU1701：引用 .NET4.x 的 Xmas11 通讯库（真机驱动，已验证可在 net8 加载） -->
+    <NoWarn>CA1416;NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="System.Management" />
+    <!-- Xmas11 通讯库依赖：.NET Core 下串口需此包（Framework 内置） -->
+    <PackageReference Include="System.IO.Ports" />
+    <!-- 国锐 PLC 真机驱动：Modbus TCP（对标旧 KUS_GUORUI 用的 EasyModbus） -->
+    <PackageReference Include="EasyModbusTCP" />
+  </ItemGroup>
+  <!-- 真机标准盒：Xmas11 通讯库（.NET4.x DLL，net8 可加载）。$(X11) 指向 Common\refdlls 目录 -->
+  <PropertyGroup>
+    <X11>$(MSBuildProjectDirectory)\..\..\..\refdlls</X11>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 共享/标准盒(ConST326)/TemplateUUT(TemplateUUT) 所需通讯库；其余被检专属 DLL 已随业务移除 -->
+    <Reference Include="Xmas11.Comm.Common"><HintPath>$(X11)\Xmas11.Comm.Common.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Core"><HintPath>$(X11)\Xmas11.Comm.Core.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Devices.PGC2"><HintPath>$(X11)\Xmas11.Comm.Devices.PGC2.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Devices.ZQWL"><HintPath>$(X11)\Xmas11.Comm.Devices.ZQWL.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Devices.ZCZH"><HintPath>$(X11)\Xmas11.Comm.Devices.ZCZH.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Devices.DPG2"><HintPath>$(X11)\Xmas11.Comm.Devices.DPG2.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Domain"><HintPath>$(X11)\Xmas11.Domain.dll</HintPath><Private>true</Private></Reference>
+    <!-- ConST326 标准盒源/测：DPC2Base -->
+    <Reference Include="Xmas11.Comm.Devices.DPC2"><HintPath>$(X11)\Xmas11.Comm.Devices.DPC2.dll</HintPath><Private>true</Private></Reference>
+    <!-- TemplateUUT 控制板(TemplateUUT)被检：ConST171Base -->
+    <Reference Include="Xmas11.Comm.Devices.ConST171"><HintPath>$(X11)\Xmas11.Comm.Devices.ConST171.dll</HintPath><Private>true</Private></Reference>
+    <!-- 串口物理链路解析（WmiSerialScanner 用 DiscoveredSerial） -->
+    <Reference Include="Xmas11.IO.USB"><HintPath>$(X11)\Xmas11.IO.USB.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Json"><HintPath>$(X11)\Xmas11.Json.dll</HintPath><Private>true</Private></Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\01.Core\TESTRIG.Core.Abstractions\TESTRIG.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\TESTRIG.Devices.Abstractions\TESTRIG.Devices.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

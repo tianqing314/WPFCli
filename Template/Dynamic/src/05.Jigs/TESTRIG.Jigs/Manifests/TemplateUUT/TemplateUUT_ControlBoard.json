@@ -1,0 +1,310 @@
+{
+  "Key": "{{DutType}}_ControlBoard",
+  "DeviceFamily": "{{DutType}}",
+  "BoardName": "{{DutType}}控制板",
+  "Description": "{{DutType}} 控制板动态测试（按真机逻辑迁移自旧 TemplateUUT/ConST171_MainBoard_Auto，源命名 MainBoard 有误，实为控制板；被检 ConST171Base + 标准盒 ConST326/继电器/DAM6803D 电压/2 路电流表）",
+  "Dut": {
+    "Name": "{{DutType}} 控制板被检",
+    "Model": "171AKZB"
+  },
+  "Positions": [
+    {
+      "Index": 1,
+      "Name": "1号位",
+      "Comm": {
+        "Link": "Serial",
+        "PhysicalLink": "123",
+        "Serial": {
+          "Baud": 9600,
+          "DataBits": 8,
+          "StopBits": "One",
+          "Parity": "None"
+        }
+      }
+    }
+  ],
+  "Steps": [
+    {
+      "Key": "BenchPreparation",
+      "Kind": "Prep{{DutType}}",
+      "Name": "工装准备",
+      "Description": "继电器 A/B/C 全通道复位、A9 选 CHB 24V、C20 CHB 上电，等待 10s 后重连被检。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "2c04f388-1fc4-4a3d-b286-1583114fadff"
+    },
+    {
+      "Key": "VersionTest",
+      "Kind": "Version{{DutType}}",
+      "Name": "版本测试",
+      "Description": "读取控制器软件/硬件版本并记录。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "dc3f0205-26a4-4b91-ba7e-60c4b32bfdaf"
+    },
+    {
+      "Key": "PowerSourceTrackTest",
+      "Kind": "PowerTrack{{DutType}}",
+      "Name": "电源轨测试",
+      "Description": "326 电压测量档、B14 电压输出；B1~B5/B7 依次连 E1~E5/E7 通道读 326 电压，逐路 Range 判定。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "E1指标",
+          "Min": 3.2,
+          "Max": 3.4,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "E2指标",
+          "Min": 17,
+          "Max": 18,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "E3指标",
+          "Min": 4.5,
+          "Max": 5.5,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "E4指标",
+          "Min": 3.2,
+          "Max": 3.4,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "E5指标",
+          "Min": 2.9,
+          "Max": 3.1,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "E7指标",
+          "Min": 3.2,
+          "Max": 3.4,
+          "Unit": "V"
+        }
+      ],
+      "Guid": "95e1d270-9137-4a0b-a20b-d369a09107ca"
+    },
+    {
+      "Key": "PowerStatusTest",
+      "Kind": "PowerStatus{{DutType}}",
+      "Name": "电源状态测试",
+      "Description": "被检读 DC24V/BOOST-SENSOR/VACUUM-SENSOR 电压，逐路 Range 判定。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "D24指标",
+          "Min": 23,
+          "Max": 25,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "BOOST-SENSOR",
+          "Min": 3.2,
+          "Max": 3.4,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "VACUUM-SENSOR",
+          "Min": 3.2,
+          "Max": 3.4,
+          "Unit": "V"
+        }
+      ],
+      "Guid": "302c6120-bc6c-490e-b60f-453c16bcd60a"
+    },
+    {
+      "Key": "ConsumeTest",
+      "Kind": "Consume{{DutType}}",
+      "Name": "功耗测试",
+      "Description": "2 路电流表通道 2 采集 30 点，掐头去尾各 5 取均值，Range 判定。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "功耗范围",
+          "Min": 50,
+          "Max": 150,
+          "Unit": "mA"
+        }
+      ],
+      "Guid": "ea7997e9-5cad-4777-8529-33e924683e8f"
+    },
+    {
+      "Key": "BuzzerTest",
+      "Kind": "Buzzer{{DutType}}",
+      "Name": "蜂鸣器测试",
+      "Description": "关蜂鸣器读 326 电压应在不动作区间，开蜂鸣器应在动作区间（326 V 档、B8 连 E8、B14 电压输出）。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "不动作",
+          "Min": 0,
+          "Max": 0.1,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "动作",
+          "Min": 3.1,
+          "Max": 3.2,
+          "Unit": "V"
+        }
+      ],
+      "Guid": "53eac4c6-d923-4ae7-b1c3-498a20538dca"
+    },
+    {
+      "Key": "ScreenSerialportTest",
+      "Kind": "ScreenSerial{{DutType}}",
+      "Name": "大彩屏串口测试",
+      "Description": "扫描系统串口，115200 下发大彩屏指令并校验响应头/尾，确认大彩屏串口通讯正常。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "5a2689ab-7d7c-4ba4-8a59-033c19a927c1"
+    },
+    {
+      "Key": "PressureSensorTest",
+      "Kind": "PressureSensor{{DutType}}",
+      "Name": "压力传感器测试",
+      "Description": "读增压/真空组件压力，值有效（≠0）即传感器通讯正常。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "29658ebc-7e22-4c9d-9d6c-85bc7b77ee60"
+    },
+    {
+      "Key": "TemperatureSensorTest",
+      "Kind": "TempSensor{{DutType}}",
+      "Name": "温度传感器测试",
+      "Description": "读板载/前级/增压 NTC 温度，各自减环境基准温度得温差，按温差合格判定（参考 ConST218A 温度芯片测试）。",
+      "Settings": {},
+      "Parameters": [
+        {
+          "Name": "温湿度计SN1",
+          "Value": "25223D010016"
+        },
+        {
+          "Name": "温湿度计SN2",
+          "Value": "25223D010012"
+        }
+      ],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "温差合格",
+          "Min": -5,
+          "Max": 5,
+          "Unit": "℃"
+        }
+      ],
+      "Guid": "9016e36f-55c3-4e55-a5fc-773cb9d4d255"
+    },
+    {
+      "Key": "FANTest",
+      "Kind": "Fan{{DutType}}",
+      "Name": "风扇测试",
+      "Description": "C5 常闭点设前级风扇占空比、C6 常开点设增压风扇占空比，各等 10s 读转速判区间。",
+      "Settings": {},
+      "Parameters": [
+        {
+          "Name": "转速",
+          "Value": "0.3",
+          "Unit": "%"
+        }
+      ],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "转速范围",
+          "Min": 3700,
+          "Max": 4500,
+          "Unit": "rpm"
+        }
+      ],
+      "Guid": "b6612170-d3f2-4f72-a7f7-6ba69270b98e"
+    },
+    {
+      "Key": "ControlValveTest",
+      "Kind": "ControlValve{{DutType}}",
+      "Name": "控制阀测试",
+      "Description": "进整机测试模式；C1 开 V1/V2、C2 开 V3/V4，DAM6803D 通道 0/1 读开/关阀电压，Range 判定。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "关闭",
+          "Min": 2,
+          "Max": 3,
+          "Unit": "V"
+        },
+        {
+          "Kind": "Range",
+          "Name": "打开",
+          "Min": 23.5,
+          "Max": 24.5,
+          "Unit": "V"
+        }
+      ],
+      "Guid": "54204c8e-2616-4cfc-bdc4-4da2a005234d"
+    },
+    {
+      "Key": "FOCDriverTest",
+      "Kind": "FocDriver{{DutType}}",
+      "Name": "FOC驱动测试",
+      "Description": "故障码非零先重连；进整机测试模式，读前级/增压泵电压 Range 判定，前级/增压泵运行后故障码应>100000。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [
+        {
+          "Kind": "Range",
+          "Name": "电压范围",
+          "Min": 24,
+          "Max": 25,
+          "Unit": "V"
+        }
+      ],
+      "Guid": "fcd00afc-3935-4fcd-a6bc-e49295cbb312"
+    },
+    {
+      "Key": "FOCCommunicationTest",
+      "Kind": "FocComm{{DutType}}",
+      "Name": "FOC芯片通讯测试",
+      "Description": "读增压/前级组件 FOC 芯片状态是否正常。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "e488cd02-3417-4005-bb63-39822e6286ce"
+    },
+    {
+      "Key": "TestFinish",
+      "Kind": "Finish{{DutType}}",
+      "Name": "测试结束",
+      "Description": "继电器 C9 常闭点、C19 CHB 断电，复位工装。",
+      "Settings": {},
+      "Parameters": [],
+      "Conditions": [],
+      "Guid": "de42910b-b547-4dd8-9ebf-77ccf271f7ef"
+    }
+  ]
+}

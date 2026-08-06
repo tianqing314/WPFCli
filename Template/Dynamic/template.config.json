@@ -1,0 +1,9 @@
+{
+  "description": "动态工装模板（TESTRIG 动态测试平台，TemplateUUT 被检）",
+  "businessType": "dynamic",
+  "category": "dynamic",
+  "disabled": false,
+  "dutPlaceholder": "TemplateUUT",
+  "excludeFromCopy": [],
+  "excludeFromReplacement": []
+}

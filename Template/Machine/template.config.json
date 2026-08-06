@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "description": "整机测试通用模板（含前端业务逻辑与 WPF UI）",
+  "businessType": "machine",
+  "category": "machine",
+  "excludeFromCopy": [],
+  "excludeFromReplacement": []
+}

@@ -1,0 +1,4426 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xmas11.Comm.Devices.PGC2</name>
+    </assembly>
+    <members>
+        <member name="T:Xmas11.Comm.Devices.PGC2Base">
+            <summary>
+            P22设备通讯库
+            ConST283 智能数字压力校验仪 ||  ADT673 Advanced Digital Pressure Calibrator 通讯库基类
+            ConST228 智能数字压力表 ||  ADT686 Advanced Digital Pressure Gauge 通讯库基类
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2Base.FW_IPM">
+            <summary>
+            内部控压模块（转发）
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2Base.DataLoggerTaskGuid">
+            <summary>
+            启动数据记录数据记录任务Guid
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetAtmosSensorSN">
+            <summary>
+            获取大气压模块编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetAtmosSensorSN(System.String)">
+            <summary>
+            设置大气压传感器SN
+            </summary>
+            <param name="sn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetAtmosSensor">
+            <summary>
+            获取大气压传感器值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.IsOnLine_IPM">
+            <summary>
+            内部模块是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.#ctor(System.UInt16,System.UInt16,System.String)">
+            <summary>
+            构造函数（USB通讯方式适用）
+            </summary>
+            <param name="vid"></param>
+            <param name="pid"></param>
+            <param name="location"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ConstructDefaultInfo">
+            <summary>
+            配置构造函数默认信息
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ClearRegister">
+            <summary>
+            这条命令清除下面的寄存器：标准事件寄存器；操作事件寄存器；状态字节寄存器；错误队列。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Reset">
+            <summary>
+            主程序复位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDeviceLogo">
+            <summary>
+            仪器标识查询，返回的数据分2个部分：a.产品序列号；b.软件版本号；
+            </summary>
+            <returns>产品序列号, 软件版本号 (?,DPC-EX V0.26.0.0)</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureStruct">
+            <summary>
+            读取当前压力值指令
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureAndAtm">
+            <summary>
+            读取测量压力值MRMD
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureUnit">
+            <summary>
+            读取压力单位MRMD
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetPressureUnit(Xmas11.Domain.Unit)">
+            <summary>
+            设置压力单位OUNIT
+            </summary>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureType">
+            <summary>
+            读取压力类型ORAN
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetPressureType(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置压力类型ABSET
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureModuleIsOnline">
+            <summary>
+            获取压力模块是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureRange(System.Boolean)">
+            <summary>
+            读取压力模块量程ORAN
+            </summary>
+            <param name="isSymbol">
+            无参或参数=0：量程下限,量程上限,单位id,压力类型(G/A/D);
+            参数=1：量程下限,量程上限,单位名称,压力类型(G/A/D);
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.PressureZero">
+            <summary>
+            压力清零OZERO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureModuleResolution">
+            <summary>
+            获取压力模块是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetPressureModuleResolution(Xmas11.Comm.Devices.PGC2.PressureResolution)">
+            <summary>
+            设置压力分辨率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureFilterIsEnable">
+            <summary>
+            读取压力滤波状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetPressureModuleResolution(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置压力滤波状态
+            </summary>
+            <param name="state">滤波状态</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetLiveData">
+            <summary>
+            获取LiveData
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricityMeasure(System.Boolean)">
+            <summary>
+            读取当前测量值
+            测量项目序号说明：1电流档 2电压档 3开关档 4HART档
+            </summary>
+            <param name="isCal">是否是CAL</param>
+            <returns>
+            不是CAL：测量项目序号，测量值，单位名称
+            是CAL：测量项目序号，最终测量值，单位名称, 单点修正后的值，多点修正后的值，线性修正后的值，原始值
+            </returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricityFunction">
+            <summary>
+            读取当前测量项目
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityFunction(Xmas11.Comm.Devices.PGC2.MeasureStruct)">
+            <summary>
+            设置当前测量项目
+            </summary>
+            <param name="measureStruct"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricity24VEnable">
+            <summary>
+            读取24V供电状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Set24VState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置24V电源开关O24V
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityZero">
+            <summary>
+            电测档位清零
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityCZero">
+            <summary>
+            电测档位取消清零
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricitySwitchActions">
+            <summary>
+            读取开关测试动作值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricityFilterEnable">
+            <summary>
+            读取滤波状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityFilterEnable(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置滤波状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricityFilter">
+            <summary>
+            读取滤波参数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityFilter(Xmas11.Comm.Devices.PGC2.FilterStruct)">
+            <summary>
+            设置滤波参数
+            </summary>
+            <param name="filterStruct"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricityScaleEnable">
+            <summary>
+            读取比例缩放状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityScaleEnable(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置比例缩放状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricityScale">
+            <summary>
+            读取比例缩放配置
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityScale(Xmas11.Comm.Devices.PGC2.ScaleStruct)">
+            <summary>
+            设置比例缩放配置
+            </summary>
+            <param name="scaleStruct"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricityMinMaxEnable">
+            <summary>
+            读取最值功能状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricityMinMaxEnable(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置最值功能状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetiVersion(Xmas11.Comm.Devices.PGC2.VersionType)">
+            <summary>
+            获取版本
+            </summary>
+            <param name="versionType">版本类型</param>
+            <returns>版本号 PGC-HOST 0.0.1.21</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetVersion(Xmas11.Comm.Devices.PGC2.VersionType)">
+            <summary>
+            获取系统版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetSystemDateTime">
+            <summary>
+            获取设备系统日期和时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetSystemDate">
+            <summary>
+            获取系统日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetSystemDate(System.DateTime)">
+            <summary>
+            设置系统日期
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetSystemTime">
+            <summary>
+            获取系统时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetSystemTime(System.DateTime)">
+            <summary>
+            设置系统时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetSystemTimeFormat(System.Boolean,System.Int32)">
+            <summary>
+            设置系统时间格式
+            </summary>
+            <param name="is24hour"></param>
+            <param name="UTCnum"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetLockScreenState">
+            <summary>
+            查询锁屏状态(0false 未锁屏;1true 锁屏)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetLockScreenState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置锁屏状态
+            </summary>
+            <param name="state">是否锁屏</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetKeyboardState">
+            <summary>
+            查询锁屏状态(0false 未锁屏;1true 锁屏)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetKeyboardState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置键盘启用状态OKEY
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetBatteryOnline">
+             <summary>
+             读取电池是否在线
+             </summary>
+             <returns>
+            1 :电池在线  0 :电池不在线
+             </returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetBatteryStatus">
+             <summary>
+             读取当前电池状态
+             </summary>
+             <returns>
+            0：电池通讯异常 1：电池通讯正常
+             </returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetBatteryInfo">
+            <summary>
+            读取当前电池电量及电池电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetFileCount(Xmas11.Comm.Devices.PGC2.DataManagerType)">
+            <summary>
+            获取数据数量, 默认DATAlogger
+            参数：LEAKtest 泄露测试；SNAPshot：快照；DATAlogger：数据记录
+            </summary>
+            <param name="dataType">数据类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetFileInfo(Xmas11.Comm.Devices.PGC2.DataManagerType,System.Int32,System.Int32)">
+            <summary>
+            获取数据文件相关信息 默认是 DATAlogger
+            </summary>
+            <param name="managerType"></param>
+            <param name="readFileStart"></param>
+            <param name="readFileCount"></param>
+            <returns>数据个数</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.DeleteFile(Xmas11.Comm.Devices.PGC2.DataManagerType,System.String)">
+            <summary>
+            删除数据记录
+            </summary>
+            <param name="managerType"></param>
+            <param name="fileGuid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetFileDataLength(Xmas11.Comm.Devices.PGC2.DataManagerType,Xmas11.Comm.Devices.PGC2.FileType,System.String)">
+            <summary>
+            读取数据长度
+            </summary>
+            <param name="managerType">数据管理类型</param>
+            <param name="fileType">文件类型</param>
+            <param name="fileGuid">文件GUID</param>
+            <returns>返回数据长度</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetFileData(Xmas11.Comm.Devices.PGC2.DataManagerType,Xmas11.Comm.Devices.PGC2.FileType,System.String,System.Int32,System.Int32)">
+            <summary>
+            读取的指定位置的数据
+            </summary>
+            <param name="managerType"></param>
+            <param name="fileType"></param>
+            <param name="fileGuid"></param>
+            <param name="readDataStart"></param>
+            <param name="readDataLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GoBackHomeDisplay">
+            <summary>
+            返回主界面
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDataloggerState(Xmas11.Comm.Data.Common.OpenCloseState,Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger,System.Boolean)">
+            <summary>
+            开始或停止数据记录
+            </summary>
+            <param name="state">0-停止记录 1-开始记录</param>
+            <param name="startLogger">数据记录任务配置</param>
+            <param name="isSave">是否保存记录</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetElectricalCalibrationData(Xmas11.Comm.Devices.PGC2.ElectricalCalItem,System.String,System.String,System.DateTime)">
+            <summary>
+            设置电测校准数据
+            </summary>
+            <param name="item"></param>
+            <param name="points"></param>
+            <param name="values"></param>
+            <param name="date"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetElectricalCalibrationData(Xmas11.Comm.Devices.PGC2.ElectricalCalItem)">
+            <summary>
+            读取电测校准数据
+            </summary>
+            <param name="item">测量项</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetAtmosPCalData">
+            <summary>
+            获取大气压传感器两点校准值
+            </summary>
+            <returns>标准值1,校准值1,标准值2,校准值2,年,月,日</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.PCalAtmos_Cal(System.Double,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            执行大气压传感器两点校准——厂家校准
+            </summary>
+            <param name="point1">校准点1</param>
+            <param name="p1">标准压力1</param>
+            <param name="point2">校准点2</param>
+            <param name="p2">标准压力2</param>
+            <param name="yy">年</param>
+            <param name="mm">月</param>
+            <param name="dd">日</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.PCalAtmos_CancelCal">
+            <summary>
+            取消厂家校准
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetAtmosPCalDataSingle">
+            <summary>
+            获取大气压传感器单点校准值
+            </summary>
+            <returns>标准值1,校准值1,标准值2,校准值2,年,月,日</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.PCalAtmos_CalSingle(System.Double,System.Double,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            执行大气压传感器单点校准——厂家校准
+            </summary>
+            <param name="point1">校准点1</param>
+            <param name="p1">标准压力1</param>
+            <param name="yy">年</param>
+            <param name="mm">月</param>
+            <param name="dd">日</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.RestoreATMUserCalibrationData">
+            <summary>
+            取消用户校准数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetATMUserCalibrationData(Xmas11.Comm.Devices.PGC2.ATMCalibrationType)">
+            <summary>
+            获取用户校准数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetATMUserCalibrationData(Xmas11.Comm.Devices.PGC2.UserCalibrationData)">
+            <summary>
+            写入用户校准数据
+            </summary>
+            <param name="calData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetATMUserPreCalibratedRawValue">
+            <summary>
+            获取用户校准前的
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticIDN">
+            <summary>
+            读取设备序列号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDiagnosticIDN(System.String)">
+            <summary>
+            设置设备序列号
+            </summary>
+            <param name="idn">序列号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticModel">
+            <summary>
+            读取设备型号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDiagnosticModel(System.String)">
+            <summary>
+            设置设备型号
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticTag">
+            <summary>
+            读取设备标签（Tag）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDiagnosticTag(System.String)">
+            <summary>
+            设置设备标签
+            </summary>
+            <param name="tag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticName">
+            <summary>
+            读取设备名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDiagnosticName(System.String)">
+            <summary>
+            设置设备名称
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticGuid">
+            <summary>
+            读取设备Guid
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDiagnosticGuid(System.String)">
+            <summary>
+            设置设备guid
+            </summary>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticFeatures(Xmas11.Comm.Devices.PGC2.FeatureItem)">
+            <summary>
+            读取设备是否支持功能(不带参数默认是0)
+            </summary>
+            <param name="feature">项目或项目号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDiagnosticFeatures(Xmas11.Comm.Devices.PGC2.FeatureItem,Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置设备是否支持功能
+            </summary>
+            <param name="item"></param>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetManufactureDate(System.DateTime)">
+            <summary>
+            设置设备生产日期
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetManufactureDate">
+            <summary>
+            获取设备生产日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetCheckerClose">
+            <summary>
+            关闭 屏幕扬声器检查程序
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetCheckerOpen(Xmas11.Comm.Devices.PGC2.ProgramFunction)">
+            <summary>
+            启动 屏幕扬声器检查程序
+            </summary>
+            <param name="function">程序功能</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetCheckerSelect(Xmas11.Comm.Devices.PGC2.ProgramFunction)">
+            <summary>
+            切换 屏幕扬声器检查程序
+            </summary>
+            <param name="function">程序功能</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetCheckerState">
+            <summary>
+            查询屏幕坏点、触摸屏、扬声器测试状态返回值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetCheckerResult">
+            <summary>
+            查询屏幕自检程序的结果
+            返回9个byte的数组的Base64编码，每byte数组代表1个测试项结果（0未测试，1测试成功，2测试失败）
+            9个测试：0坏点检测，1画线测试，2扬声器测试，3背景测试，4Wifi测试，5LAN测试，6无，7USB测试，8旋钮按键测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDIAGnosticLFRDate">
+            <summary>
+            读取设备出厂日期
+            20210705040504
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDIAGnosticLFRDate(System.DateTime)">
+            <summary>
+            设置设备出厂日期
+            </summary>
+            <param name="date">出厂日期</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetComponentSN">
+            <summary>
+            获取表头SN
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetComponentSN(System.String)">
+            <summary>
+            设置表头SN
+            </summary>
+            <param name="code">表头SN</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetBatteryVoltage">
+            <summary>
+            读取电池电压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticModuleCommand(Xmas11.Comm.Devices.PGC2.ModuleCommand)">
+            <summary>
+            压力模块转发指令Address(129=内置,130=大气压模块)
+            例如: DIAGnostic:MODule:COMMand 129:R:MRMD
+            </summary>
+            <param name="command"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticModuleTemperature">
+            <summary>
+            读取压力模块温度（温度传感器）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticBarosensor">
+            <summary>
+            读取大气压值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDiagnosticBarosensorTemperature">
+            <summary>
+            读取大气压模块温度值（温度传感器）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetExternalModuleOpen(System.Boolean)">
+            <summary>
+            开启或关闭外接模块供电
+            </summary>
+            <param name="isOpen"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetExternalModule(Xmas11.Comm.Devices.PGC2.ProgramFunction)">
+            <summary>
+            设置外接模块类型
+            </summary>
+            <param name="function"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetSystemReboot">
+            <summary>
+            重启设备
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartSupplyMode">
+            <summary>
+            查询供电模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetBRIGhtness(System.Int32)">
+            <summary>
+            设置屏幕亮度
+            </summary>
+            <param name="value">亮度百分比</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetHartSupplyMode(Xmas11.Comm.Devices.PGC2.SupplyMode)">
+            <summary>
+            设置Hart供电模式
+            </summary>
+            <param name="mode">供电方式</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SearchHart(Xmas11.Comm.Devices.PGC2.SearchState)">
+            <summary>
+            搜索HART
+            </summary>
+            <param name="state">搜索状态</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartMassage">
+            <summary>
+            返回hart地址和设备类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartDevices">
+            <summary>
+            获取HART设备列表(返回地址列表)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ConnectHartDevice(System.Int32)">
+            <summary>
+            连接HART设备
+            </summary>
+            <param name="address">地址</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.IsHartDeviceConnected">
+            <summary>
+            HART设备是否已经连接
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartDeviceProcess">
+            <summary>
+            获取HART设备过程量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartDeviceProcessInfo(Xmas11.Comm.Devices.PGC2.HartProcessItem)">
+            <summary>
+            获取HART设备过程量信息
+            </summary>
+            <param name="item">过程项</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartDeviceProcessInfo">
+            <summary>
+            获取HART设备过程量信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetHartDeviceProcess(Xmas11.Comm.Devices.PGC2.HartProcessItem)">
+            <summary>
+            设置HART设备过程量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartDeviceInfo">
+            <summary>
+            获取HART设备信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartDeviceSensorInfo">
+            <summary>
+            获取HART设备传感器信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHartDeviceOutputInfo">
+            <summary>
+            获取Hart设备输出信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.StartRemoteMode(Xmas11.Comm.HartProtocal.PowerSupplyMode)">
+            <summary>
+            切换远程透传模式
+            </summary>
+            <param name="supplyMode">变送器电源电阻模式</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.CloseRemoteMode">
+            <summary>
+            关闭远程透传模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Polling">
+            <summary>
+            轮询0地址上的设备
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDeviceInfo(Xmas11.Comm.HartProtocal.HartIdentifier)">
+            <summary>
+            获取Hart设备信息
+            </summary>
+            <param name="identifier"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetHARTProcessValue(Xmas11.Comm.HartProtocal.HartIdentifier,Xmas11.Comm.Data.Common.HartProcessItem)">
+            <summary>
+            获取主变量
+            </summary>
+            <param name="identifier"></param>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Initialize">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Test">
+            <summary>
+            连接测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetName">
+            <summary>
+            获取设备名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetSN">
+            <summary>
+            获取设备编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetiVersion">
+            <summary>
+            读取设备版本号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetVersion">
+            <summary>
+            读取设备版本字符串 读取软件版本号
+            </summary>
+            <returns>PGC-HOST 0.0.1.21</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetSerialNumber">
+            <summary>
+            读取设备编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetSerialNumber(System.String)">
+            <summary>
+            设置设备编号
+            </summary>
+            <param name="code">设备编号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDevName">
+            <summary>
+            读取设备名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDevName(System.String)">
+            <summary>
+            设置设备名称
+            </summary>
+            <param name="name">设备名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDevType">
+            <summary>
+            读取设备类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDevType(System.String)">
+            <summary>
+            设置设备类型
+            </summary>
+            <param name="type">设备类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.LockKeyboard">
+            <summary>
+            锁定键盘
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.UnlockKeyboard">
+            <summary>
+            解锁键盘
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.LockScreen">
+            <summary>
+            锁定屏幕
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.UnlockScreen">
+            <summary>
+            解锁屏幕
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressure">
+            <summary>
+            获取测量压力值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureRange">
+            <summary>
+            获取压力量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetRESolution(System.Int32)">
+            <summary>
+            设置压力显示分辨率
+            </summary>
+            <param name="solution"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetRESolution">
+            <summary>
+            获取压力显示分辨率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetRERate(System.Int32)">
+            <summary>
+            设置压力读数次数
+            </summary>
+            <param name="rate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetRERate">
+            <summary>
+            获取压力读数次数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetMeasureValue_mA">
+            <summary>
+            读取电流测量值(mA)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetMeasureValue_V">
+            <summary>
+            读取电压测量值(V)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetMeasureValue_Switch">
+            <summary>
+            读取开关状态测量值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ChangeToMeasure_mA">
+            <summary>
+            切换至电流测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ChangeToMeasure_V">
+            <summary>
+            切换至电压测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ChangeToMeasure_Switch">
+            <summary>
+            切换至开关测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ChangeToMeasure_Switch(System.Int32)">
+            <summary>
+            切换至开关测量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetMeasureItem">
+            <summary>
+            获取电测项目
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.PowerOnOffTestSetState(Xmas11.Comm.Devices.PGC2.PowerOnOFFType,Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            电源通断测试设置状态
+            </summary>
+            <param name="type"></param>
+            <param name="openClose"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.FerroelectricAutoTest">
+            <summary>
+            铁电自动测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetMeasureValue">
+            <summary>
+            读取测量值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetMeasureOriginalValue">
+            <summary>
+            获取测量原始值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Set24VState(Xmas11.Comm.Data.Common.Power24VState)">
+            <summary>
+            设置24V电源状态
+            </summary>
+            <param name="state">开启或关闭</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Open24V">
+            <summary>
+            打开24V电源开关O24V
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.Close24V">
+            <summary>
+            关闭24V电源开关O24V
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDataLoggerInfos``1(Xmas11.Comm.Devices.PGC2.DataManagerType,System.Int32,System.Int32)">
+            <summary>
+            获取数据记录信息
+            </summary>
+            <param name="index">起始位置</param>
+            <param name="count">读取数量</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetLeakTestInfos(System.Int32,System.Int32)">
+            <summary>
+            获取泄露测试信息
+            </summary>
+            <param name="index">起始位置</param>
+            <param name="count">读取数量</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDataLoggerDatas(Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo)">
+            <summary>
+            获取数据记录数据
+            </summary>
+            <param name="fileInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetLeakTestDatas(Xmas11.Comm.Devices.PGC2.LeakTestFileInfo)">
+            <summary>
+            获取泄露测试数据
+            </summary>
+            <param name="fileInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPSVTestStruct(Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestFileInfo)">
+            <summary>
+            获取泄露测试数据
+            </summary>
+            <param name="fileInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.ConvertDecimalSymbolToDot(System.String,System.String)">
+            <summary>
+            将数据转换为.小数点
+            </summary>
+            <param name="str"></param>
+            <param name="symbol"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetQUICKtestDatas(Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo)">
+            <summary>
+            获取任务数据
+            </summary>
+            <param name="fileInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDataManagerImage(Xmas11.Comm.Devices.PGC2.DataManagerType,System.String)">
+            <summary>
+            获取图片
+            </summary>
+            <param name="managerType"></param>
+            <param name="fileGuid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDataManagerImageBuffers(Xmas11.Comm.Devices.PGC2.DataManagerType,System.String,System.Int32,System.Int32)">
+            <summary>
+            获取图片字节流
+            </summary>
+            <param name="managerType"></param>
+            <param name="fileGuid"></param>
+            <param name="readDataStart"></param>
+            <param name="readDataLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDataLoggerDatas(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取数据记录数据
+            </summary>
+            <param name="fileGuid"></param>
+            <param name="readDataStart"></param>
+            <param name="readDataLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetLeakTestDatas(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取泄露测试数据
+            </summary>
+            <param name="fileGuid"></param>
+            <param name="readDataStart"></param>
+            <param name="readDataLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDataManagerImage(Xmas11.Comm.Devices.PGC2.DataManagerType,System.String,System.Int32,System.Int32)">
+            <summary>
+            获取图片
+            </summary>
+            <param name="managerType"></param>
+            <param name="fileGuid"></param>
+            <param name="readDataStart"></param>
+            <param name="readDataLength"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2Base.VID">
+            <summary>
+            VID
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2Base.PID">
+            <summary>
+            PID
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetAllOnlineUSBDevices">
+            <summary>
+            寻找所有USB连接的设备
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.isPGC2(System.String)">
+            <summary>
+            是否是P22设备
+            </summary>
+            <param name="versionPrefix"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetFormatBase64String(System.String)">
+            <summary>
+            获取base64字符串
+            </summary>
+            <param name="base64Str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureType(System.String)">
+            <summary>
+            获取压力类型
+            </summary>
+            <param name="param"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureRangeOld(System.Boolean)">
+            <summary>
+            读取压力模块量程ORAN
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.InnerGetBarosensorPressure(System.String)">
+            <summary>
+            内部方法——获取压力值，通讯指令返回结构为 值 单位
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetCommand(System.String)">
+            <summary>
+            设置命令方法
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetAdapterType">
+            <summary>
+            读取适配器类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetRamTest">
+            <summary>
+            校准数据的存储器测试
+            </summary>
+            <returns>返回1表示成功，0表示失败</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.UmemoryExistDirectory(System.String)">
+            <summary>
+            判断U盘盘符是否存在
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.WriteToUmemory(System.String,System.String)">
+            <summary>
+            往U盘根目录创建一个文件并写数据
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetUmemoryData(System.String)">
+            <summary>
+            判断U盘盘符是否存在
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.DeleteUmemoryData(System.String)">
+            <summary>
+            判断U盘盘符是否存在
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SwitchOutput(System.String,System.String)">
+            <summary>
+            开关输出
+            </summary>
+            <param name="swNo">通道(1：SW1；2：SW2)</param>
+            <param name="high">高低电平（1：高；0：低）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetFeatureModule(Xmas11.Comm.Devices.PGC2.ExternalModuleType)">
+            <summary>
+            设置外界模块类型
+            </summary>
+            <param name="module">外接模块类型0、1、2分别对应无、WIFI、232串口</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetFeatureModule">
+            <summary>
+            获取外界模块类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetSwitchMeasureState">
+            <summary>
+            读取开关状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetLanguage">
+            <summary>
+            读取设备显示语言
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetLanguage(Xmas11.Comm.Data.Common.Languages)">
+            <summary>
+            设置设备显示语言
+            </summary>
+            <param name="language">显示语言（注意，目前仅支持中英文两种语言）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDeviceBootLogo(Xmas11.Comm.Devices.PGC2.CompanyName)">
+            <summary>
+            设置设备开机Logo-目前只支持ConST及Additel
+            </summary>
+            <param name="Company">公司名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetBLEState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置蓝牙状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.OpenBLE">
+            <summary>
+            打开蓝牙
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.CloseBLE">
+            <summary>
+            关闭蓝牙
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetBleInfo(Xmas11.Comm.Devices.BLEInfoItem)">
+            <summary>
+            获取蓝牙MAC地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetModuleInfo(System.String)">
+            <summary>
+            压力模块转发指令Address(129=内置,130=大气压模块)
+            例如: DIAGnostic:MODule:COMMand 129:R:MRMD
+            </summary>
+            <param name="command"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetAtmosPCalDataInfo(System.Int32)">
+            <summary>
+            获取两点校准值,0,1,2
+            2是标定
+            </summary>
+            <returns>标准值1,校准值1,标准值2,校准值2,年,月,日</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetRESTore">
+            <summary>
+            恢复出厂
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetSystemTimeFormat">
+            <summary>
+            读取系统时间格式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPreRange(System.Boolean)">
+            <summary>
+            获取压力量程（）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.UpdateInit">
+            <summary>
+            升级前初始化  无
+            </summary>
+            <returns>0失败||1成功</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.UpdateInfo">
+            <summary>
+            读取升级信息
+            </summary>
+            <returns>字节数</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.UpdateDataDownload(System.String,System.String,System.String)">
+            <summary>
+            分包下载到设备中
+            </summary>
+            <param name="fileName">文件名</param>
+            <param name="base64Str">base64编码数据</param>
+            <param name="CRC16CCITT">此包的CRC校验码CRC16CCITT	</param>
+            <returns>0 失败||1 成功</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.UpdateStart(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            开始升级
+            </summary>
+            <param name="pageName">升级包名称</param>
+            <param name="isConfirmVersion">是否显示升级版本信息</param>
+            <param name="isConfirmResult">是否显示升级结果信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSTValue">
+            <summary>
+            读取热梯度补偿需要数据
+            返回指令：1:F:ORGTC: 29.8818: 29.9185:-0.08371: 0.01763: 0.01763
+            参数1：TMP117温度值；
+            参数2：AD7124温度值；
+            参数3：原始压力值（以KPA为单位）；
+            参数4：正常温补后压力值（以KPA为单位）；
+            参数5：梯度温补后压力值（以KPA为单位）。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSsn">
+            <summary>
+            读取dps模块的编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSversion">
+            <summary>
+            读取dps模块的版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDPSQYState(System.Boolean)">
+            <summary>
+            DPS模块量程迁移是否启用
+            </summary>
+            <param name="isopen"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSRange">
+            <summary>
+            DPS模块量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDPSRangeUnit(Xmas11.Comm.Devices.PGC2.RangeUnit)">
+            <summary>
+            设置DPS模块迁移后的量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDPSFixValue(System.Boolean,System.Double,System.Double,System.Double)">
+            <summary>
+            设置DPS温补系数
+            129:W:OGTC:1:-3.68:-2.5:0
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSFixValue">
+            <summary>
+            读取DPS温补系数
+            1:F:OGTC: 1: -3.68: -2.50:  0.00: -2.50
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetPressureClearRecoder">
+            <summary>
+            设置DPS清除过压记录
+            1:F:DANGP:OK
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPressureClearRecoder">
+            <summary>
+            获取DPS过压记录
+            1:F:DANGP:NoOverload
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSisDuodiannihe">
+            <summary>
+            读取dps模块是否是多点拟合
+            129:R:OPOYSAT，1多点拟合生效
+            返回0多点拟合不生效，可以为是线性插值。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSisxianxingchazhi">
+            <summary>
+            读取dps模块是否是线性插值
+            129:R:MWORK，3线性插值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSPTjieshu">
+            <summary>
+            读取dps模块压力阶数np，温度阶数nt
+            129:R:OPOYPRA
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSJZStr(System.Int32,System.Int32)">
+            <summary>
+            读取dps模块 拟合系数，压力是行，温度是列，需要按照这个格式拼矩阵
+            129:R:OPOYPRA
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDPSNHXS(System.Int32,System.Int32)">
+            <summary>
+            读取dps模块 拟合系数，压力是行，温度是列，需要按照这个格式拼矩阵
+            129:R:OPOYPRA
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPCBSystemVer">
+            <summary>
+            读取板级的版本信息，用于系统时间校准。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetDevVoice(System.Int32)">
+            <summary>
+            设置设备音量
+            </summary>
+            <param name="percentage">音量的百分比</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetDevVoice">
+            <summary>
+            获取设备音量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SendCMD(System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            发送指令，返回结果
+            </summary>
+            <param name="cmd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetATMRange">
+            <summary>
+            获取大气压模块量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetPTypeSwitch(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置表绝压切换
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetPTypeSwitch">
+            <summary>
+            查询表绝压切换
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetATM">
+            <summary>
+            读取是否支持大气压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetATM(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否支持大气压
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetWLANState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置WIFI启用禁用
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetWLANState">
+            <summary>
+            查询WIFI启用禁用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetWLANDHCP(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置DHCP启用禁用
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetWLANDHCP">
+            <summary>
+            查询DHCP启用禁用状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.SetWLANCONNect(System.String,System.String)">
+            <summary>
+            设置连接指定SSID
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetWLANCONNect">
+            <summary>
+            查询WIFI连接状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Base.GetWLANADDRess">
+            <summary>
+            查询无线IP
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.DataLoggerData">
+            <summary>
+            数据记录数据明细
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerData.DataDate">
+            <summary>
+            日期时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerData.PressureValue">
+            <summary>
+            压力值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerData.TempratureValue">
+            <summary>
+            温度值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerData.Atmosphere">
+            <summary>
+            大气压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerData.ElectricValue">
+            <summary>
+            电测值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo">
+            <summary>
+            数据记录文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.Guid">
+            <summary>
+            Guid
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.Name">
+            <summary>
+            数据名称
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.Operator">
+            <summary>
+            操作人员
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.StartTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.TriggerMode">
+            <summary>
+            触发模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.IntervalMilliSeconds">
+            <summary>
+            间隔时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.TotalSeconds">
+            <summary>
+            记录时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.Samples">
+            <summary>
+            记录点数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.ActualCount">
+            <summary>
+            实际计数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.DecimalSymbolIndex">
+            <summary>
+            小数索引
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.EFuncType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.DateFormat">
+            <summary>
+            日期格式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.TimeFormat">
+            <summary>
+            时间格式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerFileInfo.Remarks">
+            <summary>
+            备注信息
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.DataLoggerHeader">
+            <summary>
+            数据记录数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerHeader.DataDate">
+            <summary>
+            数据时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerHeader.PressureRange">
+            <summary>
+            压力范围 (0~250000)kPa,
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerHeader.Temperature">
+            <summary>
+            压力模块温度°C,
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerHeader.ElectricRange">
+            <summary>
+            电测范围 (-30~30)mA
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.DataLoggerStruct">
+            <summary>
+            数据记录整体信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerStruct.DataLoggerFileInfo">
+            <summary>
+            数据记录文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerStruct.DataLoggerHeader">
+            <summary>
+            数据记录数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerStruct.DataLoggerData">
+            <summary>
+            数据记录数据明细
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataLoggerStruct.DataLoggerImage">
+            <summary>
+            数据记录图片
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder">
+            <summary>
+            高速记录{"Guid":"419d3bdc-d60f-4f71-8794-6b74b3aa80c8",
+            "Name":"test",
+            "Operator":null,
+            "TestTimeSeconds":61,
+            "UnitID":1133,
+            "PType":0,
+            "Decimals":0,
+            "ActualCount":1794,
+            "StartPTime":"2022-03-07T10:54:54",
+            "MaxP":-11.0,
+            "MaxPTime":"2022-03-07T10:55:11",
+            "DecimalSymbolIndex":46,
+            "DateFormat":"dd-MM-yyyy",
+            "TimeFormat":"HH:mm:ss"}/// </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.Guid">
+            <summary>
+            Guid
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.Name">
+            <summary>
+            Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.Operator">
+            <summary>
+            Operator
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.TestTimeSeconds">
+            <summary>
+            TestTimeSeconds
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.UnitID">
+            <summary>
+            UnitID
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.PType">
+            <summary>
+            PType
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.Decimals">
+            <summary>
+            Decimals
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.ActualCount">
+            <summary>
+            ActualCount
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.StartPTime">
+            <summary>
+            StartPTime
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.MaxP">
+            <summary>
+            MaxP
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.MaxPTime">
+            <summary>
+            MaxPTime
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.DecimalSymbolIndex">
+            <summary>
+            DecimalSymbolIndex
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.DateFormat">
+            <summary>
+            DateFormat
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HighSpeedRecorder.TimeFormat">
+            <summary>
+            TimeFormat
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.ATMCalibrationType">
+            <summary>
+            大气压校准类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ATMCalibrationType.TwoPoint">
+            <summary>
+            两点
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ATMCalibrationType.Excursion">
+            <summary>
+            偏移
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.HartProcessItem">
+            <summary>
+            HART过程项
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.UnKnown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.PV">
+            <summary>
+            主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.AO">
+            <summary>
+            模拟电流值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.Percent">
+            <summary>
+            量程百分比
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.SV">
+            <summary>
+            第二主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.TV">
+            <summary>
+            第三主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.FV">
+            <summary>
+            第四主变量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.HartProcessItem.LoopCurrent">
+            <summary>
+            环路电流
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.CompanyName">
+            <summary>
+            公司名称
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CompanyName.Unknow">
+            <summary>
+            未知公司
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CompanyName.ConST">
+            <summary>
+            ConST
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CompanyName.Additel">
+            <summary>
+            Additel
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.DataManagerType">
+            <summary>
+            数据管理类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.LeakTest">
+            <summary>
+            泄漏测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.SnapShot">
+            <summary>
+            快照
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.DataLogger">
+            <summary>
+            数据记录
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.METHanedetector">
+            <summary>
+            甲烷浓度测试  暂未启用启用需要讨论
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.SPHYgmomanoter">
+            <summary>
+            血压计  暂未启用启用需要讨论
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.PSVTest">
+            <summary>
+            安全阀测试 暂未启用启用需要讨论
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.HighSpeedRecorder">
+            <summary>
+            快速记录
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.DataManagerType.QUICKtest">
+            <summary>
+            任务
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.ElectricalCalItem">
+            <summary>
+            电测校准项
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ElectricalCalItem.I">
+            <summary>
+            电流
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ElectricalCalItem.V">
+            <summary>
+            电压
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.ExternalModuleType">
+            <summary>
+            外部模块类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ExternalModuleType.NULL">
+            <summary>
+            无
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ExternalModuleType.WLAN">
+            <summary>
+            WIFI
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ExternalModuleType.SERIALPORT">
+            <summary>
+            RS232
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.FileType">
+            <summary>
+            数据管理类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FileType.Data">
+            <summary>
+            数据文件
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FileType.Image">
+            <summary>
+            图片文件
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PowerOnOFFType">
+            <summary>
+            电源通断类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PowerOnOFFType.V255V">
+            <summary>
+            ±2.55V
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PowerOnOFFType.CDP">
+            <summary>
+            CDP模块
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PowerOnOFFType.BackLight">
+            <summary>
+            液晶背光
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.RangeUnit">
+            <summary>
+            DPS模块的压力单位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.RangeUnit.NC">
+            <summary>
+            无单位
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.UserCalibrationData">
+            <summary>
+            用户校准数据
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.UserCalibrationData.CalDate">
+            <summary>
+            校准日期
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.UserCalibrationData.CalDatas">
+            <summary>
+            校准数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.UserCalibrationPoint">
+            <summary>
+            用户校准点数据
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.UserCalibrationPoint.Index">
+            <summary>
+            索引
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.UserCalibrationPoint.ReferencePressure">
+            <summary>
+            标准压力值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.UserCalibrationPoint.ActualPressure">
+            <summary>
+            实测压力值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.BatteryInformation">
+            <summary>
+            电池信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.BatteryInformation.CurrentEnergy">
+            <summary>
+            当前电池电量
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.BatteryInformation.TotalEnergy">
+            <summary>
+            电池总电量
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.BatteryInformation.Voltage">
+            <summary>
+            电池电压
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.BatteryInformation.Current">
+            <summary>
+            电流
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.ProgramFunction">
+            <summary>
+            工装使用进行屏幕坏点、触摸屏、扬声器自检程序功能
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ProgramFunction.TestMainInterface">
+            <summary>
+            测试主界面
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ProgramFunction.BadPixel">
+            <summary>
+            屏幕坏点检查
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ProgramFunction.Touch">
+            <summary>
+            屏幕触摸测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ProgramFunction.Speaker">
+            <summary>
+            扬声器测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ProgramFunction.ScreenBrightness">
+            <summary>
+            屏幕亮度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ProgramFunction.KeyTest">
+            <summary>
+            按键测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SearchState.Start">
+            <summary>
+            开始搜索
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SearchState.Stop">
+            <summary>
+            停止搜索
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SearchState.Zero">
+            <summary>
+            只搜索0地址
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.SupplyMode">
+            <summary>
+            供电模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SupplyMode.IPIR">
+            <summary>
+            内部电源内部电阻
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SupplyMode.EPER">
+            <summary>
+            外部电源外部电阻
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SupplyMode.EPIR">
+            <summary>
+            外部电源内部电阻
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SupplyMode.IPER">
+            <summary>
+            内部电源外部电阻
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SupplyMode.Unknow">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.SwitchGear">
+            <summary>
+            开关挡位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SwitchGear.Mechanical">
+            <summary>
+            机械开关
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SwitchGear.NPN">
+            <summary>
+            NPN开关
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.SwitchGear.PNP">
+            <summary>
+            PNP开关
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.Root">
+            <summary>
+            JSON数据的实体结构
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.Guid">
+            <summary>
+            Guid
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.Name">
+            <summary>
+            数据名称
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.Operator">
+            <summary>
+            操作人员
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.StartTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.TriggerMode">
+            <summary>
+            触发模式
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.IntervalMilliSeconds">
+            <summary>
+            间隔时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.TotalSeconds">
+            <summary>
+            记录时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.Samples">
+            <summary>
+            记录点数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.ActualCount">
+            <summary>
+            实际计数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.EFuncType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Root.DataItem">
+            <summary>
+            数据信息
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.DataItem">
+            <summary>
+            数据元素
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.DataItem.DataDate">
+            <summary>
+            数据时间
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.DataItem.PressureRange">
+            <summary>
+            压力范围
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.DataItem.ElectricRange">
+            <summary>
+            电测范围
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.DataItem.PressureValue">
+            <summary>
+            压力值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.DataItem.ElectricValue">
+            <summary>
+            电测值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.FeatureItem">
+            <summary>
+            设备支持功能
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FeatureItem.ALL">
+            <summary>
+            ALL
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FeatureItem.HART">
+            <summary>
+            HART
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FeatureItem.TASK">
+            <summary>
+            TASK
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FeatureItem.Electric">
+            <summary>
+            Electric
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FeatureItem.BLE">
+            <summary>
+            BLE
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FeatureItem.DataLogger">
+            <summary>
+            数据记录
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PressureResolution">
+            <summary>
+            压力显示分辨率
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureResolution.One">
+            <summary>
+            1
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureResolution.Two">
+            <summary>
+            2
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureResolution.Three">
+            <summary>
+            3
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureResolution.Four">
+            <summary>
+            4
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureResolution.Five">
+            <summary>
+            5
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureResolution.Six">
+            <summary>
+            6
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.ScaleStruct">
+            <summary>
+            比例缩放结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleStruct.ScaleFunction">
+            <summary>
+            转换函数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleStruct.InputLower">
+            <summary>
+            输入下限
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleStruct.InputUpper">
+            <summary>
+            输入上限
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleStruct.OutputLower">
+            <summary>
+            输出下限
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleStruct.OutputUpper">
+            <summary>
+            输出上限
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleStruct.OutputUnit">
+            <summary>
+            输出单位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleStruct.OutputDigits">
+            <summary>
+            输出量程小数位数
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.ScaleFunction">
+            <summary>
+            比例缩放转换函数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleFunction.Linear">
+            <summary>
+            Linear
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleFunction.SquareRoot">
+            <summary>
+            SquareRoot
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ScaleFunction.Square">
+            <summary>
+            Square
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.FilterStruct">
+            <summary>
+            滤波结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FilterStruct.FilterMode">
+            <summary>
+            滤波模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FilterStruct.FilterCoefficient">
+            <summary>
+            滤波系数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FilterStruct.RemoveExtremumLogarithm">
+            <summary>
+            去极值对数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FilterStruct.FilterWindowSize">
+            <summary>
+            滤波窗口大小
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.FilterMode">
+            <summary>
+            滤波模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FilterMode.FIRST_ORDER">
+            <summary>
+            一阶滤波
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.FilterMode.AVERAGE">
+            <summary>
+            平均值滤波
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.MeasureStruct">
+            <summary>
+            测量结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.IsCal">
+            <summary>
+            是否是CAL
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.MeasureItem">
+            <summary>
+            测量项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.MeasureValue">
+            <summary>
+            测量值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.MeasureUnit">
+            <summary>
+            测量单位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.SingleCorrect">
+            <summary>
+            单点修正后的值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.MultipleCorrect">
+            <summary>
+            多点修正后的值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.LinearCorrect">
+            <summary>
+            线性修正后的值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.OriginalValue">
+            <summary>
+            原始值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureStruct.SwitchGear">
+            <summary>
+            开关挡位
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.ModuleCommand">
+            <summary>
+            转发模块结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ModuleCommand.CommandModule">
+            <summary>
+            模块类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ModuleCommand.CommandType">
+            <summary>
+            命令类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ModuleCommand.CommandParam">
+            <summary>
+            命令参数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ModuleCommand.ResponseStr">
+            <summary>
+            返回字符串
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.ModuleCommand.ValueAndUnit">
+            <summary>
+            值和单位
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.CommandModule">
+            <summary>
+            模块类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CommandModule.InnerModule">
+            <summary>
+            内置模块
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CommandModule.AtmModule">
+            <summary>
+            大气压模块
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.CommandType">
+            <summary>
+            命令类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CommandType.R">
+            <summary>
+            读指令
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CommandType.W">
+            <summary>
+            写指令
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.CommandParam">
+            <summary>
+            命令参数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CommandParam.OTYPE">
+            <summary>
+            大气压模块编号
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.CommandParam.MRMD">
+            <summary>
+            大气压传感器值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PressureStruct">
+            <summary>
+            压力结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStruct.PressureStructType">
+            <summary>
+            压力结构类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStruct.PressureType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStruct.Pressure">
+            <summary>
+            压力值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStruct.AtmPressure">
+            <summary>
+            大气压值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStruct.Temperature">
+            <summary>
+            温度值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStruct.Electricity">
+            <summary>
+            电测值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PressureStructType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_ID">
+            <summary>
+            压力值+单位Id，
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_Name">
+            <summary>
+            压力值+单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_ID">
+            <summary>
+            压力值+大气压+单位Id
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_Name">
+            <summary>
+            压力值+大气压+单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_Default">
+            <summary>
+            压力值 + 大气压（默认当前单位）
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_T_E_ID">
+            <summary>
+            压力值+温度+电测+单位Id
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_T_E_Name">
+            <summary>
+            压力值+温度+电测+单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_E_ID">
+            <summary>
+            压力值+大气压+电测+单位Id
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_E_Name">
+            <summary>
+            压力值+大气压+电测+单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_T_ID">
+            <summary>
+            压力值+大气压+压力单位Id+温度+温度单位id
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_T_Name">
+            <summary>
+            压力值+大气压+压力单位Name+温度+温度单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_T_E_ID">
+            <summary>
+            压力值+大气压+压力单位Id+温度+温度单位id+电测+电测单位Id
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PressureStructType.P_A_T_E_Name">
+            <summary>
+            压力值+大气压+压力单位Name+温度+温度单位Name+电测+电测单位Name
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.VersionType">
+            <summary>
+            版本类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.VersionType.APPLication">
+            <summary>
+            主程序版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.VersionType.OS_FIRMware">
+            <summary>
+            操作系统固件版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.VersionType.OS_HARDware">
+            <summary>
+            操作系统硬件版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.VersionType.WIFI_FIRMware">
+            <summary>
+            WIFI版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.VersionType.BT_FIRMware">
+            <summary>
+            蓝牙版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.VersionType.HART_DD">
+            <summary>
+            HARTDD文件版本
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.MeasureItem">
+            <summary>
+            测量项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureItem.UnKnown">
+            <summary>
+            未知测量项目
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureItem.I">
+            <summary>
+            电流
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureItem.V">
+            <summary>
+            电压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureItem.T">
+            <summary>
+            温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureItem.S">
+            <summary>
+            开关
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.MeasureItem.H">
+            <summary>
+            HART
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PressureIntegral">
+            <summary>
+            压力
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PressureIntegral.Value">
+            <summary>
+            值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PressureIntegral.PressureType">
+            <summary>
+            压力单位
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PressureIntegral.Unit">
+            <summary>
+            压力单位
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PressureIntegral.Empty">
+            <summary>
+            空数据
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.#ctor(System.Double,Xmas11.Domain.Unit)">
+            <summary>
+            压力构造
+            </summary>
+            <param name="value">值</param>
+            <param name="unit">PressureUnitCollection中的压力单位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.#ctor(System.Double,Xmas11.Domain.Unit,Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            压力构造
+            </summary>
+            <param name="value">值</param>
+            <param name="unit">PressureUnitCollection中的压力单位</param>
+            <param name="pressureType">压力类型</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_Inequality(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_LessThan(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_LessThanOrEqual(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_Equality(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_GreaterThan(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_GreaterThanOrEqual(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_Subtraction(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.op_Addition(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="left"></param>
+             <param name="right"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.Abs(Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.CompareTo(System.Object)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.CompareTo(Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.Equals(Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+             <summary>
+            
+             </summary>
+             <param name="obj"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.Equals(System.Object)">
+             <summary>
+            
+             </summary>
+             <param name="obj"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.GetHashCode">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.IsEmpty">
+            <summary>
+            判断是否为空
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.IsEmpty(Xmas11.Comm.Devices.PGC2.PressureIntegral)">
+            <summary>
+            判断是否为空
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.Parse(System.String,System.String)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.Parse(System.Double,System.String)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.Parse(System.String,Xmas11.Domain.Unit)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.Parse(System.Double,Xmas11.Domain.Unit)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.ToString">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.ToString(System.IFormatProvider)">
+             <summary>
+            
+             </summary>
+             <param name="provider"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.ToString(System.String)">
+             <summary>
+            
+             </summary>
+             <param name="format"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.ToString(System.String,System.IFormatProvider)">
+             <summary>
+            
+             </summary>
+             <param name="format"></param>
+             <param name="provider"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.TryParse(System.String,System.String,Xmas11.Comm.Devices.PGC2.PressureIntegral@)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <param name="result"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.TryParse(System.Double,System.String,Xmas11.Comm.Devices.PGC2.PressureIntegral@)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <param name="result"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.TryParse(System.String,Xmas11.Domain.Unit,Xmas11.Comm.Devices.PGC2.PressureIntegral@)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <param name="result"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.TryParse(System.Double,Xmas11.Domain.Unit,Xmas11.Comm.Devices.PGC2.PressureIntegral@)">
+             <summary>
+            
+             </summary>
+             <param name="value"></param>
+             <param name="unit"></param>
+             <param name="result"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.ToUnit(Xmas11.Domain.Unit)">
+            <summary>
+            压力转换
+            </summary>
+            <param name="unit">新压力单位</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2.PressureIntegral.ConvertTo(Xmas11.Comm.Devices.PGC2.PressureIntegral,Xmas11.Domain.Unit)">
+            <summary>
+            压力转换
+            </summary>
+            <param name="oldValue">压力值</param>
+            <param name="unit">新压力单位</param>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.Data.Structs.PTJS">
+            <summary>
+            压力阶数，温度阶数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Data.Structs.PTJS.PJS">
+            <summary>
+            压力阶数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Data.Structs.PTJS.TJS">
+            <summary>
+            温度阶数
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.Data.Structs.PTJZ">
+            <summary>
+            压力阶数1行，温度阶数多列
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.Data.Structs.PTJZ.TJZ">
+            <summary>
+            温度多列
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.LeakTestData">
+            <summary>
+            泄漏测试数据明细
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestData.DataDate">
+            <summary>
+            日期时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestData.PressureValue">
+            <summary>
+            压力值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestData.TemperatureValue">
+            <summary>
+            温度值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestData.Atmosphere">
+            <summary>
+            大气压
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo">
+            <summary>
+            泄漏测试文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.Guid">
+            <summary>
+            GUID
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.Name">
+            <summary>
+            文件名称
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.Operator">
+            <summary>
+            操作者
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.WaitTimeSeconds">
+            <summary>
+            等待时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.TestTimeSeconds">
+            <summary>
+            运行时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.UnitID">
+            <summary>
+            压力单位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.PType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.Decimals">
+            <summary>
+             小数位数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.TUnitId">
+            <summary>
+            温度单位ID
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.TDecimals">
+            <summary>
+            温度小数位数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.ActualCount">
+            <summary>
+            记录点数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.DecimalSymbolIndex">
+            <summary>
+            小数类型索引
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.StartP">
+            <summary>
+            起始压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.StartT">
+            <summary>
+            起始温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.StartPTime">
+            <summary>
+            起始压力时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.EndP">
+            <summary>
+            结束压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.EndT">
+            <summary>
+            结束温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.EndPTime">
+            <summary>
+            结束压力时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.MinP">
+            <summary>
+            最小压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.MinT">
+            <summary>
+            最小温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.MinPTime">
+            <summary>
+            最小压力时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.MaxP">
+            <summary>
+            最大压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.MaxT">
+            <summary>
+            最大温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.MaxPTime">
+            <summary>
+            最大压力时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.DateFormat">
+            <summary>
+            日期格式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.TimeFormat">
+            <summary>
+            时间格式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestFileInfo.Remarks">
+            <summary>
+            备注信息
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.LeakTestHeader">
+            <summary>
+            泄漏测试数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestHeader.DataDate">
+            <summary>
+            日期时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestHeader.PressureRange">
+            <summary>
+            压力范围 (0~250000)kPa,
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestHeader.Temperature">
+            <summary>
+            环境温度
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.LeakTestStruct">
+            <summary>
+            泄漏测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestStruct.LeakTestFileInfo">
+            <summary>
+            泄漏测试文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestStruct.LeakTestHeader">
+            <summary>
+            泄漏测试数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestStruct.LeakTestData">
+            <summary>
+            泄漏测试数据明细
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.LeakTestStruct.LeakTestImage">
+            <summary>
+            泄露测试图片
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.IntervalMilliseconds">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.TestTimeSeconds">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.RelativeTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.Operator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.Note">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.PressureType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.IsEnvironmentalTemperature">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.IsAtmosphericPressure">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.PressureUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.TemperatureUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.ElectricalChannelType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.DigitalPressureCalibratorStartLogger.HARTType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.HARTProcessType">
+            <summary>
+            Hart变送器主变量类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.HARTProcessType.HART_PROCESS_TYPE_NONE">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.HARTProcessType.HART_PROCESS_TYPE_PV">
+            <summary>
+            PV
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.HARTProcessType.HART_PROCESS_TYPE_AO">
+            <summary>
+            AO
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.HARTProcessType.HART_PROCESS_TYPE_PERCENT">
+            <summary>
+            百分比
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.HARTProcessType.HART_PROCESS_TYPE_LOOP">
+            <summary>
+            环路电流
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.PressureType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.PressureType.PRESSURE_TYPE_GAUGE">
+            <summary>
+            表压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.PressureType.PRESSURE_TYPE_ABSOLUTE">
+            <summary>
+            绝压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.PressureType.PRESSURE_TYPE_DIFFERENTIAL">
+            <summary>
+            差压
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.ChannelType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_UNKNOWN">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_PRESSURE">
+            <summary>
+            压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_ENV_TEMPERATURE">
+            <summary>
+            环境温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_ATM">
+            <summary>
+            大气压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_MA">
+            <summary>
+            mA
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_V">
+            <summary>
+            测量:V
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_SWITCH">
+            <summary>
+            开关
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_HART">
+            <summary>
+            HART
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_EXTA_PRESSURE">
+            <summary>
+            外接压力模块A
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_EXTB_PRESSURE">
+            <summary>
+            外接压力模块B
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_TEMPERATURE">
+            <summary>
+            温度通道
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_HUMIDITY">
+            <summary>
+            湿度通道
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_WIND_SPEED">
+            <summary>
+            风速
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_VOLUME_FLOW">
+            <summary>
+            体积流量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_TC">
+            <summary>
+            TC
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_RTD">
+            <summary>
+            RTD
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_CO2">
+            <summary>
+            二氧化碳浓度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_DIFF_PRESSURE">
+            <summary>
+            差压通道
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_EXT_TEMPERATURE">
+            <summary>
+            外接温度标准
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_HZ">
+            <summary>
+            频率
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_PULSE">
+            <summary>
+            脉冲
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_MV">
+            <summary>
+            mV
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_AC_V">
+            <summary>
+            交流电压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_RESISTANCE">
+            <summary>
+            电阻
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_THERMISTOR">
+            <summary>
+            热敏电阻
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelType.CHANNEL_TYPE_PERCENTAGE">
+            <summary>
+            百分比
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.LiveData">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.version">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.device_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.power">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.atmosphere">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.electric_channel">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.pressure_channel">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.running_test">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.screen_locked">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.is_usb_online">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.data_logger_running">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.data_logger_count">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.LiveData.data_logger_startTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.Power">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Power.online">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Power.capacity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.Atmosphere">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Atmosphere.pressure">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Atmosphere.temperature">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.Channel">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Channel.online">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Channel.measurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.ChannelMeasurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.ChannelMeasurement.type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.ElectricMeasurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.ElectricMeasurement.enable24V">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.measurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.range">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.state">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.stable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.is_scale_enable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.scale_text">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.scale_unit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.is_peak_enable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.peak_max">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.peak_min">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.is_filter_enable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.GeneralMeasurement.peak_avg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.SwitchMeasurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchMeasurement.switch_type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchMeasurement.state">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchMeasurement.actions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.connected">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.measurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.unit_name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.range">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.state">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.loop_current">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.loop_current_accuracy">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.HartMeasurement.device_type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.SwitchAction">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchAction.state">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchAction.value">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchAction.unit_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchAction.accuracy">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchAction.absolute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.SwitchAction.unit_name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.Measurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Measurement.value">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Measurement.unit_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Measurement.accuracy">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.Measurement.width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.measurement">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.range">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.state">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.stable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.absolute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.unit_name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.is_stable_enable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.is_peak">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.peak_max">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.peak_min">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.is_filter_enable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.is_tare_enable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.tare_value">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.is_alarm_open">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.PGC2.PB.PressureMeasurement.peak_avg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.ChannelFunctionType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelFunctionType.Measure_Voltage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelFunctionType.Measure_Current">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelFunctionType.Measure_Switch">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelFunctionType.Measure_HART">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelFunctionType.Pressure_IPM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.ChannelFunctionType.Pressure_AT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PB.RunningTask">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.RunningTask.unknown">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.RunningTask.None">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.RunningTask.App_Datalogger">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.RunningTask.App_LeakTest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PB.RunningTask.App_PSV">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestData">
+            <summary>
+            安全阀测试数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestData.DataDate">
+            <summary>
+            日期时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestData.PressureValue">
+            <summary>
+            压力值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestFileInfo">
+            <summary>
+            PSV文件信息
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestHeader">
+            <summary>
+            安全阀测试数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestHeader.DataDate">
+            <summary>
+            日期时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestHeader.PressureRange">
+            <summary>
+            压力范围 (0~250000)kPa,
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestStruct">
+            <summary>
+            安全阀测试文件结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestStruct.PSVTestFileInfo">
+            <summary>
+            安全阀测试文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestStruct.PSVTestHeader">
+            <summary>
+            安全阀测试数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestStruct.PSVTestData">
+            <summary>
+            安全阀测试数据明细
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.PSVTest.PSVTestStruct.PSVTestImage">
+            <summary>
+            安全阀测试图片
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTType">
+            <summary>
+            被检类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTType.PressureGauge">
+            <summary>
+            压力表
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTType.PressureTransmitter">
+            <summary>
+            压力变送器
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTType.PressureSwitch">
+            <summary>
+            压力开关
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestData">
+            <summary>
+            任务数据明细
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestData.Input">
+            <summary>
+            输入
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestData.Output">
+            <summary>
+            输出
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestData.Error">
+            <summary>
+            误差
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo">
+            <summary>
+            被检结果信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUTHeader">
+            <summary>
+            被检结果信息标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUTData">
+            <summary>
+            被检结果信息数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUT">
+            <summary>
+            被检信息结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUT.Tolerance">
+            <summary>
+            允许误差
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUT.MaxError">
+            <summary>
+            最大误差
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUT.Category">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUT.SetpointDeviation">
+            <summary>
+            设定点偏差
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestDUTInfo.QuickTestDUT.RepeatabilityDeviation">
+            <summary>
+            重复性误差
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo">
+            <summary>
+            任务文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo.ID">
+            <summary>
+            GUID
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo.Name">
+            <summary>
+            文件名称
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo.SN">
+            <summary>
+            序列号
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo.Category">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo.Operator">
+            <summary>
+            操作者
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo.ExecuteDateTime">
+            <summary>
+            执行日期
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestFileInfo.DecimalSymbolIndex">
+            <summary>
+            小数类型索引
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestHeader">
+            <summary>
+            任务数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestHeader.Input">
+            <summary>
+            输入
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestHeader.Output">
+            <summary>
+            输出
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestHeader.Error">
+            <summary>
+            误差
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestStruct">
+            <summary>
+            任务
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestStruct.QuickTestData">
+            <summary>
+            任务数据明细
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestStruct.QuickTestFileInfo">
+            <summary>
+            任务文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestStruct.QuickTestHeader">
+            <summary>
+            任务数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestStruct.QuickTestTaskInfo">
+            <summary>
+            任务信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestStruct.QuickTestDUTInfo">
+            <summary>
+            被检信息
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo">
+            <summary>
+            任务信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTaskHeader">
+            <summary>
+            任务信息标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTaskData">
+            <summary>
+            任务信息数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTask">
+            <summary>
+            任务信息结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTask.Name">
+            <summary>
+            文件名称
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTask.SN">
+            <summary>
+            序列号
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTask.Operator">
+            <summary>
+            操作者
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTask.ExecuteDateTime">
+            <summary>
+            执行日期
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTask.Temperature">
+            <summary>
+            环境温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.PGC2.QuickTest.QuickTestTaskInfo.QuickTestTask.Humidity">
+            <summary>
+            环境湿度
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2.SnapShotStruct">
+            <summary>
+            快照信息
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.PGC2Device">
+            <summary>
+            P22设备通讯库
+            ConST283 智能数字压力校验仪 ||  ADT673 Advanced Digital Pressure Calibrator 通讯库基类
+            ConST228 智能数字压力表 ||  ADT686 Advanced Digital Pressure Gauge 通讯库基类
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Device.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Device.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Device.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Device.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Device.#ctor(System.UInt16,System.UInt16,System.String)">
+            <summary>
+            构造函数（USB通讯方式适用）
+            </summary>
+            <param name="vid"></param>
+            <param name="pid"></param>
+            <param name="location"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Device.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.PGC2Device.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+    </members>
+</doc>

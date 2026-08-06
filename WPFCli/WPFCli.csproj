@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>testrig-cli</ToolCommandName>
+    <PackageId>TestRigCli</PackageId>
+    <Version>2.0.0</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <Description>TestRig CLI - 动态测试工装构建工具：拷贝模板/替换占位符/编译/Obfuscar 混淆/Inno Setup 打包</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\Template\**\*"
+             Exclude="..\Template\**\bin\**;..\Template\**\obj\**;..\Template\**\.git\**;..\Template\**\.vs\**;..\Template\Common\src\libs\DeviceLink\tests\**;..\Template\Common\src\libs\DeviceLink\docs\**">
+      <Link>Template\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>false</Pack>
+    </Content>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

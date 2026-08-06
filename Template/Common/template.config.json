@@ -1,0 +1,4 @@
+{
+  "description": "公共骨架（所有业务共用，自动合入）",
+  "businessType": "common"
+}

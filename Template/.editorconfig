@@ -1,0 +1,91 @@
+# TESTRIG 测试平台编码规范机检配置（配套 docs/CSharp编码规范.md）
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,xml,csproj,props,targets}]
+indent_size = 2
+
+[*.cs]
+# ---- using 排序：System 在前 ----
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# ---- 文件范围 namespace ----
+csharp_style_namespace_declarations = file_scoped:warning
+
+# ---- 大括号：控制流一律带大括号 ----
+csharp_prefer_braces = true:warning
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+
+# ---- 表达式体：方法/构造函数禁用；属性/索引器/访问器允许 ----
+csharp_style_expression_bodied_methods = false:warning
+csharp_style_expression_bodied_constructors = false:warning
+csharp_style_expression_bodied_operators = false:warning
+csharp_style_expression_bodied_local_functions = false:warning
+csharp_style_expression_bodied_properties = true:silent
+csharp_style_expression_bodied_indexers = true:silent
+csharp_style_expression_bodied_accessors = true:silent
+
+# ---- var 使用：类型明显时用 var（仅提示，不强改） ----
+csharp_style_var_when_type_is_apparent = true:silent
+csharp_style_var_for_built_in_types = false:silent
+csharp_style_var_elsewhere = false:silent
+
+# ---- 不强制主构造函数（保留显式字段 + 构造函数写法） ----
+csharp_style_prefer_primary_constructors = false:silent
+
+# ---- 其它风格 ----
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+csharp_prefer_simple_using_statement = true:suggestion
+
+# ================= 命名规则 =================
+# 接口 I 前缀
+dotnet_naming_rule.interfaces_should_be_ipascal.severity = warning
+dotnet_naming_rule.interfaces_should_be_ipascal.symbols = interface_symbol
+dotnet_naming_rule.interfaces_should_be_ipascal.style = ipascal_style
+dotnet_naming_symbols.interface_symbol.applicable_kinds = interface
+dotnet_naming_style.ipascal_style.capitalization = pascal_case
+dotnet_naming_style.ipascal_style.required_prefix = I
+
+# 类型/方法/属性 PascalCase
+dotnet_naming_rule.types_pascal.severity = warning
+dotnet_naming_rule.types_pascal.symbols = type_member_symbol
+dotnet_naming_rule.types_pascal.style = pascal_style
+dotnet_naming_symbols.type_member_symbol.applicable_kinds = class,struct,enum,property,method,event,namespace,delegate
+dotnet_naming_style.pascal_style.capitalization = pascal_case
+
+# 私有字段 _camelCase
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_rule.private_fields_underscore.symbols = private_field_symbol
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_style
+dotnet_naming_symbols.private_field_symbol.applicable_kinds = field
+dotnet_naming_symbols.private_field_symbol.applicable_accessibilities = private
+dotnet_naming_style.underscore_camel_style.capitalization = camel_case
+dotnet_naming_style.underscore_camel_style.required_prefix = _
+
+# 常量 PascalCase
+dotnet_naming_rule.constants_pascal.severity = warning
+dotnet_naming_rule.constants_pascal.symbols = constant_symbol
+dotnet_naming_rule.constants_pascal.style = pascal_style
+dotnet_naming_symbols.constant_symbol.applicable_kinds = field
+dotnet_naming_symbols.constant_symbol.required_modifiers = const
+
+# 私有 static readonly 字段 PascalCase（与 const 一致；required_modifiers=static,readonly
+# 更具体，覆盖上面的私有字段 _ 规则，且不影响实例 readonly 字段如 _logger）
+dotnet_naming_rule.static_readonly_pascal.severity = warning
+dotnet_naming_rule.static_readonly_pascal.symbols = static_readonly_symbol
+dotnet_naming_rule.static_readonly_pascal.style = pascal_style
+dotnet_naming_symbols.static_readonly_symbol.applicable_kinds = field
+dotnet_naming_symbols.static_readonly_symbol.applicable_accessibilities = private
+dotnet_naming_symbols.static_readonly_symbol.required_modifiers = static,readonly

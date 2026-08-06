@@ -1,0 +1,3436 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xmas11.Comm.Devices.DPG2</name>
+    </assembly>
+    <members>
+        <member name="T:Xmas11.Comm.Devices.DPG2SCPIBase">
+            <summary>
+            221SCPI指令库
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2SCPIBase.FW_IPM">
+            <summary>
+            模块（转发）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2SCPIBase.FW_SPM">
+            <summary>
+            仪表本身（转发）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2SCPIBase.Address">
+            <summary>
+            通讯地址，范围0~255，默认地址255
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2SCPIBase.WriteTimeOut">
+            <summary>
+            执行无无返回指令等待时间(指令较长蓝牙需分包发送，写入速度比串口慢)
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.#ctor(System.UInt16,System.UInt16,System.String)">
+            <summary>
+            构造函数（USB通讯方式适用）
+            </summary>
+            <param name="vid"></param>
+            <param name="pid"></param>
+            <param name="location"></param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.ConstructDefaultInfo">
+            <summary>
+            配置构造函数默认信息
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.ClearRegister">
+            <summary>
+            这条命令清除下面的寄存器：标准事件寄存器；操作事件寄存器；状态字节寄存器；错误队列。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.Reset">
+            <summary>
+            主程序复位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.ShutDown">
+            <summary>
+            设备关机
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDeviceLogo">
+            <summary>
+            仪器标识查询，返回的数据分2个部分：a.产品序列号；b.软件版本号；
+            </summary>
+            <returns>产品序列号, 软件版本号 (?,DPC-EX V0.26.0.0)</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureStruct(Xmas11.Comm.Devices.DPG2.PressureStructType)">
+            <summary>
+            读取当前压力值指令
+            </summary>
+            <param name="structType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureUnit">
+            <summary>
+            读取当前压力单位
+            </summary>
+            <returns>压力单位Id,压力单位名称</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureUnit(System.String)">
+            <summary>
+            设置当前压力单位
+            </summary>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SwitchPressureUnit(Xmas11.Comm.Devices.DPG2.SwitchUnitType)">
+            <summary>
+            按照压力列表顺序向上或向下切换压力单位
+            </summary>
+            <param name="switchUnit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureType">
+            <summary>
+            读取当前压力类型（不支持表绝压切换时使用）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureType(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置当前压力类型（不支持表绝压切换时使用）
+            </summary>
+            <param name="pressureType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureTypeGaugeAbsolute">
+            <summary>
+            读取当前压力类型（支持表绝压切换时使用）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureTypeGaugeAbsolute(Xmas11.Comm.Data.Common.PressureType)">
+            <summary>
+            设置当前压力类型（支持表绝压切换时使用）
+            </summary>
+            <param name="pressureType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureModelIsOnline">
+            <summary>
+            查询压力模块是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureModuleRange(System.Boolean)">
+            <summary>
+            读取压力模块量程
+            </summary>
+            <param name="isID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPeakData">
+            <summary>
+            获取峰值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.ResetPeakData">
+            <summary>
+            复位峰值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetTareData">
+            <summary>
+            获取设备Tare值，单位固定为kPa
+            </summary>
+            <returns>去皮是否启用(0禁用或1启用), 压力去皮值, 单位id</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetTareData(Xmas11.Comm.Devices.DPG2.PressureTare)">
+            <summary>
+            设置设备Tare值
+            </summary>
+            <param name="pressure">Tare值（参考零点压力数值与单位）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAlarmData">
+            <summary>
+            获取设备Alarm报警门限
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetAlarmData(Xmas11.Comm.Devices.DPG2.PressureAlarm)">
+            <summary>
+            设置设备Alarm报警门限（上限值、下限值、单位）
+            </summary>
+            <param name="pressureAlarm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureRate">
+            <summary>
+             获取设备压力刷新速率（即测量速度，格式为“次/秒”）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureRate(Xmas11.Comm.Devices.DPG2.PressureRate)">
+            <summary>
+            设置压力测量速率
+            </summary>
+            <param name="pressureRate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PressureZero">
+            <summary>
+            压力模块清零指令
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDisplayDigit">
+            <summary>
+            获取显示位数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDisplayDigit(Xmas11.Comm.Devices.DPG2.DisplayDigit)">
+            <summary>
+            设置设备当前显示位数
+            </summary>
+            <param name="display"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureSupportUnit">
+            <summary>
+            获取设备支持的压力单位集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureSupportUnit(System.Collections.Generic.List{System.String})">
+            <summary>
+            设置单位显示列表
+            </summary>
+            <param name="lstIDs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetCustomeUnits">
+            <summary>
+            读取自定义单位列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetCustomeUnits(System.Collections.Generic.List{Xmas11.Comm.Devices.DPG2.CustomUnitStruct},Xmas11.Comm.Devices.DPG2.CustomUnitStruct)">
+            <summary>
+            设置自定义压力单位列表
+            </summary>
+            <param name="oldCUnits"></param>
+            <param name="customUnit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetFilterInfo">
+            <summary>
+            读取滤波状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetFilterInfo(Xmas11.Comm.Devices.DPG2.Data.Structs.FilterStruct)">
+            <summary>
+            设置滤波参数
+            </summary>
+            <param name="filterStruct"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetiVersion(Xmas11.Comm.Devices.DPG2.VersionType)">
+            <summary>
+            获取版本
+            </summary>
+            <param name="versionType">版本类型</param>
+            <returns>版本号</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetVersion(Xmas11.Comm.Devices.DPG2.VersionType)">
+            <summary>
+            获取版本
+            </summary>
+            <param name="versionType">版本类型</param>
+            <returns>版本号</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetErrorCount">
+            <summary>
+            查询错误队列里有多少条错误
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetErrorNext">
+            <summary>
+            查询错误队列里的下一个错误项，并从队列里删除该项。
+            错误队列可以存储20条错误信息，如果超过20条，最后一条用-350，”Queue overflow”代替。
+            系统断电或* CLS指令可以清除错误队列。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetKeyboardState">
+            <summary>
+            查询锁屏状态
+            </summary>
+            <returns> 0-不锁屏；1-锁屏</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetKeyboardState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置键盘启用状态
+            </summary>
+            <param name="state"> 0-不锁屏；1-锁屏</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.LockKeyboard">
+            <summary>
+            锁定键盘
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.UnlockKeyboard">
+            <summary>
+            解锁定键盘
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSystemDate(System.DateTime)">
+            <summary>
+            设置系统日期
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSystemDateFormat(System.Int32)">
+            <summary>
+            设置系统日期格式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSystemDateFormat">
+            <summary>
+            获取系统日期格式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSystemDate">
+            <summary>
+            获取系统日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSystemTime(System.DateTime)">
+            <summary>
+            设置系统时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSystemTime">
+            <summary>
+            获取系统时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetBackLightingInfo">
+            <summary>
+            读取系统背光配置信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetBackLightingInfo(Xmas11.Comm.Devices.DPG2.BackLightStruct)">
+            <summary>
+            设置系统背光配置信息
+            </summary>
+            <param name="backLight"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetBackLightingState">
+            <summary>
+            查询背光状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetBackLightingState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置背光状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.OpenBackLighting">
+            <summary>
+            开启背光
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.CloseBackLighting">
+            <summary>
+            关闭背光
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAutoPowerOff">
+            <summary>
+            查询自动关机时间
+            </summary>
+            <returns>时间列表序号：0|3|4|5</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetAutoPowerOff(Xmas11.Comm.Devices.DPG2.AutoPowerOff)">
+            <summary>
+            设置自动待机时间
+            </summary>
+            <param name="autoPower">时间列表序号：0|3|4|5</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetBatteryVoltage">
+            <summary>
+            电池信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSubViewDisplayInfo">
+            <summary>
+            读取主界面副值区域显示内容
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSubViewDisplayInfo(Xmas11.Comm.Devices.DPG2.SubViewType)">
+            <summary>
+            设置主界面副值区域显示内容
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDPG3SubViewDisplayInfo">
+            <summary>
+            读取主界面副值区域显示内容
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSubViewDisplayInfo(Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType)">
+            <summary>
+            设置主界面副值区域显示内容
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSubViewSupportDisplayATMInfo">
+            <summary>
+            读取ATM信息在主界面上是否显示
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSubViewSupportDisplayATMInfo(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置ATM信息在主界面上是否显示
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetLEDHome">
+            <summary>
+            读取当前显示界面是否为主界面
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetLEDHome">
+            <summary>
+            关闭LED屏幕测试界面，返回主界面
+            实际上也可用于任意情况下的返回主界面
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetTemperatureUnit">
+            <summary>
+            读取系统的温度单位
+            </summary>
+            <returns>值1：温度单位Id 值2：温度单位名称</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetTemperatureUnit(System.String)">
+            <summary>
+            设置系统的温度单位
+            </summary>
+            <param name="unit">温度单位Id或温度单位名称，自动识别</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetRSComm">
+            <summary>
+            读取（232或485）通讯参数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetRSComm(Xmas11.Comm.Devices.DPG2.BauteStruct)">
+            <summary>
+            设置（232或485）通讯参数
+            </summary>
+            <param name="baute"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDeviceHaveBLE">
+            <summary>
+            读取设备是否支持蓝牙
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetBLEState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置蓝牙状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.OpenBLE">
+            <summary>
+            打开蓝牙
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.CloseBLE">
+            <summary>
+            关闭蓝牙
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetBlueToothNameMAC">
+            <summary>
+            获取蓝牙名称+MAC地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetTouchValue">
+            <summary>
+            获取屏幕触摸的坐标值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataloggerState">
+            <summary>
+            查询数据记录状态
+            </summary>
+            <returns>0-停止记录 1-开始记录 需要再REC界面执行指令</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDataloggerState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            开始或停止数据记录
+            </summary>
+            <param name="state">0-停止记录 1-开始记录</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataloggerInterval">
+            <summary>
+            获取数据记录间隔
+            </summary>
+            <returns>单位：秒 范围（0.1~9999.9）</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDataloggerInterval(System.Double)">
+            <summary>
+            设置数据记录间隔
+            </summary>
+            <param name="interval">记录间隔</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerType">
+            <summary>
+            查询记录类型
+            </summary>
+            <returns>
+            0：记录压力 
+            1：记录压力+温度 
+            </returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDataLoggerType(Xmas11.Comm.Devices.DPG2.DataLoggerType)">
+            <summary>
+            设置记录类型
+            </summary>
+            <param name="loggerType">记录类型
+            0：记录压力 
+            1：记录压力+温度 
+            2：记录压力+大气压
+            3：记录压力+大气压+温度</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDataLoggerShow">
+            <summary>
+            设置显示记录界面
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerSpace">
+            <summary>
+            查询数据记录已占用的空间
+            </summary>
+            <returns>数据记录已占用空间百分比</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.ClearDataLogger(Xmas11.Comm.Devices.DPG2.PasswordType)">
+            <summary>
+            清除数据记录
+            </summary>
+            <param name="password">密码 3721：厂家密码 123456：用户密码</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.ClearDataLogger(System.String)">
+            <summary>
+            清除数据记录
+            </summary>
+            <param name="password">密码</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDataLoggingOverrideState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置记满覆盖开关
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggingOverrideState">
+            <summary>
+            获取记满覆盖开关
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerFileSize(System.Int32)">
+            <summary>
+            获取指定记录文件文件大小
+            </summary>
+            <param name="fileIndex">指定文件索引（0-999个记录文件）</param>
+            <returns>文件大小</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerFile">
+            <summary>
+            获取记录信息
+            </summary>
+            <returns>值1：文件起始下标  值2：文件尾后下标    值3：文件最大数量</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataloggerInfo">
+            <summary>
+            获取记录信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetFileInfo(System.Int32)">
+            <summary>
+            获取指定记录文件文件信息
+            </summary>
+            <param name="fileIndex">指定文件索引（0-999个记录文件）</param>
+            <returns>数据记录信息</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerData(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            获取数据记录数据
+            </summary>
+            <param name="fileIndex">指定文件索引</param>
+            <param name="readIndex">读取位置</param>
+            <param name="readLength">读取长度</param>
+            <returns>数据记录信息（base64编码后的字符）</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerDataByTerminator(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            增加带结束符数据记录获取指令
+            </summary>
+            <param name="fileIndex"></param>
+            <param name="readIndex"></param>
+            <param name="readLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetCurrentSourceValue(System.Double,Xmas11.Comm.Devices.DPG2.CurrentSourceType)">
+            <summary>
+            设置4～20)mA电流输出值
+            </summary>
+            <param name="value">输出值</param>
+            <param name="type">输出类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetTRANsmitterRANGe(Xmas11.Domain.Mechanics.PressureRange)">
+            <summary>
+            设置4-20mA变送器量程范围
+            </summary>
+            <param name="pressureRange"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetTRANsmitterRANGe">
+            <summary>
+            获取4-20mA变送器量程范围
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetCalculateData(Xmas11.Comm.Devices.DPG2.PasswordType)">
+            <summary>
+            获取4-20mA变送器两点校准数据
+            </summary>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetCurrentSourceTwoPointCalibrationData(Xmas11.Comm.Devices.DPG2.PasswordType,Xmas11.Comm.Devices.DPG2.CalculateDataStruct)">
+            <summary>
+            设置4-20mA变送器两点校准数据
+            </summary>
+            <param name="password"></param>
+            <param name="calData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.CancelCurrentSourceTwoPointCalibrationData(Xmas11.Comm.Devices.DPG2.PasswordType)">
+            <summary>
+            取消4-20mA变送器两点校准数据
+            </summary>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCAL_GetState">
+            <summary>
+            压力校准——读取校准状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDiagnosticIDN">
+            <summary>
+            读取设备序列号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDiagnosticIDN(System.String)">
+            <summary>
+            设置设备序列号
+            </summary>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDiagnosticModel">
+            <summary>
+            读取设备型号 主型号,子型号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDiagnosticModel(System.String)">
+            <summary>
+            设置设备类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDiagnosticTag">
+            <summary>
+            读取设备标签(Tag)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDiagnosticTag(System.String)">
+            <summary>
+            设置设备标签(Tag)
+            </summary>
+            <param name="tag">设备标签</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDiagnosticCopyright">
+            <summary>
+            读取设备版权信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDiagnosticCopyright(System.String)">
+            <summary>
+            设置设备版权信息
+            </summary>
+            <param name="copyright"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDiagnosticMFRDate">
+            <summary>
+            读取设备生产日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDiagnosticMFRDate(System.DateTime)">
+            <summary>
+            设置设备生产日期
+            </summary>
+            <param name="date"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDiagnosticLFRDate">
+            <summary>
+            读取设备出厂日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDiagnosticLFRDate(System.DateTime)">
+            <summary>
+            设置设备生产日期
+            </summary>
+            <param name="date"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.DDiagnosticSystemRestore(Xmas11.Comm.Devices.DPG2.PasswordType,System.Boolean)">
+            <summary>
+             恢复出厂设置
+            </summary>
+            <param name="password">密码：3721：删除用户数据并恢复出厂 123456：保留用户数据并恢复出厂</param>
+            <param name="isReboot">是否重启</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.DiagnosticSystemReboot(System.Int32)">
+            <summary>
+            软复位，设备复位后停留在Bootloader,参数是停留在升级状态多久
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.DiagnosticReset">
+            <summary>
+            轴向表复位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.EnterBootloader">
+            <summary>
+            进入loader
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetCanChangeAG(Xmas11.Comm.Devices.DPG2.CanUse)">
+            <summary>
+            设置是否能让用户手动切换压力类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetCanChangeAG">
+            <summary>
+            获取是否能让用户手动切换压力类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetExtendModuleEnableType(Xmas11.Comm.Devices.DPG2.ExternalModuleType)">
+            <summary>
+            设置扩展模块类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetExtendModuleEnableType">
+            <summary>
+            获取扩展模块类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDataLoggingEnableState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置数据记录功能使能状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggingEnableState">
+            <summary>
+            获取数据记录使能状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetLEDFullOpen">
+            <summary>
+            打开LED屏幕测试界面，全显示
+            进入液晶屏和实体按键测试模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetTouchOpen">
+            <summary>
+            打开屏幕触摸测试界面
+            进入触摸测试模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetBARoEepromValue">
+            <summary>
+            获取大气压板存储器自检结果
+            大气压的存储器测试
+            DIAGnostic:TEST:BARoEeprom:ECHO,OK,
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetNORFLASHValue">
+            <summary>
+            获取主板NOR-FLASH测试自检结果
+            DIAGnostic:TEST:NORFlash:ECHO,OK,
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetBuzzerOpen">
+            <summary>
+            打开蜂鸣器，连续发声
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetBuzzerClose">
+            <summary>
+            关闭蜂鸣器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetKeyDownValue">
+            <summary>
+            获取实体按键按下的值，1，2，3
+            实体按键测试模式下获取实体按键按下值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetStorageIDN">
+            <summary>
+            读取是否支持数据记录
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetStorageIDN(System.String)">
+            <summary>
+            设置是否支持数据记录
+            </summary>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.Initialize">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.Test">
+            <summary>
+            连接测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetName">
+            <summary>
+            获取设备名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSN">
+            <summary>
+            获取设备编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetiVersion">
+            <summary>
+            读取设备版本号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetVersion">
+            <summary>
+            获取版本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDPSEXVersion">
+            <summary>
+            获取附带的DPS组件的版本信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDevType">
+            <summary>
+            读取设备类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDevType(System.String)">
+            <summary>
+            设置设备类型
+            </summary>
+            <param name="type">设备类型 （注意：有些设备对写入类型有长度限制）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSerialNumber">
+            <summary>
+            读取设备编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSerialNumber(System.String)">
+            <summary>
+            设置设备编号
+            </summary>
+            <param name="code">设备编号 （注意：有些设备对写入编号有长度限制）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetManufactureDate">
+            <summary>
+            获取制造时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetManufactureDate(System.DateTime)">
+            <summary>
+            设置制造时间
+            </summary>
+            <param name="date"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetContinuousUploadState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置自动上传测量值状态
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.StartContinuousUpload">
+            <summary>
+            开始自动上传测量值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.StopContinuousUpload">
+            <summary>
+            结束自动上传测量值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetComponentSN">
+            <summary>
+            获取表头SN
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetComponentSN(System.String)">
+            <summary>
+            设置表头SN
+            </summary>
+            <param name="code">表头SN</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetLiveData">
+            <summary>
+            获取LiveData
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressure">
+            <summary>
+            获取测量压力值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetTemperature">
+            <summary>
+            获取温度
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureRange">
+            <summary>
+            获取压力量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureUnit(Xmas11.Domain.Unit)">
+            <summary>
+            设置压力单位
+            </summary>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureWorkMode(Xmas11.Comm.Data.Common.PressureWorkMode)">
+            <summary>
+            设置工作模式
+            </summary>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureMode">
+            <summary>
+            读取压力模块模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureMode(Xmas11.Comm.Devices.DPG2.Data.Enums.ReadDataMode)">
+            <summary>
+            设置压力模式
+            </summary>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_Start">
+            <summary>
+            压力校准——开始校准
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_Cal(Xmas11.Comm.Data.Common.PressureCalItem,Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            压力校准——执行校准
+            </summary>
+            <param name="item">校准项</param>
+            <param name="pressure">压力压力值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_Stop(System.Boolean)">
+            <summary>
+            压力校准——结束压力校准操作
+            </summary>
+            <param name="isSave">是否保存结果</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_SafeStopAndSave">
+            <summary>
+            压力校准——安全的保存并结束压力校准操作
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_CalLower(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            压力校准——校准下限压力（单量程，此点为零点压力数值；复合量程，此点为下限压力数值）
+            </summary>
+            <param name="p">下限压力（单量程，此点为零点压力数值；复合量程，此点为下限压力数值）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_CalMiddle(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            压力校准——校准中间点（单量程，此点不生效，不必调用此方法；复合量程，此点为零点压力数值）
+            </summary>
+            <param name="p">中间点压力（单量程，此点不生效，不必调用此方法；复合量程，此点为零点压力数值）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_CalUpper(Xmas11.Domain.Mechanics.Pressure)">
+            <summary>
+            压力校准——校准上限压力（满度）
+            </summary>
+            <param name="p">上限压力（满度）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_CancelCal">
+            <summary>
+            压力校准——取消厂家校准
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.ResumeAllPressureCalData(Xmas11.Comm.Data.Common.AllPressureCalData)">
+            <summary>
+            恢复全部校准数据（发送的指令较多，执行完毕可能需要一定时间）
+            </summary>
+            <param name="allData">全部校准数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAllPressureCalData">
+            <summary>
+            读取全部校准数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCal_GetOneData(Xmas11.Comm.Data.Common.PressureCalItem)">
+            <summary>
+            压力校准——读取压力校准某一点的数据
+            </summary>
+            <param name="item">校准项</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetContentType(System.String)">
+            <summary>
+            字符串描述存储的内容信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerFileInfo(System.Int32)">
+            <summary>
+            获取指定记录文件文件信息
+            </summary>
+            <param name="fileIndex">指定文件索引（0-999个记录文件）</param>
+            <returns>数据记录信息</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerFileData(System.Int32,Xmas11.Comm.Devices.DPG2.DataLoggerType,System.Int32,System.Int32)">
+            <summary>
+            获取指定记录数据记录数据
+            1.获取到数据总数 DataCount = fileSize / 4;
+            2.根据数据类型进行分隔 P->N=1 P_T||P_A->N=2 P_T_A->N=3 
+            </summary>
+            <param name="fileIndex"></param>
+            <param name="contentType"></param>
+            <param name="fileSize">一帧为1024字节，可以上传最大长度FileSize</param>
+            <param name="readLength">设置一帧堆区字节数</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDataLoggerFileData(System.Int32,System.Int32)">
+            <summary>
+            获取数据记录数据
+            </summary>
+            <returns>数据记录信息（base64编码后的字符）</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.isDPG2(System.String)">
+            <summary>
+            判断是否为DPG2
+            </summary>
+            <param name="versionPrefix"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSingleCalData(System.Single)">
+            <summary>
+            设置设备单点校准系数（写入系数前要清零）
+            </summary>
+            <param name="factor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetMimicPanel(Xmas11.Comm.Devices.DPG2.MimicPanelMode)">
+            <summary>
+            设置设备模拟表盘显示模式
+            </summary>
+            <param name="mode">表盘显示模式（百分比、波动、报警）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetCustomeUnit(System.Int32)">
+            <summary>
+            获取自定义单位
+            </summary>
+            <param name="unitIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetTPValue">
+            <summary>
+            获取温度和大气压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAtmValue">
+            <summary>
+            获取大气压值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAtmosPCalData">
+            <summary>
+            获取大气压校准数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCalAtmos_Cal(System.Double,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            执行大气压传感器校准——厂家校准
+            </summary>
+            <param name="point1">校准点1</param>
+            <param name="p1">标准压力1</param>
+            <param name="point2">校准点2</param>
+            <param name="p2">标准压力2</param>
+            <param name="yy">年</param>
+            <param name="mm">月</param>
+            <param name="dd">日</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.PCalAtmos_CancelCal">
+            <summary>
+            取消厂家校准
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.IsOnLine_IPM">
+            <summary>
+            内部模块是否在线
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSWState(System.Int32,System.Int32)">
+            <summary>
+            设置SW开关信号输出
+            参数1：1-第一路开关;2-第二路开关;3-第一路和第二路同时开关
+            参数2：0-低电平; 1-高电平
+            </summary>
+            <param name="whichSW">哪一路开关</param>
+            <param name="VoltageLevel">高电平还是低电平</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAutomSN">
+            <summary>
+            获取大气压板的编号
+            255:F:OTYPE:DPSEX
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetAutomSN(System.String)">
+            <summary>
+            设置大气压板的编号
+            </summary>
+            <param name="Sn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetFlashFormat">
+            <summary>
+            格式化表头的存储区域
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAutomDUALdata">
+            <summary>
+            获取大气压板的两点校准数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetVoiceCircle">
+            <summary>
+            设置音量循环模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetLineAutomDUALdata">
+            <summary>
+            获取大气压板的产线工装的两点校准数据
+            133:F:ProduceCAL:60,108.0009:60.0097,108.0465
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureSN">
+            <summary>
+            获取DPSEX的编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureCAL">
+            <summary>
+            获取DPSEX的精度等级
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureClearRecoder">
+            <summary>
+            设置DPS清除过压记录
+            1:F:DANGP:OK
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureClearRecoder">
+            <summary>
+            获取DPS清除过压记录
+            1:F:DANGP:NoOverload
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetLFD">
+            <summary>
+            读取设备出厂日期
+            20210705040504
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetLFD(System.DateTime)">
+            <summary>
+            设置出厂日期
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetComInfo">
+            <summary>
+            获取串口下的波特率
+            2,9600,8,1,0
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetComInfo(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            设置串口下的波特率
+            SYSTem:RSCOmm 2,9600,8,1,0
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetScreenConfig">
+            <summary>
+            获取表头的屏幕配置信息,1旧屏，2新屏
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetScreenConfig(System.String)">
+            <summary>
+            设置表头的屏幕配置信息,1旧屏，2新屏
+            </summary>
+            <param name="Sn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetUsbConnect">
+            <summary>
+            获取USB连接状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetModulAbsMode">
+            <summary>
+            设置为绝压模块模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetModulGageMode">
+            <summary>
+            设置为表压校准模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetModulCalMode">
+            <summary>
+            获取模块校准模式 1绝压模式 0表压模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetResolutionFunction">
+            <summary>
+            获取设置分辨率功能开启状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.RestoreATMUserCalibrationData">
+            <summary>
+            取消用户校准数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetATMMultiPointUserCalibrationData">
+            <summary>
+            获取用户校准数据(多点)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetATMSinglePointUserCalibrationData">
+            <summary>
+            获取用户校准数据(单点)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetATMUserCalibrationData(Xmas11.Comm.Devices.DPG2.UserCalibrationData)">
+            <summary>
+            写入用户校准数据
+            </summary>
+            <param name="calData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAtmRawValue(Xmas11.Comm.Devices.DPG2.AtmCalType)">
+            <summary>
+            用户校准时获取ATM原始值(两点校准时读取P1值，单点校准时获取P2值)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetCalReminderInfo(System.DateTime,System.DateTime)">
+            <summary>
+            设置校准日期及下次校准日期
+            </summary>
+            <param name="lastCalDate">上次校准日期（即本次校准日期）</param>
+            <param name="nextCalDate">下次校准日期</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetCalReminderInfo">
+            <summary>
+            获取校准提醒信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetATMRange">
+            <summary>
+            获取大气压模块量程
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPTypeSwitch(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置表绝压切换
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPTypeSwitch">
+            <summary>
+            查询表绝压切换
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetATM">
+            <summary>
+            读取是否支持大气压
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetATM(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否支持大气压
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPRESsureRATE(Xmas11.Comm.Devices.DPG2.RateMode,System.Int32,System.Int32)">
+            <summary>
+            设置压力测量速率
+            </summary>
+            <param name="workMode"></param>
+            <param name="second"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPRESsureRATE">
+            <summary>
+            读取压力测量速率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSystemMode(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置触屏打开关闭
+            </summary>
+            <param name="state">这里0是打开，1是关闭</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetSystemMode">
+            <summary>
+            查询触屏打开关闭状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDIAGnosticPUNItListType(System.Int32)">
+            <summary>
+            设置压力单位列表配置模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDIAGnosticPUNItListType">
+            <summary>
+            获取压力单位列表配置模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPRESsureUNITList(System.String)">
+            <summary>
+            设置压力单位列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPRESsureUNITList">
+            <summary>
+            获取压力单位列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDIAGnosticFEATureUNITname(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置单位中是否显示温度名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDIAGnosticFEATureUNITname">
+            <summary>
+            获取单位中是否显示温度名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetAUTOpoweroff(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            禁用自动关机
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetAUTOpoweroff">
+            <summary>
+            获取自动关机状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDIAGnosticFEATureLEACal(System.Int32)">
+            <summary>
+            设置泄露测试结果计算方式
+            </summary>
+            <param name="mode">1:开始压力减结束压力</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDIAGnosticFEATureLEACal">
+            <summary>
+            获取泄露测试结果计算方式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPRESsureCALWarnInfo(Xmas11.Comm.Data.Common.OpenCloseState,System.Int32,System.DateTime,System.DateTime)">
+            <summary>
+            设置下次校准信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetDIAGnosticFEATureTARE(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置TARE功能开关
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetDIAGnosticFEATureTARE">
+            <summary>
+            获取泄露测试结果计算方式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetPressureAccuracyGrade(System.Double)">
+            <summary>
+            设置压力精度等级
+            </summary>
+            <param name="accuracyGande"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetPressureAccuracyGrade">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetBLEForceState">
+            <summary>
+            获取蓝牙功能的开启与关闭
+            </summary>
+            <returns> 0-关闭；1-开启</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetBLEForceState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置蓝牙功能强制开启与关闭
+            </summary>
+            <param name="state"> 0-不锁屏；1-锁屏</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.GetBLightForceState">
+            <summary>
+            获取背光功能的开启与关闭
+            </summary>
+            <returns> 0-关闭；1-开启</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetBLightForceState(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置背光功能强制开启与关闭
+            </summary>
+            <param name="state"> 0-不锁屏；1-锁屏</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPIBase.SetSystemTimeFormat(System.Int32)">
+            <summary>
+            设置系统日期格式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DataloggerFileData">
+            <summary>
+            文件索引
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileData.PressureDatas">
+            <summary>
+            压力数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileData.TemperatureDatas">
+            <summary>
+            温度数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileData.AtmDatas">
+            <summary>
+            大气压数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DataloggerHeader">
+            <summary>
+            数据记录数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerHeader.DataHeaders">
+            <summary>
+            数据记录标题
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo">
+            <summary>
+            文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerSetVersion">
+            <summary>
+            记录设置版本号
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerDate">
+            <summary>
+            记录日期(YYYY-MM-DD)
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerTime">
+            <summary>
+            记录时间(HH-MM-SS)
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerDuration">
+            <summary>
+            记录总时间 0:无限制
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerInterval">
+            <summary>
+            记录间隔 单位：ms
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerByte">
+            <summary>
+            一个记录项目所占大小 单位：字节
+            Pressure 4字节
+            Pressure+Temperature || Pressure+Atm 8字节
+            Pressure+Atm+Temperature 12字节
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.PressureUnitID">
+            <summary>
+            压力单位id
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.ContentType">
+            <summary>
+            字符串描述存储的内容信息 ('+'分隔)
+            Pressure    压力
+            Pressure+Temperature    压力+温度
+            Pressure+Atm   压力+大气压 
+            Pressure+Atm+Temperature  压力+大气压+温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.StartFile">
+            <summary>
+            记录文件夹下的起始文件
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.EndFile">
+            <summary>
+            记录文件夹下的尾后文件（不存在）
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.Guid">
+            <summary>
+            Guid
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerStartIndex">
+            <summary>
+            文件起始下标
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerEndIndex">
+            <summary>
+            文件尾后下标
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerMaxCounts">
+            <summary>
+            文件最大数量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.FileIndex">
+            <summary>
+            记录文件大小
+            删除数据后需要更新
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.FileSize">
+            <summary>
+            记录文件大小
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerTotalTime">
+            <summary>
+            记录总时间 记录数量*记录间隔
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.LoggerSpace">
+            <summary>
+            数据记录已占用空间百分比
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.DataCounts">
+            <summary>
+            数据记录条数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.Remarks">
+            <summary>
+            备注信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.Name">
+            <summary>
+            记录名称
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.TemperatureUnitID">
+            <summary>
+            温度单位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.PressureType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.PressureDecimal">
+            <summary>
+            压力小数位数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataloggerFileInfo.OffsetAddress">
+            <summary>
+            记录数据偏移地址
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DataLoggerStruct">
+            <summary>
+            数据记录整体信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerStruct.DataLoggerFileInfo">
+            <summary>
+            数据记录文件信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerStruct.DataLoggerHeader">
+            <summary>
+            数据记录数据标题
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerStruct.DataLoggerFileData">
+            <summary>
+            数据记录整体数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerStruct.DataLoggerImage">
+            <summary>
+            数据记录图片
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.AtmCalType">
+            <summary>
+            大气压模块校准类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.AtmCalType.SinglePoint">
+            <summary>
+            单点校准
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.AtmCalType.MultiPoint">
+            <summary>
+            两点校准
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.CurrentSourceType">
+            <summary>
+            (4～20)mA电流输出类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CurrentSourceType.NoCalibration">
+            <summary>
+            无校准修正
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CurrentSourceType.AfterLinearCorrection">
+            <summary>
+            经过线性修正
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CurrentSourceType.AfterTwoPointCorrection">
+            <summary>
+            经过两点校准修正
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CurrentSourceType.AfterAllCorrection">
+            <summary>
+            经过所有修正
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DataManagerType">
+            <summary>
+            数据管理类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataManagerType.LeakTest">
+            <summary>
+            泄漏测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataManagerType.SnapShot">
+            <summary>
+            快照
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataManagerType.DataLogger">
+            <summary>
+            数据记录
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataManagerType.METHanedetector">
+            <summary>
+            甲烷浓度测试
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataManagerType.SPHYgmomanoter">
+            <summary>
+            血压计
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataManagerType.SafetyValveTest">
+            <summary>
+            安全阀测试
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType">
+            <summary>
+            副值区域显示类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.None">
+            <summary>
+            无显示
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.ATM">
+            <summary>
+            ATM
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.TARE">
+            <summary>
+            Tare
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.LEAKTEST">
+            <summary>
+            LEAKTEST
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.MAX">
+            <summary>
+            MAX
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.MIN">
+            <summary>
+            MIN
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.TIME">
+            <summary>
+            时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.TEMPERATURE">
+            <summary>
+            温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG3SubViewType.PERCENT">
+            <summary>
+            PERCENT
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG4PressureStructType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG4PressureStructType.PressureAndID">
+            <summary>
+            压力值+单位Id，
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG4PressureStructType.PressureAndName">
+            <summary>
+            压力值+单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.DPG4PressureStructType.PressureAndTempAndID">
+            <summary>
+            压力值+单位Id+温度值+单位Id
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.Data.Enums.ReadDataMode">
+            <summary>
+            读数模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.ReadDataMode.Unkown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.ReadDataMode.UserModule">
+            <summary>
+            用户模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.Data.Enums.ReadDataMode.PressureModule">
+            <summary>
+            压力模块模式
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.Data.Structs.FilterStruct">
+            <summary>
+            滤波结构
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.ExternalModuleType">
+            <summary>
+            外接模块类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.ExternalModuleType.NULL">
+            <summary>
+            无
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.ExternalModuleType.RS232">
+            <summary>
+            RS232
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.ExternalModuleType.RS485">
+            <summary>
+            RS485
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.ExternalModuleType.MA4_20">
+            <summary>
+            4～20mA输出
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.ExternalModuleType.SW_2">
+            <summary>
+            两路开关输出
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.ExternalModuleType.RS232And2SW">
+            <summary>
+            RS232和两路开关输出
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.ExternalModuleType.RS485And2SW">
+            <summary>
+            RS485和两路开关输出
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.CanUse">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CanUse.No">
+            <summary>
+            禁用
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CanUse.Yes">
+            <summary>
+            启用
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CanUse.UnKnow">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.FileType">
+            <summary>
+            数据管理类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.FileType.Data">
+            <summary>
+            数据文件
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.FileType.Image">
+            <summary>
+            图片文件
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.MimicPanelMode">
+            <summary>
+            模拟表盘显示模式枚举
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.MimicPanelMode.None">
+            <summary>
+            无操作
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.MimicPanelMode.Percent">
+            <summary>
+            压力百分比显示模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.MimicPanelMode.Swing">
+            <summary>
+            压力波动显示模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.MimicPanelMode.Alarm">
+            <summary>
+            压力报警显示模式
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PasswordType">
+            <summary>
+            密码类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PasswordType.FACTORY">
+            <summary>
+            厂家标准 3721
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PasswordType.USER">
+            <summary>
+            用户标准 123456
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DataLoggerType">
+            <summary>
+            记录类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerType.UnKown">
+            <summary>
+            未知类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerType.Logger_P">
+            <summary>
+            记录压力
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerType.Logger_P_T">
+            <summary>
+            记录压力+温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerType.Logger_P_A">
+            <summary>
+            记录压力+大气压
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DataLoggerType.Logger_P_A_T">
+            <summary>
+            记录压力+大气压+温度
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.SubViewType">
+            <summary>
+            副值区域显示类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SubViewType.None">
+            <summary>
+            无显示
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SubViewType.ATM">
+            <summary>
+            ATM
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SubViewType.ALARM">
+            <summary>
+            Alarm
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SubViewType.TARE">
+            <summary>
+            Tare
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SubViewType.TEMPERATURE">
+            <summary>
+            温度
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SubViewType.TIME">
+            <summary>
+            时间
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DisplayDigit">
+            <summary>
+            显示位数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DisplayDigit.Unknown">
+            <summary>
+            未知类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DisplayDigit.FourDigit">
+            <summary>
+            4位显示
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DisplayDigit.FiveDigit">
+            <summary>
+            5显示
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DisplayDigit.SixDigit">
+            <summary>
+            6显示(5.5)
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PressureModuleType">
+            <summary>
+            压力模块类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureModuleType.UnKnown">
+            <summary>
+            未知类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureModuleType.CDP">
+            <summary>
+            CDP模块
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureModuleType.CDPH">
+            <summary>
+            CDPH模块
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureModuleType.DPS100">
+            <summary>
+            DPS100模块
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureModuleType.CDPR">
+            <summary>
+            CDPR模块
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.SwitchUnitType">
+            <summary>
+            切换单位类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SwitchUnitType.Downwards">
+            <summary>
+            向下切换，
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SwitchUnitType.Upwards">
+            <summary>
+            向上切换
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PressureStructType">
+            <summary>
+            压力类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStructType.PressureAndID">
+            <summary>
+            压力值+单位Id，
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStructType.PressureAndName">
+            <summary>
+            压力值+单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStructType.PressureAndAtmAndID">
+            <summary>
+            压力值+大气压+单位Id
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStructType.PressureAndAtmAndName">
+            <summary>
+            压力值+大气压+单位Name
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStructType.PressureAndAtm">
+            <summary>
+            压力值 + 大气压（默认当前单位）
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStructType.PressureAndAtmAndTemperature">
+            <summary>
+            压力值+大气压+压力单位Id+温度+温度单位id
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.VersionType">
+            <summary>
+            版本类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.VersionType.APP">
+            <summary>
+            主程序版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.VersionType.PM">
+            <summary>
+            压力模块固件版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.VersionType.BT">
+            <summary>
+            蓝牙版本
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.FaultIDConverter">
+            <summary>
+            错误码ID转换器
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.FaultIDConverter.FaultDictionary">
+            <summary>
+            DPG错误码字典
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.KeyValues">
+            <summary>
+            按键触发值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.UnKnown">
+            <summary>
+            未知按键
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.NULL">
+            <summary>
+            空值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.Zero">
+            <summary>
+            清零键
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.Units">
+            <summary>
+            单位键
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.BackLight">
+            <summary>
+            背光键
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.Peak">
+            <summary>
+            峰值键
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.AnalogueDial">
+            <summary>
+            模拟表盘键
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.KeyValues.Power">
+            <summary>
+            开关机键
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryDataInfo.ByteCount">
+            <summary>
+            总字节数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryDataInfo.PackageCount">
+            <summary>
+            总包数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryDataInfo.ItemCount">
+            <summary>
+            总记录条数
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.MemoryModuInfo">
+            <summary>
+            存储器模块信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryModuInfo.IsMemoryModuExist">
+            <summary>
+            是否存在存储器
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryModuInfo.IsMemoryModuOpen">
+            <summary>
+            是否开启存储功能
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.MemoryState">
+            <summary>
+            存储器状态
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryState.TimeSpan">
+            <summary>
+            时间间隔
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryState.ItemCount">
+            <summary>
+            存储内容条数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryState.StorgePercentage">
+            <summary>
+            已使用存储空间百分比
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.MemoryState.LogIsOpen">
+            <summary>
+            记录状态状态是否打开
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.SensorSupplyMode">
+            <summary>
+            传感器供电模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SensorSupplyMode.Continuation">
+            <summary>
+            连续供电
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SensorSupplyMode.Intermittence">
+            <summary>
+            间歇供电
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.AutoPowerOff">
+            <summary>
+            自动关机配置信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.AutoPowerOff.AutoPowerOffState">
+            <summary>
+            0-自动关机禁用，1-自动关机启用；
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.AutoPowerOff.AutoPowerOffTime">
+            <summary>
+            自动关机时间(0~5*24*60*60)S
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.BackLightStruct">
+            <summary>
+            背光信息结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BackLightStruct.BackLightState">
+            <summary>
+            背光状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BackLightStruct.BrightnessPercent">
+            <summary>
+            背光亮度百分比(0-100)
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BackLightStruct.BackLightTime">
+            <summary>
+            自动关背光时间(0~600)S
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.BatteryStruct">
+            <summary>
+            电池信息结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BatteryStruct.BatteryVoltage">
+            <summary>
+            电池电压(V)
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BatteryStruct.BatteryNumbers">
+            <summary>
+            电池电量（满格-4格，3格，2格，1格，0格）
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BatteryStruct.BatteryCapacity">
+            <summary>
+            电池电量（%）
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.BauteStruct">
+            <summary>
+            通讯参数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BauteStruct.Address">
+            <summary>
+            地址
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BauteStruct.Baute">
+            <summary>
+            波特率
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BauteStruct.DataBit">
+            <summary>
+            数据位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BauteStruct.StopBit">
+            <summary>
+            停止位
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.BauteStruct.Parity">
+            <summary>
+            奇偶校验
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.CalculateDataStruct">
+            <summary>
+            校准数据结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataStruct.CalculateDataFlag">
+            <summary>
+            数据标志
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataStruct.CalculatePointCounts">
+            <summary>
+            校准数量
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataStruct.CalculatePoints">
+            <summary>
+            校准点列表
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataStruct.StandardPoints">
+            <summary>
+            标准点列表
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataStruct.Year">
+            <summary>
+            年
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataStruct.Month">
+            <summary>
+            月
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataStruct.Day">
+            <summary>
+            日
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.CalculateDataFlag">
+            <summary>
+            数据标志
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataFlag.NoData">
+            <summary>
+            无数据
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CalculateDataFlag.HaveData">
+            <summary>
+            有数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.CalReminderInfo">
+            <summary>
+            校准提醒信息
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.CalReminderInfo.IsEnabled">
+            <summary>
+            是否开启
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.CalReminderInfo.ReminderDays">
+            <summary>
+            提醒天数（360天）
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.CalReminderInfo.LastCalDate">
+            <summary>
+            上次校准日期
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.CalReminderInfo.NextCalDate">
+            <summary>
+            下次校准日期
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.CustomUnitStruct">
+            <summary>
+            自定义压力单位列表
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CustomUnitStruct.CustomeUnitID">
+            <summary>
+            自定义单位的id，必须为负的整数，[-32767, 0]；
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CustomUnitStruct.CustomeUnitRefId">
+            <summary>
+            自定义单位的参考单位，一般设置为1133，表示参考单位为kPa；
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CustomUnitStruct.Coefficients">
+            <summary>
+            参考系数，单精度浮点数；
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CustomUnitStruct.CustomeUnitName">
+            <summary>
+            自定义单位名称，内部使用；
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.CustomUnitStruct.DisplayName">
+            <summary>
+            自定义单位显示名称，必须使用仪表上可显示的字符，否则仪表将显示不全。
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PressureRate">
+            <summary>
+            压力测量速率
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureRate.RateMode">
+            <summary>
+            工作模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureRate.RateSeconds">
+            <summary>
+            时间/秒数: (1~60)
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureRate.RateCounts">
+            <summary>
+            出数个数：(1~500)
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.RateMode">
+            <summary>
+            工作模式
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.RateMode.NormalPower">
+            <summary>
+            正常功耗
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.RateMode.LowerPower">
+            <summary>
+            低功耗
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PressureModelRange">
+            <summary>
+            压力结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureModelRange.PressureType">
+            <summary>
+            压力结构类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureModelRange.PressureRange">
+            <summary>
+            压力量程
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PressureStruct">
+            <summary>
+            压力结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStruct.PressureStructType">
+            <summary>
+            压力结构类型
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStruct.Pressure">
+            <summary>
+            压力值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStruct.AtmPressure">
+            <summary>
+            大气压值
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureStruct.Temperature">
+            <summary>
+            温度值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PressureAlarm">
+            <summary>
+            报警信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureAlarm.AlarmState">
+            <summary>
+            报警状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureAlarm.AlarmRange">
+            <summary>
+            报警阈值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.PressureTare">
+            <summary>
+            去皮信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureTare.TareState">
+            <summary>
+            去皮状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.PressureTare.TarePressure">
+            <summary>
+            去皮值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.SystemStruct">
+            <summary>
+            系统结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.Version">
+            <summary>
+            设备版本
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.ErrorInfo">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.ErrorCount">
+            <summary>
+            错误条数
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.ProductSN">
+            <summary>
+            产品序列号
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.ProductModel">
+            <summary>
+            产品型号
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.SystemTime">
+            <summary>
+            系统时间
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.BacklightStatus">
+            <summary>
+            背光状态
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.BacklightNumber">
+            <summary>
+            时间列表序号：1|2|3
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.SleepNumber">
+            <summary>
+            自动待机时间：0|3|4|5
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.SystemStruct.PowerOffNumber">
+            <summary>
+            自动关机时间：0|3|4|5
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DateTimeStruct">
+            <summary>
+            时间结构
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DateTimeStruct.Year">
+            <summary>
+            年
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DateTimeStruct.Month">
+            <summary>
+            月
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DateTimeStruct.Day">
+            <summary>
+            日
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DateTimeStruct.Hour">
+            <summary>
+            时
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DateTimeStruct.Minute">
+            <summary>
+            分
+            </summary>
+        </member>
+        <member name="F:Xmas11.Comm.Devices.DPG2.DateTimeStruct.Second">
+            <summary>
+            秒
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.UnitIDConverter">
+            <summary>
+            单位ID转换器
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UnitIDConverter.UnitStringDictionary">
+            <summary>
+            DPG2 单位字典 DPG2适用 将标准单位映射到DPG2指令集可识别的单位字串
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UnitIDConverter.UnitCodeDictionary_211H">
+            <summary>
+            211H 单位字典 211H适用 将标准单位映射到211H指令集可识别的单位ID
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UnitIDConverter.UnitCodeDictionary_211D">
+            <summary>
+            211D 单位字典 211D适用 将标准单位映射到211D指令集可识别的单位ID
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.UserCalibrationData">
+            <summary>
+            用户校准数据
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UserCalibrationData.CalDate">
+            <summary>
+            校准日期
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UserCalibrationData.CalDatas">
+            <summary>
+            校准数据
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.UserCalibrationPoint">
+            <summary>
+            用户校准点数据
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UserCalibrationPoint.Index">
+            <summary>
+            索引
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UserCalibrationPoint.ReferencePressure">
+            <summary>
+            标准压力值
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.UserCalibrationPoint.ActualPressure">
+            <summary>
+            实测压力值
+            </summary>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DPG4.Additel601">
+            <summary>
+            210数字压力表
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.ConstructDefaultInfo">
+            <summary>
+            默认参数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.FW_IPM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel601.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A">
+            <summary>
+            218A数字压力表
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.ConstructDefaultInfo">
+            <summary>
+            默认参数
+            </summary>
+        </member>
+        <member name="P:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.FW_IPM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680A.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P">
+            <summary>
+            218P数字压力表
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.ConstructDefaultInfo">
+            <summary>
+            默认参数
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2.DPG4.Additel680P.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG2SCPI">
+            <summary>
+            P22设备通讯库
+            ConST221数字压力表 Additel685 DigitalPressureGauges SCPI通讯库
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPI.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPI.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPI.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPI.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPI.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG2SCPI.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG3SCPI">
+            <summary>
+            ConST211A数字压力表通讯库
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.isDPG3(System.String)">
+            <summary>
+            判断是否为DPG3
+            </summary>
+            <param name="versionPrefix"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.GetDataLoggerDataByTerminator(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            数据记录获取指令
+            </summary>
+            <param name="fileIndex"></param>
+            <param name="readIndex"></param>
+            <param name="readLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.GetPressureType">
+            <summary>
+            读取当前表头表绝压类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.Setfacturer(System.String)">
+            <summary>
+            设置厂商名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG3SCPI.Getfacturer">
+            <summary>
+            读取厂商名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xmas11.Comm.Devices.DPG4SCPI">
+            <summary>
+            ConST218A数字压力表通讯库，P26项目，218A、210、218P
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            构造函数(TCP、UDP通讯方式使用）
+            </summary>
+            <param name="ipAddress">IP地址</param>
+            <param name="port">端口号</param>
+            <param name="isConnectionOriented">是否为面向连接的通讯</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            构造函数(TCP通讯方式、串口服务器方式适用）
+            </summary>
+            <param name="ipAddress">（服务器）IP地址</param>
+            <param name="port">端口号（10001,10002,...,10007,10008,...,10016,...,10032,...等）</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.#ctor(System.String,System.Int32,System.Int32,System.IO.Ports.StopBits,System.IO.Ports.Parity)">
+            <summary>
+            构造函数(RS232通讯方式使用）
+            </summary>
+            <param name="serialPortName">串口号</param>
+            <param name="baudrate">波特率</param>
+            <param name="databits">数据位</param>
+            <param name="stopBits">停止位</param>
+            <param name="parity">校验位</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.#ctor(System.String)">
+            <summary>
+            构造函数(RS232通讯方式适用，使用默认的串口信息进行配置）
+            </summary>
+            <param name="serialPortName">串口号</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.#ctor(Xmas11.Comm.Core.CommSettings)">
+            <summary>
+            构造函数（直接传递通讯设置的实例方式适用）
+            </summary>
+            <param name="settings">通讯设置的实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.#ctor(Xmas11.Comm.Core.ICommClient)">
+            <summary>
+            构造函数（直接传递通讯实例方式适用）
+            </summary>
+            <param name="commInstance">通讯实例</param>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.ConstructDefaultInfo">
+            <summary>
+            默认参数
+            </summary>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.IsExist">
+            <summary>
+            是否存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.isDPG4(System.String)">
+            <summary>
+            判断是否为DPG4
+            </summary>
+            <param name="versionPrefix"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetPressureType">
+            <summary>
+            读取当前表头表绝压类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetAxialRadial(System.String)">
+            <summary>
+            设置轴向还是径向,0 1 2
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetAxialRadial">
+            <summary>
+            读取轴向还是径向
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.Setfacturer(System.String)">
+            <summary>
+            设置厂商名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.Getfacturer">
+            <summary>
+            读取厂商名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SentCMDGetResult(System.String)">
+            <summary>
+            发送指令，返回指令的结果
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetLEDFullOpen">
+            <summary>
+            打开LED屏幕测试界面，全显示
+            进入液晶屏和实体按键测试模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetPressureStruct(Xmas11.Comm.Devices.DPG2.Data.Enums.DPG4PressureStructType)">
+            <summary>
+            设置当前表头表绝压类型
+            设置当前表头表绝压类型
+            读取当前压力值指令
+            </summary>
+            <param name="structType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDataLoggerData(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            获取数据记录数据
+            </summary>
+            <param name="fileIndex">指定文件索引</param>
+            <param name="readIndex">读取位置</param>
+            <param name="readLength">读取长度</param>
+            <returns>数据记录信息（base64编码后的字符）</returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetDIAGnosticFEATureClock(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置实时时钟显示
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDIAGnosticFEATureClock">
+            <summary>
+            获取实时时钟显示
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetDIAGnosticFEATureFilter(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否支持滤波
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDIAGnosticFEATureFilter">
+            <summary>
+            获取是否支持滤波
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetDIAGnosticFEATureCustomUnit(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否支持自定义单位和工程水柱单位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetPressureResolution(System.Int32)">
+            <summary>
+            设置压力显示分辨率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetPressureResolution">
+            <summary>
+            获取压力显示分辨率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDIAGnosticFEATureCustomUnit">
+            <summary>
+            获取是否支持自定义单位和工程水柱单位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetDIAGnosticFEATureCALWarn(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否支持校准周期提醒功能
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDIAGnosticFEATureCALWarn">
+            <summary>
+            获取是否支持校准周期提醒功能
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetDIAGnosticFEATureRESOlution(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否支持切换分辨率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDIAGnosticFEATureRESOlution">
+            <summary>
+            获取是否支持切换分辨率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetDIAGnosticFEATureRS232(Xmas11.Comm.Data.Common.OpenCloseState)">
+            <summary>
+            设置是否支持设置串口
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDIAGnosticFEATureRS232">
+            <summary>
+            获取是否支持设置串口
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.SetDIAPercent(System.Int32)">
+            <summary>
+            设置压力百分比 0：关闭 1：开启
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xmas11.Comm.Devices.DPG4SCPI.GetDIAPercent">
+            <summary>
+            读取压力百分比 0：关闭 1：开启
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

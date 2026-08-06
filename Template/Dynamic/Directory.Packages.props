@@ -1,0 +1,4 @@
+<Project>
+  <!-- Dynamic 业务项目复用 Common 的 CPM 包版本（单一来源）-->
+  <Import Project="..\Common\Directory.Packages.props" />
+</Project>

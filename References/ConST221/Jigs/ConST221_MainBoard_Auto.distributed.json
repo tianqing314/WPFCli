@@ -1,0 +1,192 @@
+{
+  "GUID": "B9551499-CBD2-4c98-8A2A-37C18C601339",
+  "Name": "ConST221系统板动态测试",
+  "Type": {
+    "Type": 14,
+    "Categories": "ConST221HT",
+    "IsManualConfig": false,
+    "TestCategoriesItems": []
+  },
+  "View": "TestBench_SelfCheckTaskRunView",
+  "ScriptFile": "ConST221_MainBoard_Auto.cs",
+  "RefAssemblies": "Bots.TestBench.Device.Base.dll,Bots.TestBench.Model.Task.dll,Bots.TestBench.Model.Scripts.dll",
+  "Devices": [
+    {
+      "$type": "Bots.TestBench.Device.ConST221_2, Bots.TestBench.Device.ConST221",
+      "DeviceKey": "P22",
+      "DeviceName": "221主板针床",
+      "DeviceMode": "221PCB",
+      "DeviceType": "DUT",
+      "CommConfigs": [
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.SerialPortConfig, Bots.TestBench.Device.Base",
+          "Bauds": 19200,
+          "Name": "Board",
+          "StopBits": "Two",
+          "Parity": "None"
+        }
+      ]
+    }
+  ],
+  "TaskCollection": [
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "ConST221_MainBoard_Auto",
+        "Entry": "BenchPreparation"
+      },
+      "SortIdentifier": 1,
+      "Categories": "ConST221HT",
+      "Name": "工装准备",
+      "TestDesc": "1. 网络继电器A切档1：CHA通道3.3V供电\r\n2. 网络继电器C切档18：CHA通道上电\r\n3. 网络继电器其余通道不动作，保持为常闭点\r\n",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "6a4b0baf-aec5-406f-8212-925544377edd"
+    },
+    //{
+    //  "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+    //  "Location": {
+    //    "Package": "ConST221_MainBoard_Auto",
+    //    "Entry": "BeginForeChecksum"
+    //  },
+    //  "SortIdentifier": 2,
+    //  "Categories": "ConST221HT",
+    //  "Name": "开始前校验",
+    //  "TestDesc": "1. 校验测试类型与测试被检类型一致\r\n",
+    //  "HandleDesc": "",
+    //  "Parameters": [],
+    //  "Conditions": [],
+    //  "GUID": "3af489c4-fe23-40f6-b007-c68049546b1a"
+    //},
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "ConST221_MainBoard_Auto",
+        "Entry": "PowerSourceTrackTest"
+      },
+      "SortIdentifier": 3,
+      "Categories": "ConST221HT",
+      "Name": "电源轨测试",
+      "TestDesc": "1. 被检关闭CDP/液晶屏/触摸屏/FRAM/FLASH电源\r\n2. 读取8路电压采集器前6通道测量值，CDP/液晶屏/触摸屏/FRAM/FLASH/VBACK电源\r\n3. 被检打开CDP/液晶屏/触摸屏/FRAM/FLASH电源\r\n4. 读取8路电压采集器前6通道测量值，CDP/液晶屏/触摸屏/FRAM/FLASH/VBACK电源\r\n",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "VBACK指标",
+          "Lower": 2.8,
+          "Upper": 3.1,
+          "Unit": "V"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "关闭电源",
+          "Lower": 0,
+          "Upper": 0.1,
+          "Unit": "V"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "打开电源",
+          "Lower": 3.1,
+          "Upper": 3.3,
+          "Unit": "V"
+        }
+      ],
+
+      "GUID": "3fa5bca4-3df9-4eb6-b991-667b4c63c5ef"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "ConST221_MainBoard_Auto",
+        "Entry": "RTCTest"
+      },
+      "SortIdentifier": 4,
+      "Categories": "ConST221HT",
+      "Name": "RTC测试",
+      "TestDesc": "1. 被检写入时间，读取验证\r\n2. 网络继电器C切档17：CHA通道断电，被检关机\r\n3. 30s后，网络继电器C切档18：CHA通道上电，被检开机\r\n4. 读取时间，对比验证\r\n",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [
+      ],
+      "GUID": "10eef8e4-0104-4bfb-a285-5607b5d72bb3"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "ConST221_MainBoard_Auto",
+        "Entry": "FerroElectricityTest"
+      },
+      "SortIdentifier": 5,
+      "Categories": "ConST221HT",
+      "Name": "铁电测试",
+      "TestDesc": "1. 被检打开FRAM电源\r\n2. 被检能正常进行写入擦除操作\r\n",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "aae86c70-167c-4a9f-94eb-335f95faf0c6"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "ConST221_MainBoard_Auto",
+        "Entry": "FLASHTest"
+      },
+      "SortIdentifier": 6,
+      "Categories": "ConST221HT",
+      "Name": "FLASH测试",
+      "TestDesc": "1. 被检打开FLASH电源\r\n2. 被检能正常进行写入擦除操作\r\n",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "0b35bffe-b19b-43ee-822a-c135f2c48df3"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "ConST221_MainBoard_Auto",
+        "Entry": "ConsumeTest"
+      },
+      "SortIdentifier": 7,
+      "Categories": "ConST221HT",
+      "Name": "功耗测试",
+      "TestDesc": "1. 被检关闭CDP/液晶屏/触摸屏/FRAM/FLASH电源\r\n2. 读取2路电流计1通道测量值\r\n3. 被检打开CDP/液晶屏/触摸屏/FRAM/FLASH电源\r\n4. 读取2路电流计1通道测量值\r\n",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "功耗范围(关闭)",
+          "Lower": 11,
+          "Upper": 15,
+          "Unit": "mA"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "功耗范围(打开)",
+          "Lower": 29,
+          "Upper": 31,
+          "Unit": "mA"
+        }
+      ],
+      "GUID": "0fe594bf-d6b3-4b4f-8249-e836e39cac6c"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Package": "ConST221_MainBoard_Auto",
+        "Entry": "TestFinish"
+      },
+      "SortIdentifier": 8,
+      "Categories": "ConST221HT",
+      "Name": "测试结束",
+      "TestDesc": "1. 网络继电器A切档1：CHA通道3.3V供电\r\n2. 网络继电器C切档17：CHA通道断电",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "8e0c5c74-3ff9-494b-a1ba-faa7cd830865"
+    }
+  ]
+}

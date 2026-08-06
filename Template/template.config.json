@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "placeholder": "TESTRIG",
+  "description": "TestRig 多业务模板脚手架",
+  "targetFramework": "net8.0-windows10.0.19041.0",
+  "configuration": "Release",
+  "mainProjectName": "TESTRIG.App",
+  "excludeFromCopy": [ "bin", "obj", ".reasonix", ".vs", ".git", "src/libs/DeviceLink/tests", "src/libs/DeviceLink/docs" ],
+  "excludeFromReplacement": [ "src/libs/DeviceLink", "tools", "docs", "refdlls" ],
+  "deleteFromOutput": [],
+  "obfuscationTargets": [ "Infrastructure", "Devices", "TestSteps", "Core.Engine" ],
+  "reservedNames": [ "PS02" ]
+}

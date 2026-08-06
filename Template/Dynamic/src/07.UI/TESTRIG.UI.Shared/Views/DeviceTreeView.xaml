@@ -1,0 +1,250 @@
+<UserControl
+    x:Class="TESTRIG.UI.Shared.Views.DeviceTreeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:views="clr-namespace:TESTRIG.UI.Shared.Views"
+    xmlns:vm="clr-namespace:TESTRIG.UI.Shared.ViewModels"
+    x:Name="Self">
+    <DockPanel>
+        <!--  搜索 + 全部展开/折叠  -->
+        <Border
+            Padding="12,10,12,8"
+            BorderBrush="{StaticResource Brush.Divider}"
+            BorderThickness="0,0,0,1"
+            DockPanel.Dock="Top">
+            <DockPanel>
+                <Button
+                    Width="32"
+                    Height="32"
+                    Margin="6,0,0,0"
+                    Padding="0"
+                    Background="{StaticResource Brush.PrimaryPale}"
+                    Command="{Binding ToggleExpandAllCommand}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource Btn.Icon}"
+                    ToolTip="展开 / 折叠 全部设备">
+                    <materialDesign:PackIcon
+                        Width="18"
+                        Height="18"
+                        Foreground="{StaticResource Brush.Primary}">
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="materialDesign:PackIcon">
+                                <Setter Property="Kind" Value="UnfoldMoreHorizontal" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AllExpanded}" Value="True">
+                                        <Setter Property="Kind" Value="UnfoldLessHorizontal" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+                </Button>
+                <TextBox
+                    VerticalAlignment="Center"
+                    materialDesign:HintAssist.Hint="搜索 型号 / TESTRIG 名称"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="输入设备型号或 TESTRIG 名称，模糊筛选待测板子" />
+            </DockPanel>
+        </Border>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl
+                Margin="5,5"
+                views:DragReorder.Items="{Binding Devices}"
+                ItemsSource="{Binding DevicesView}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:DeviceGroupViewModel}">
+                        <StackPanel Margin="0,1">
+                            <!--  一级：设备族行（扁平白底，悬停浅底；小号弱色箭头随展开旋转）  -->
+                            <ToggleButton
+                                HorizontalAlignment="Stretch"
+                                Cursor="Hand"
+                                IsChecked="{Binding IsExpanded, Mode=TwoWay}"
+                                Style="{x:Null}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border
+                                            x:Name="hd"
+                                            Padding="4,8,10,8"
+                                            Background="Transparent"
+                                            CornerRadius="3">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border
+                                                    Grid.Column="0"
+                                                    Margin="0,0,4,0"
+                                                    VerticalAlignment="Stretch"
+                                                    views:DragReorder.Handle="True"
+                                                    Background="Transparent"
+                                                    ToolTip="按住拖动调整设备顺序">
+                                                    <materialDesign:PackIcon
+                                                        Width="14"
+                                                        Height="14"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource Brush.TextMuted}"
+                                                        Kind="DragVertical" />
+                                                </Border>
+                                                <materialDesign:PackIcon
+                                                    Grid.Column="1"
+                                                    Width="16"
+                                                    Height="16"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource Brush.Primary}"
+                                                    Kind="DeveloperBoard" />
+                                                <TextBlock
+                                                    Grid.Column="2"
+                                                    Margin="8,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontFamily="{StaticResource Font.Mono}"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding Device}" />
+                                                <materialDesign:PackIcon
+                                                    x:Name="cv"
+                                                    Grid.Column="3"
+                                                    Width="13"
+                                                    Height="13"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource Brush.TextMuted}"
+                                                    Kind="ChevronDown"
+                                                    RenderTransformOrigin="0.5,0.5">
+                                                    <materialDesign:PackIcon.RenderTransform>
+                                                        <RotateTransform Angle="0" />
+                                                    </materialDesign:PackIcon.RenderTransform>
+                                                </materialDesign:PackIcon>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="hd" Property="Background" Value="{StaticResource Brush.Surface2}" />
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="cv" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <RotateTransform Angle="180" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <!--  二级：板子列表（小缩进）  -->
+                            <ItemsControl
+                                Margin="10,1,0,3"
+                                views:DragReorder.Items="{Binding Boards}"
+                                ItemsSource="{Binding BoardsView}"
+                                Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVis}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:BoardItemViewModel}">
+                                        <Grid Margin="0,1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border
+                                                Grid.Column="0"
+                                                Padding="2,6"
+                                                VerticalAlignment="Stretch"
+                                                views:DragReorder.Handle="True"
+                                                Background="Transparent"
+                                                ToolTip="按住拖动调整板子顺序">
+                                                <materialDesign:PackIcon
+                                                    Width="14"
+                                                    Height="14"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource Brush.TextMuted}"
+                                                    Kind="DragVertical" />
+                                            </Border>
+                                            <Button
+                                                Grid.Column="1"
+                                                MinWidth="0"
+                                                Padding="6,7"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Left"
+                                                Command="{Binding DataContext.OpenBoardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="{Binding Description}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                        <Setter Property="Foreground" Value="{StaticResource Brush.TextWeak}" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border
+                                                                        x:Name="bd"
+                                                                        Padding="{TemplateBinding Padding}"
+                                                                        Background="Transparent"
+                                                                        BorderBrush="Transparent"
+                                                                        BorderThickness="2,0,0,0"
+                                                                        CornerRadius="3"
+                                                                        TextElement.Foreground="{TemplateBinding Foreground}">
+                                                                        <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                                                    </Border>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter TargetName="bd" Property="Background" Value="{StaticResource Brush.PrimaryPale}" />
+                                                                            <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Brush.Primary}" />
+                                                                            <Setter TargetName="bd" Property="TextElement.Foreground" Value="{StaticResource Brush.PrimaryText}" />
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon VerticalAlignment="Center">
+                                                        <materialDesign:PackIcon.Style>
+                                                            <Style TargetType="materialDesign:PackIcon">
+                                                                <Setter Property="Kind" Value="Chip" />
+                                                                <Setter Property="Foreground" Value="{StaticResource Brush.Primary}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                                        <Setter Property="Kind" Value="Circle" />
+                                                                        <Setter Property="Foreground" Value="{StaticResource Brush.Success}" />
+                                                                        <DataTrigger.EnterActions>
+                                                                            <BeginStoryboard x:Name="BlinkSb">
+                                                                                <Storyboard>
+                                                                                    <DoubleAnimation
+                                                                                        AutoReverse="True"
+                                                                                        RepeatBehavior="Forever"
+                                                                                        Storyboard.TargetProperty="Opacity"
+                                                                                        From="1"
+                                                                                        To="0.2"
+                                                                                        Duration="0:0:0.6" />
+                                                                                </Storyboard>
+                                                                            </BeginStoryboard>
+                                                                        </DataTrigger.EnterActions>
+                                                                        <DataTrigger.ExitActions>
+                                                                            <StopStoryboard BeginStoryboardName="BlinkSb" />
+                                                                        </DataTrigger.ExitActions>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </materialDesign:PackIcon.Style>
+                                                    </materialDesign:PackIcon>
+                                                    <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding BoardName}"
+                                                        TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

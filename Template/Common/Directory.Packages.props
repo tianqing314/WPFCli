@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- MVVM 工具包（ViewModel 基类 + RelayCommand） -->
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <!-- 国锐 PLC 真机驱动：Modbus TCP -->
+    <PackageVersion Include="EasyModbusTCP" Version="5.6.0" />
+    <!-- WPF Material Design 主题控件库 -->
+    <PackageVersion Include="MaterialDesignThemes" Version="5.3.2" />
+    <!-- Markdown 渲染（软件内手册预览） -->
+    <PackageVersion Include="MdXaml" Version="1.27.0" />
+    <!-- EF Core SQLite：本地结果库 -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+    <!-- EF Core MySQL：远程同步 -->
+    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+    <!-- DI / Hosting / Logging 抽象 -->
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <!-- Serilog 日志（控制台 + 文件） -->
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="6.0.0" />
+    <!-- 串口通讯（Xmas11 .NET Core 下需此包） -->
+    <PackageVersion Include="System.IO.Ports" Version="8.0.0" />
+    <!-- WMI 设备扫描（System.Management，仅 Windows） -->
+    <PackageVersion Include="System.Management" Version="8.0.0" />
+    <!-- 登录历史密码 DPAPI 加密落盘 -->
+    <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+  </ItemGroup>
+</Project>
