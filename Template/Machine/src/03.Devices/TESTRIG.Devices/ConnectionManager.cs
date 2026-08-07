@@ -110,7 +110,9 @@ public sealed class ConnectionManager
     public async Task<(bool Ok, string Message)> TestStandardModuleAsync(
         string deviceKey, string deviceName, string model, CommEndpoint endpoint, CancellationToken ct = default)
     {
-        // 串口：物理链路号（如 DevSn "DPSE022FE0054"）不是 COM 名，先解析成当前实际 COM 再交驱动 Open。
+        // 配置 DevSn（如 "DPSE022FE0054"）：串口物理链路号不是 COM 名，先解析成当前实际 COM 再交驱动 Open；
+        // 驱动连接时读设备序列号与 DevSn 比对（见 DPSEXStandardModule.ConnectAsync）。
+        var expectedSn = endpoint.PhysicalLink;
         if (endpoint.Link == LinkType.Serial)
         {
             var r = _resolver.Resolve(endpoint);
@@ -121,7 +123,7 @@ public sealed class ConnectionManager
             endpoint = endpoint with { PhysicalLink = r.Target };
         }
 
-        var descriptor = new DeviceDescriptor(deviceName, model) { Comm = endpoint };
+        var descriptor = new DeviceDescriptor(deviceName, model) { Comm = endpoint, SerialNumber = expectedSn };
         try
         {
             var module = _stdRegistry.Create(descriptor);

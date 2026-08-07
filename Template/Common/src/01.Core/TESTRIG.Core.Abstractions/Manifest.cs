@@ -94,7 +94,8 @@ public sealed record PositionDescriptor(int Index, string Name)
 /// <param name="Model">型号：**一板一型号**，既决定用哪个 DUT 驱动（<c>[DutDriver("型号")]</c> 注册串），
 /// 也是结果落库的 <c>DeviceModel</c> 与数据查看页的过滤依据，故绝不可多块板共用同一值。</param>
 /// <param name="Comm">连接端点（可空）。</param>
-public sealed record DeviceDescriptor(string Name, string Model, CommEndpoint? Comm = null);
+/// <param name="SerialNumber">期望设备序列号（标准模块等配置了 DevSn 时用于连接验证；可空）。</param>
+public sealed record DeviceDescriptor(string Name, string Model, CommEndpoint? Comm = null, string? SerialNumber = null);
 
 /// <summary>
 /// 测试项描述（对应旧 TaskCollection 一项 + Location.Entry）。行为由 <see cref="Kind"/> 对应的处理器提供。

@@ -87,6 +87,7 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
         foreach (var tool in manifest.ToolDevices)
         {
             var toolComm = tool.Comm;
+            var expectedSn = tool.Comm?.PhysicalLink; // 配置 DevSn（解析前快照，连接时读设备 SN 比对）
             if (toolComm is not null && toolComm.Link == LinkType.Serial)
             {
                 var tr = _resolver.Resolve(toolComm);
@@ -95,7 +96,7 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
                     toolComm = toolComm with { PhysicalLink = tr.Target };
                 }
             }
-            var descriptor = new DeviceDescriptor(tool.Name, tool.Model) { Comm = toolComm };
+            var descriptor = new DeviceDescriptor(tool.Name, tool.Model) { Comm = toolComm, SerialNumber = expectedSn };
             tools[tool.Key] = _stdRegistry.Create(descriptor);
         }
         return new DeviceProvider(_registry.Create(dut), tools);

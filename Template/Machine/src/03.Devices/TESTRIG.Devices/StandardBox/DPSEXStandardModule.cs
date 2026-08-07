@@ -35,6 +35,11 @@ public sealed class DPSEXStandardModule : IStandardModule
     private readonly CommEndpoint? _comm;
 
     /// <summary>
+    /// 期望设备序列号（配置 DevSn 时非空，连接时读设备 SN 比对，不匹配即断开）。
+    /// </summary>
+    private readonly string? _expectedSn;
+
+    /// <summary>
     /// 设备键（=manifest ToolDevices Key，如 DPSEX1/DPSEX2）。
     /// </summary>
     public string Key { get; }
@@ -60,10 +65,12 @@ public sealed class DPSEXStandardModule : IStandardModule
         Key = descriptor.Model;
         Model = descriptor.Model;
         _comm = descriptor.Comm;
+        _expectedSn = descriptor.SerialNumber;
     }
 
     /// <summary>
-    /// 连接标准模块：按端点（串口）建 DPSEXBase，Open 探活。
+    /// 连接标准模块：按端点（串口）建 DPSEXBase，Open 探活；
+    /// 配置了 DevSn 时读设备序列号比对，匹配才认为连接成功，否则关闭连接（参考旧 Bots.TestBench DPSEX.Open）。
     /// </summary>
     /// <param name="ct">取消令牌。</param>
     public Task ConnectAsync(CancellationToken ct = default)
@@ -73,10 +80,42 @@ public sealed class DPSEXStandardModule : IStandardModule
             try { _dev?.Close(); } catch { }
             _dev = Build(_comm);
             var opened = _dev.Open();
-            IsConnected = opened && _dev.Connected && _dev.IsExist();
-            _logger.LogInformation(IsConnected ? "DPSEX 标准模块连接成功" : "DPSEX 标准模块连接未就绪（将重试）");
+            var ready = opened && _dev.Connected && _dev.IsExist();
+            if (ready && !string.IsNullOrWhiteSpace(_expectedSn))
+            {
+                // 配置了 DevSn：读设备序列号比对，匹配才认为连接成功，否则关闭连接
+                var r = _dev.GetDeviceSerialNumber();
+                var sn = r.IsCorrect ? r.Result?.Trim() : "";
+                if (MatchSerial(_expectedSn, sn))
+                {
+                    IsConnected = true;
+                    _logger.LogInformation("DPSEX 标准模块连接成功（SN {Sn} 匹配配置）", sn);
+                }
+                else
+                {
+                    try { _dev.Close(); } catch { }
+                    IsConnected = false;
+                    _logger.LogWarning("DPSEX 标准模块序列号不匹配：期望 {Expected}，读到 {Actual}，已断开", _expectedSn, sn);
+                }
+            }
+            else
+            {
+                IsConnected = ready;
+                _logger.LogInformation(IsConnected ? "DPSEX 标准模块连接成功" : "DPSEX 标准模块连接未就绪（将重试）");
+            }
         }, ct);
     }
+
+    /// <summary>
+    /// 序列号匹配（与旧 DPSEX.Open 相同：相等或配置 DevSn 包含读值，忽略大小写/空白）。
+    /// </summary>
+    /// <param name="expected">配置 DevSn。</param>
+    /// <param name="actual">设备读回的序列号。</param>
+    /// <returns>是否匹配。</returns>
+    private static bool MatchSerial(string expected, string? actual)
+        => !string.IsNullOrWhiteSpace(actual)
+           && (string.Equals(actual.Trim(), expected.Trim(), StringComparison.OrdinalIgnoreCase)
+               || expected.ToLowerInvariant().Contains(actual.ToLowerInvariant().Trim()));
 
     /// <summary>
     /// 按端点构造 DPSEXBase（标准模块默认串口 4800/Two/None；网络预留）。
