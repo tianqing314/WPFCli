@@ -153,6 +153,11 @@ public partial class ConnectionConfigViewModel : ObservableObject
     public ObservableCollection<CommRowViewModel> StandardModules { get; } = [];
 
     /// <summary>
+    /// 是否配置了共享设备（未配置则连接配置页只显示被检连接，隐藏共享设备 Tab）。
+    /// </summary>
+    public bool HasStandardModules => StandardModules.Count > 0;
+
+    /// <summary>
     /// 被检连接行集合（按号位）；针床工装模式下承载针床工装子设备行。
     /// </summary>
     public ObservableCollection<CommRowViewModel> Duts { get; } = [];

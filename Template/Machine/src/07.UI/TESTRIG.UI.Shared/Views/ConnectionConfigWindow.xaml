@@ -266,7 +266,10 @@
             ClipToBounds="True"
             Style="{StaticResource Card.Std}">
             <TabControl Background="Transparent">
-                <TabItem Header="共享设备（通用）">
+                <!--  共享设备（标准模块）：未配置（.shared.json / manifest 均为空）时隐藏，只显示被检连接  -->
+                <TabItem
+                    Header="共享设备（通用）"
+                    Visibility="{Binding HasStandardModules, Converter={StaticResource BoolToVis}}">
                     <ScrollViewer Padding="14,12,14,0" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <!--  标准模块（共享设备：正压/真空标准模块）  -->
