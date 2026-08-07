@@ -274,7 +274,7 @@
                                 <materialDesign:PackIcon
                                     VerticalAlignment="Center"
                                     Foreground="{StaticResource Brush.Primary}"
-                                    Kind="GaugeOutline" />
+                                    Kind="Gauge" />
                                 <TextBlock
                                     Margin="6,0,0,0"
                                     VerticalAlignment="Center"

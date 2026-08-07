@@ -78,7 +78,7 @@ public partial class MainWindow : ChromeWindow
             return;
         }
 
-        if (!AppDialog.Confirm("退出确认", "确认退出 TESTRIG 动态测试平台吗？"))
+        if (!AppDialog.Confirm("退出确认", "确认退出 TESTRIG 整机测试平台吗？"))
         {
             e.Cancel = true;
             return;

@@ -8,7 +8,7 @@
     xmlns:views="clr-namespace:TESTRIG.UI.Shared.Views"
     xmlns:vm="clr-namespace:TESTRIG.UI.Shared.ViewModels"
     x:Name="Root"
-    Title="TESTRIG 动态测试平台"
+    Title="TESTRIG 整机测试平台"
     Width="1280"
     Height="800"
     ShowCaptionButtons="False"
@@ -399,7 +399,7 @@
                     FontFamily="{StaticResource Font.Mono}"
                     FontSize="12"
                     Foreground="{StaticResource Brush.TextMuted}"
-                    Text="{Binding AppVersion, StringFormat='TESTRIG 动态测试平台 {0}'}" />
+                    Text="{Binding AppVersion, StringFormat='TESTRIG 整机测试平台 {0}'}" />
             </DockPanel>
         </Border>
 

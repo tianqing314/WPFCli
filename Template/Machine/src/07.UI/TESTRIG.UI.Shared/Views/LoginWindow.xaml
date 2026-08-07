@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    Title="TESTRIG 动态测试平台 — 登录"
+    Title="TESTRIG 整机测试平台 — 登录"
     Width="1040"
     Height="620"
     AllowsTransparency="True"
@@ -83,7 +83,7 @@
                     FontSize="15"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Brush.Text}"
-                    Text="TESTRIG 动态测试平台" />
+                    Text="TESTRIG 整机测试平台" />
             </StackPanel>
 
             <!--  右上 标语  -->
@@ -96,7 +96,7 @@
                     FontSize="22"
                     FontWeight="SemiBold"
                     Foreground="{StaticResource Brush.PrimaryText}"
-                    Text="动态测试 · 数据驱动" />
+                    Text="整机测试 · 全流程检测" />
                 <TextBlock
                     Margin="0,6,0,0"
                     HorizontalAlignment="Right"
@@ -157,7 +157,7 @@
                             Margin="0,14,0,0"
                             HorizontalAlignment="Center"
                             Style="{StaticResource Text.Title}"
-                            Text="TESTRIG 动态测试平台" />
+                            Text="TESTRIG 整机测试平台" />
                         <TextBlock
                             Margin="0,6,0,22"
                             HorizontalAlignment="Center"

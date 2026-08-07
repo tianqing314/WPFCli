@@ -10,7 +10,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <LangVersion>latest</LangVersion>
     <AssemblyTitle>TESTRIG 升级器</AssemblyTitle>
-    <Product>TESTRIG 动态测试平台 升级器</Product>
+    <Product>TESTRIG 整机测试平台 升级器</Product>
     <RootNamespace>TESTRIG.Updater</RootNamespace>
   </PropertyGroup>
 
