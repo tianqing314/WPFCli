@@ -344,7 +344,6 @@
 
                 <ScrollViewer
                     DataContext="{Binding Current}"
-                    HorizontalScrollBarVisibility="Auto"
                     VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,0,4,0">
                         <!--  元信息  -->
@@ -597,15 +596,16 @@
                                         </Button>
                                     </StackPanel>
                                 </DockPanel>
-                                <ItemsControl ItemsSource="{Binding SharedDevices}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border
-                                                Margin="0,2"
-                                                Padding="6,5"
-                                                Background="{StaticResource Brush.Surface}"
-                                                BorderBrush="{StaticResource Brush.BorderStrong}"
-                                                BorderThickness="1"
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding SharedDevices}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border
+                                                    Margin="0,2"
+                                                    Padding="6,5"
+                                                    Background="{StaticResource Brush.Surface}"
+                                                    BorderBrush="{StaticResource Brush.BorderStrong}"
+                                                    BorderThickness="1"
                                                 CornerRadius="4">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock
@@ -683,6 +683,7 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+                                </ScrollViewer>
                             </StackPanel>
                         </materialDesign:Card>
 
