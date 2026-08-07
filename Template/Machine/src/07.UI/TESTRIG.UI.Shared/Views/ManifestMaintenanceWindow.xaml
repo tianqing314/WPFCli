@@ -20,6 +20,22 @@
     <chrome:ChromeWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <views:SameRefToTrueConverter x:Key="SameRefToTrue" />
+        <Style
+            x:Key="Fld"
+            BasedOn="{StaticResource {x:Type ComboBox}}"
+            TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,0,20,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="{StaticResource Font.Mono}" />
+        </Style>
+        <Style
+            x:Key="FldTb"
+            BasedOn="{StaticResource {x:Type TextBox}}"
+            TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,20,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="{StaticResource Font.Mono}" />
+        </Style>
     </chrome:ChromeWindow.Resources>
 
     <Grid Margin="12" Background="{StaticResource Brush.Bg}">
