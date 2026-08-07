@@ -70,6 +70,11 @@ public partial class ConnectionConfigViewModel : ObservableObject
     private readonly Dictionary<string, string> _toolModel = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
+    /// 标准模块配置序列号表（manifest ToolDevices Key → DevSn，连接时读设备 SN 比对）。
+    /// </summary>
+    private readonly Dictionary<string, string?> _toolSn = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
     /// 构造连接配置视图模型：按当前配置与 manifest 号位构建各连接行，并后台扫描设备。
     /// </summary>
     /// <param name="store">连接配置仓储。</param>
@@ -87,13 +92,17 @@ public partial class ConnectionConfigViewModel : ObservableObject
         var c = store.Current;
 
         // 标准模块（共享设备：正压/真空标准模块，来自 manifest.ToolDevices；已存 StandardModules 覆盖优先）
-        // 通讯方式定死串口（DPSEX 4800/Two/None），各自一行带连接/断开（真连探活）
+        // 通讯方式定死串口（DPSEX 4800/Two/None），各自一行带连接/断开（真连探活）。
+        // 物理链路只选 COM 口——DevSn（序列号）不作为物理链路显示，连接时由驱动读设备 SN 与 DevSn 比对。
         foreach (var tool in manifest.ToolDevices)
         {
             _toolModel[tool.Key] = tool.Model;
+            _toolSn[tool.Key] = tool.Comm?.PhysicalLink; // 配置 DevSn（如 DPSE022FE0054）
             var ep = c.StandardModules.TryGetValue(tool.Key, out var se)
                 ? se
-                : tool.Comm ?? CommEndpoint.OfSerial("COM2", new SerialParams(4800, 8, "Two", "None"));
+                : tool.Comm is not null
+                    ? tool.Comm with { PhysicalLink = "" }
+                    : CommEndpoint.OfSerial("", new SerialParams(4800, 8, "Two", "None"));
             StandardModules.Add(new CommRowViewModel(tool.Name, ep, SerialOptions, UsbOptions, conn, SerialOnly)
             {
                 ToggleHandler = ToggleStandardModuleRowAsync,
@@ -324,7 +333,8 @@ public partial class ConnectionConfigViewModel : ObservableObject
     {
         var key = row.DeviceKey ?? "";
         var model = _toolModel.TryGetValue(key, out var m) ? m : key;
-        return _conn.TestStandardModuleAsync(key, row.Name, model, row.ToEndpoint());
+        var sn = _toolSn.TryGetValue(key, out var s) ? s : null;
+        return _conn.TestStandardModuleAsync(key, row.Name, model, row.ToEndpoint(), sn);
     }
 
     /// <summary>

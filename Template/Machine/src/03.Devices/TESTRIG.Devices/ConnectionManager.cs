@@ -99,20 +99,20 @@ public sealed class ConnectionManager
 
     /// <summary>
     /// **真连**标准模块（如 DPSEX1 正压 / DPSEX2 真空）：按型号建驱动并 Connect 探活，测完关闭。
-    /// 用于连接配置页单设备/一键连接。
+    /// 用于连接配置页单设备/一键连接。配置了 DevSn（<paramref name="expectedSn"/>）时，驱动连接后
+    /// 读设备序列号比对，匹配才认为连接成功，否则关闭通讯端口（见 <c>DPSEXStandardModule.ConnectAsync</c>）。
     /// </summary>
     /// <param name="deviceKey">标准模块实例键（manifest ToolDevices 的 Key，如 DPSEX1）。</param>
     /// <param name="deviceName">设备名（仅显示）。</param>
     /// <param name="model">型号（驱动注册键，如 DPSEX）。</param>
-    /// <param name="endpoint">该标准模块端点（页面当前值）。</param>
+    /// <param name="endpoint">该标准模块端点（页面当前值，物理链路为所选 COM）。</param>
+    /// <param name="expectedSn">配置的设备序列号（DevSn；无则跳过序列号比对）。</param>
     /// <param name="ct">取消令牌。</param>
     /// <returns>(是否连通, 说明)。</returns>
     public async Task<(bool Ok, string Message)> TestStandardModuleAsync(
-        string deviceKey, string deviceName, string model, CommEndpoint endpoint, CancellationToken ct = default)
+        string deviceKey, string deviceName, string model, CommEndpoint endpoint, string? expectedSn = null, CancellationToken ct = default)
     {
-        // 配置 DevSn（如 "DPSE022FE0054"）：串口物理链路号不是 COM 名，先解析成当前实际 COM 再交驱动 Open；
-        // 驱动连接时读设备序列号与 DevSn 比对（见 DPSEXStandardModule.ConnectAsync）。
-        var expectedSn = endpoint.PhysicalLink;
+        // 串口：物理链路为所选 COM 名；配置 DevSn 时驱动连接后读设备序列号比对（见 DPSEXStandardModule.ConnectAsync）。
         if (endpoint.Link == LinkType.Serial)
         {
             var r = _resolver.Resolve(endpoint);
