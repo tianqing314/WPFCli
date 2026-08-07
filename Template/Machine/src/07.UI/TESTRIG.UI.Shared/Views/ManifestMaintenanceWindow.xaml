@@ -650,76 +650,31 @@
                                                         SelectedValue="{Binding Link}"
                                                         SelectedValuePath="Key"
                                                         Style="{StaticResource Fld}" />
-                                                    <!--  串口参数  -->
-                                                    <StackPanel
+                                                    <!--  通讯参数摘要 + 编辑（弹窗配置：串口 波特率/数据位/停止位/校验位；网口 端口号）  -->
+                                                    <TextBlock
+                                                        Width="44"
                                                         Margin="6,0,0,0"
-                                                        Orientation="Horizontal"
-                                                        Visibility="{Binding IsSerial, Converter={StaticResource BoolToVis}}">
-                                                        <TextBlock
-                                                            Width="50"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{StaticResource Brush.TextWeak}"
-                                                            Text="波特率" />
-                                                        <ComboBox
-                                                            Width="76"
-                                                            ItemsSource="{Binding BaudOptions}"
-                                                            SelectedItem="{Binding Baud}"
-                                                            Style="{StaticResource Fld}" />
-                                                        <TextBlock
-                                                            Width="50"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{StaticResource Brush.TextWeak}"
-                                                            Text="数据位" />
-                                                        <ComboBox
-                                                            Width="52"
-                                                            ItemsSource="{Binding DataBitsOptions}"
-                                                            SelectedItem="{Binding DataBits}"
-                                                            Style="{StaticResource Fld}" />
-                                                        <TextBlock
-                                                            Width="50"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{StaticResource Brush.TextWeak}"
-                                                            Text="停止位" />
-                                                        <ComboBox
-                                                            Width="60"
-                                                            ItemsSource="{Binding StopBitsOptions}"
-                                                            SelectedValue="{Binding StopBits}"
-                                                            Style="{StaticResource Fld}" />
-                                                        <TextBlock
-                                                            Width="50"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{StaticResource Brush.TextWeak}"
-                                                            Text="校验位" />
-                                                        <ComboBox
-                                                            Width="60"
-                                                            ItemsSource="{Binding ParityOptions}"
-                                                            SelectedValue="{Binding Parity}"
-                                                            Style="{StaticResource Fld}" />
-                                                    </StackPanel>
-                                                    <!--  网口参数  -->
-                                                    <StackPanel
-                                                        Margin="6,0,0,0"
-                                                        Orientation="Horizontal"
-                                                        Visibility="{Binding IsEthernet, Converter={StaticResource BoolToVis}}">
-                                                        <TextBlock
-                                                            Width="30"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{StaticResource Brush.TextWeak}"
-                                                            Text="IP" />
-                                                        <TextBox
-                                                            Width="110"
-                                                            Style="{StaticResource FldTb}"
-                                                            Text="{Binding Ip, UpdateSourceTrigger=PropertyChanged}" />
-                                                        <TextBlock
-                                                            Width="50"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{StaticResource Brush.TextWeak}"
-                                                            Text="端口" />
-                                                        <TextBox
-                                                            Width="60"
-                                                            Style="{StaticResource FldTb}"
-                                                            Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}" />
-                                                    </StackPanel>
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource Brush.TextWeak}"
+                                                        Text="参数" />
+                                                    <TextBlock
+                                                        Width="126"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="{StaticResource Font.Mono}"
+                                                        Foreground="{StaticResource Brush.TextWeak}"
+                                                        Text="{Binding CommSummary}"
+                                                        ToolTip="点击右侧「编辑」配置通讯参数" />
+                                                    <Button
+                                                        Height="26"
+                                                        Padding="10,0"
+                                                        Command="{Binding DataContext.EditCommParamsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}"
+                                                        Style="{StaticResource Btn.Secondary}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon VerticalAlignment="Center" Kind="Pencil" />
+                                                            <TextBlock Margin="4,0,0,0" Text="编辑" />
+                                                        </StackPanel>
+                                                    </Button>
                                                     <TextBlock
                                                         Width="56"
                                                         Margin="6,0,0,0"

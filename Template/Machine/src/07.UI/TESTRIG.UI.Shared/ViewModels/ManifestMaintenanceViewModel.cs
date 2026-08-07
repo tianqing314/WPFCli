@@ -213,6 +213,25 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
     }
 
     /// <summary>
+    /// 编辑共享设备的通讯参数（弹窗：串口 波特率/数据位/停止位/校验位；网口 端口号）。
+    /// </summary>
+    /// <param name="row">共享设备行。</param>
+    [RelayCommand]
+    private void EditCommParams(ToolDeviceEditModel? row)
+    {
+        if (row is null)
+        {
+            return;
+        }
+
+        var dlg = new CommParamsWindow(new CommParamsEditModel(row)) { Owner = Application.Current.MainWindow };
+        if (dlg.ShowDialog() == true)
+        {
+            dlg.ViewModel.ApplyTo(row);
+        }
+    }
+
+    /// <summary>
     /// 是否有清单在编辑区。
     /// </summary>
     public bool HasCurrent => Current is not null;
@@ -832,25 +851,36 @@ public partial class ToolDeviceEditModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsSerial))]
     [NotifyPropertyChangedFor(nameof(IsEthernet))]
+    [NotifyPropertyChangedFor(nameof(CommSummary))]
     private LinkType _link = LinkType.Serial;
 
     /// <summary>串口波特率。</summary>
-    [ObservableProperty] private int _baud = 4800;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CommSummary))]
+    private int _baud = 4800;
 
     /// <summary>串口数据位。</summary>
-    [ObservableProperty] private int _dataBits = 8;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CommSummary))]
+    private int _dataBits = 8;
 
     /// <summary>串口停止位。</summary>
-    [ObservableProperty] private string _stopBits = "Two";
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CommSummary))]
+    private string _stopBits = "Two";
 
     /// <summary>串口校验位。</summary>
-    [ObservableProperty] private string _parity = "None";
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CommSummary))]
+    private string _parity = "None";
 
-    /// <summary>网口 IP。</summary>
-    [ObservableProperty] private string _ip = "";
+    /// <summary>网口 IP（默认 192.168.40.110，通常无需配置）。</summary>
+    [ObservableProperty] private string _ip = "192.168.40.110";
 
     /// <summary>网口端口。</summary>
-    [ObservableProperty] private int _port = 1030;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CommSummary))]
+    private int _port = 1030;
 
     /// <summary>序列号（DevSn，可空 = 连接不校验序列号，按 IsExist 判定）。</summary>
     [ObservableProperty] private string? _serialNumber;
@@ -860,6 +890,15 @@ public partial class ToolDeviceEditModel : ObservableObject
 
     /// <summary>是否网口通讯（XAML 可见性）。</summary>
     public bool IsEthernet => Link == LinkType.Ethernet;
+
+    /// <summary>
+    /// 通讯参数摘要（行内显示；详细配置在弹窗）。
+    /// </summary>
+    public string CommSummary => Link switch
+    {
+        LinkType.Ethernet => $"网口 · 端口 {Port}",
+        _ => $"串口 · {Baud}-{DataBits}-{StopBits}-{Parity}",
+    };
 
     /// <summary>通讯方式（XAML 下拉）。</summary>
     public IReadOnlyList<KeyValuePair<LinkType, string>> LinkOptions { get; } =
@@ -926,6 +965,100 @@ public partial class ToolDeviceEditModel : ObservableObject
         }
         return em;
     }
+}
+
+/// <summary>
+/// 共享设备通讯参数弹窗视图模型：编辑**副本**，确定（<see cref="ApplyTo"/>）才回写行，取消不生效。
+/// 串口：波特率/数据位/停止位/校验位；网口：仅端口号（IP 用默认，无需配置）。
+/// </summary>
+public partial class CommParamsEditModel : ObservableObject
+{
+    /// <summary>通讯方式。</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsSerial))]
+    [NotifyPropertyChangedFor(nameof(IsEthernet))]
+    private LinkType _link;
+
+    /// <summary>串口波特率。</summary>
+    [ObservableProperty] private int _baud;
+
+    /// <summary>串口数据位。</summary>
+    [ObservableProperty] private int _dataBits;
+
+    /// <summary>串口停止位。</summary>
+    [ObservableProperty] private string _stopBits = "Two";
+
+    /// <summary>串口校验位。</summary>
+    [ObservableProperty] private string _parity = "None";
+
+    /// <summary>网口端口。</summary>
+    [ObservableProperty] private int _port;
+
+    /// <summary>是否串口（XAML 可见性）。</summary>
+    public bool IsSerial => Link == LinkType.Serial;
+
+    /// <summary>是否网口（XAML 可见性）。</summary>
+    public bool IsEthernet => Link == LinkType.Ethernet;
+
+    /// <summary>通讯方式下拉。</summary>
+    public IReadOnlyList<KeyValuePair<LinkType, string>> LinkOptions { get; } =
+    [
+        new(LinkType.Serial, "串口"),
+        new(LinkType.Ethernet, "网口"),
+    ];
+
+    /// <summary>波特率下拉。</summary>
+    public int[] BaudOptions { get; } = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200];
+
+    /// <summary>数据位下拉。</summary>
+    public int[] DataBitsOptions { get; } = [5, 6, 7, 8];
+
+    /// <summary>停止位下拉。</summary>
+    public string[] StopBitsOptions { get; } = ["One", "Two"];
+
+    /// <summary>校验位下拉。</summary>
+    public string[] ParityOptions { get; } = ["None", "Odd", "Even"];
+
+    /// <summary>
+    /// 关闭请求（true=确定，false=取消）。
+    /// </summary>
+    public event EventHandler<bool>? RequestClose;
+
+    /// <summary>
+    /// 从共享设备行复制当前通讯参数。
+    /// </summary>
+    /// <param name="row">共享设备行。</param>
+    public CommParamsEditModel(ToolDeviceEditModel row)
+    {
+        Link = row.Link;
+        Baud = row.Baud;
+        DataBits = row.DataBits;
+        StopBits = row.StopBits;
+        Parity = row.Parity;
+        Port = row.Port;
+    }
+
+    /// <summary>
+    /// 确定：把弹窗参数回写共享设备行。
+    /// </summary>
+    /// <param name="row">共享设备行。</param>
+    public void ApplyTo(ToolDeviceEditModel row)
+    {
+        row.Link = Link;
+        row.Baud = Baud;
+        row.DataBits = DataBits;
+        row.StopBits = StopBits;
+        row.Parity = Parity;
+        row.Port = Port;
+    }
+
+    /// <summary>确定。</summary>
+    [RelayCommand]
+    private void Ok() => RequestClose?.Invoke(this, true);
+
+    /// <summary>取消。</summary>
+    [RelayCommand]
+    private void Cancel() => RequestClose?.Invoke(this, false);
 }
 
 /// <summary>
