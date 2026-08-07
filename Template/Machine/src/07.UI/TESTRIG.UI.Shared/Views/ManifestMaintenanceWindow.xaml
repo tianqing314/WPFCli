@@ -9,8 +9,8 @@
     xmlns:views="clr-namespace:TESTRIG.UI.Shared.Views"
     xmlns:vm="clr-namespace:TESTRIG.UI.Shared.ViewModels"
     Title="TESTRIG / 测试项 维护"
-    Width="1160"
-    Height="780"
+    Width="1300"
+    Height="860"
     d:DataContext="{d:DesignInstance vm:ManifestMaintenanceViewModel}"
     CanMaximize="True"
     Style="{StaticResource ChromeWindow.Style}"
@@ -342,7 +342,10 @@
                     </StackPanel>
                 </Border>
 
-                <ScrollViewer DataContext="{Binding Current}" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer
+                    DataContext="{Binding Current}"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,0,4,0">
                         <!--  元信息  -->
                         <materialDesign:Card
@@ -650,29 +653,18 @@
                                                         SelectedValue="{Binding Link}"
                                                         SelectedValuePath="Key"
                                                         Style="{StaticResource Fld}" />
-                                                    <!--  通讯参数摘要 + 编辑（弹窗配置：串口 波特率/数据位/停止位/校验位；网口 端口号）  -->
-                                                    <TextBlock
-                                                        Width="44"
-                                                        Margin="6,0,0,0"
-                                                        VerticalAlignment="Center"
-                                                        Foreground="{StaticResource Brush.TextWeak}"
-                                                        Text="参数" />
-                                                    <TextBlock
-                                                        Width="126"
-                                                        VerticalAlignment="Center"
-                                                        FontFamily="{StaticResource Font.Mono}"
-                                                        Foreground="{StaticResource Brush.TextWeak}"
-                                                        Text="{Binding CommSummary}"
-                                                        ToolTip="点击右侧「编辑」配置通讯参数" />
+                                                    <!--  编辑按钮：弹窗配置通讯参数（串口 波特率/数据位/停止位/校验位；网口 端口号），悬停显示当前参数  -->
                                                     <Button
                                                         Height="26"
+                                                        Margin="6,0,0,0"
                                                         Padding="10,0"
                                                         Command="{Binding DataContext.EditCommParamsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                         CommandParameter="{Binding}"
-                                                        Style="{StaticResource Btn.Secondary}">
+                                                        Style="{StaticResource Btn.Secondary}"
+                                                        ToolTip="{Binding CommSummary}">
                                                         <StackPanel Orientation="Horizontal">
                                                             <materialDesign:PackIcon VerticalAlignment="Center" Kind="Pencil" />
-                                                            <TextBlock Margin="4,0,0,0" Text="编辑" />
+                                                            <TextBlock Margin="4,0,0,0" Text="通讯参数" />
                                                         </StackPanel>
                                                     </Button>
                                                     <TextBlock
