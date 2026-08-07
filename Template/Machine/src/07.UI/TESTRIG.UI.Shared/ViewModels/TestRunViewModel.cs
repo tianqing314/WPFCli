@@ -71,6 +71,11 @@ public partial class TestRunViewModel : ObservableObject
     private readonly IUserSession _session;
 
     /// <summary>
+    /// 共享设备配置仓储（测试项维护写入的 .shared.json，连接配置页读取清单）。
+    /// </summary>
+    private readonly ISharedDeviceStore _sharedStore;
+
+    /// <summary>
     /// 全自动计数器（通过/不合格/复测/平均耗时）。
     /// </summary>
     private readonly AutomationCounters _counters = new();
@@ -103,6 +108,7 @@ public partial class TestRunViewModel : ObservableObject
         ConnectionManager conn, IConnectionConfigStore connStore, AutomationOrchestrator orch,
         INotificationService notify, IDeviceScanner scanner, IUserSession session,
         IEnumerable<IBoardToolbarExtraProvider> boardExtras,
+        ISharedDeviceStore sharedStore,
         HardwareOptions? hwOptions = null)
     {
         _manifest = manifest;
@@ -114,6 +120,7 @@ public partial class TestRunViewModel : ObservableObject
         _notify = notify;
         _scanner = scanner;
         _session = session;
+        _sharedStore = sharedStore;
         _dispatcher = Application.Current.Dispatcher;
 
         // 本套针床若有专属工具栏扩展则挂上（没有就是 null，工具栏与原来一致）
@@ -429,7 +436,7 @@ public partial class TestRunViewModel : ObservableObject
     [RelayCommand]
     private void OpenConnectionConfig()
     {
-        var vm = new ConnectionConfigViewModel(_connStore, _scanner, _conn, _manifest);
+        var vm = new ConnectionConfigViewModel(_connStore, _scanner, _conn, _manifest, _sharedStore);
         new ConnectionConfigWindow(vm) { Owner = Application.Current.MainWindow }.ShowDialog();
 
         // 与配置窗口内的连接动作关联：关闭后同步（整机无共享标准盒状态栏）

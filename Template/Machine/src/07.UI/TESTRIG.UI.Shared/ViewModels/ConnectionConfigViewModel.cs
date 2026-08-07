@@ -81,8 +81,9 @@ public partial class ConnectionConfigViewModel : ObservableObject
     /// <param name="scanner">设备扫描器。</param>
     /// <param name="conn">连接管理器。</param>
     /// <param name="manifest">当前针床清单。</param>
+    /// <param name="sharedStore">共享设备配置仓储（测试项维护写入的 .shared.json）。</param>
     public ConnectionConfigViewModel(IConnectionConfigStore store, IDeviceScanner scanner, ConnectionManager conn,
-        JigManifest manifest)
+        JigManifest manifest, ISharedDeviceStore sharedStore)
     {
         _store = store;
         _scanner = scanner;
@@ -91,19 +92,20 @@ public partial class ConnectionConfigViewModel : ObservableObject
         _dut = manifest.Dut;
         var c = store.Current;
 
-        // 标准模块（共享设备：正压/真空标准模块，来自 manifest.ToolDevices；已存 StandardModules 覆盖优先）
-        // 通讯方式定死串口（DPSEX 4800/Two/None），各自一行带连接/断开（真连探活）。
-        // 物理链路只选 COM 口——DevSn（序列号）不作为物理链路显示，连接时由驱动读设备 SN 与 DevSn 比对。
-        foreach (var tool in manifest.ToolDevices)
+        // 标准模块（共享设备：正压/真空标准模块，来自测试项维护的共享设备清单，存在即完全取代 manifest 默认；
+        // 已存 StandardModules 的 COM 覆盖优先）。通讯方式按清单（串口/网口），各自一行带连接/断开（真连探活）。
+        // 物理链路只选 COM 口——序列号不作为物理链路显示，连接时由驱动读设备 SN 与清单 SerialNumber 比对。
+        var toolSource = sharedStore.Load(manifest.DeviceFamily, manifest.Key) ?? manifest.ToolDevices;
+        foreach (var tool in toolSource)
         {
             _toolModel[tool.Key] = tool.Model;
-            _toolSn[tool.Key] = tool.Comm?.PhysicalLink; // 配置 DevSn（如 DPSE022FE0054）
+            _toolSn[tool.Key] = tool.SerialNumber; // 清单序列号（如 DPSE022FE0054，可空）
             var ep = c.StandardModules.TryGetValue(tool.Key, out var se)
                 ? se
                 : tool.Comm is not null
                     ? tool.Comm with { PhysicalLink = "" }
                     : CommEndpoint.OfSerial("", new SerialParams(4800, 8, "Two", "None"));
-            StandardModules.Add(new CommRowViewModel(tool.Name, ep, SerialOptions, UsbOptions, conn, SerialOnly)
+            StandardModules.Add(new CommRowViewModel(tool.Name, ep, SerialOptions, UsbOptions, conn, AllLinks)
             {
                 ToggleHandler = ToggleStandardModuleRowAsync,
                 DeviceKey = tool.Key,

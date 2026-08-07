@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using TESTRIG.Core.Abstractions;
 
@@ -7,8 +9,9 @@ namespace TESTRIG.Jigs;
 /// 针床目录：扫描本工程随产物拷贝的 <c>Manifests/&lt;设备&gt;/&lt;板&gt;.json</c>，加载为强类型清单并按设备分组，
 /// 供菜单"设备→板子"两级导航。仅扫本目录的 JSON，**非旧 MEF 全盘 DLL 扫描**。
 /// 新增板子 = 往 Manifests 里加一份 JSON，无需任何代码。维护页可增删改清单，改后 <see cref="Reload"/> 即时生效。
+/// 同时实现 <see cref="ISharedDeviceStore"/>：共享设备（标准模块）独立配置 <c>Manifests/&lt;设备&gt;/&lt;Key&gt;.shared.json</c> 的读写。
 /// </summary>
-public sealed class JigCatalog
+public sealed class JigCatalog : ISharedDeviceStore
 {
     /// <summary>
     /// 已加载的针床清单集合。
@@ -182,6 +185,68 @@ public sealed class JigCatalog
         _logger.LogInformation("已保存针床清单 {Key} → {Path}", manifest.Key, target);
         Reload();
     }
+
+    /// <summary>
+    /// 共享设备配置 JSON 序列化选项（与 manifest 一致：缩进、空值省略、中文不转义、枚举按字符串）。
+    /// </summary>
+    private static readonly JsonSerializerOptions SharedJsonOpts = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        Converters = { new JsonStringEnumConverter() },
+    };
+
+    /// <summary>
+    /// 加载某工装的共享设备（标准模块）配置。无独立配置文件返回 null（调用方回落 manifest 默认 ToolDevices）。
+    /// </summary>
+    /// <param name="deviceFamily">设备族。</param>
+    /// <param name="key">工装 Key。</param>
+    /// <returns>共享设备清单，无配置返回 null。</returns>
+    public IReadOnlyList<ToolDeviceDescriptor>? Load(string deviceFamily, string key)
+    {
+        var path = SharedPathOf(deviceFamily, key);
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+        try
+        {
+            var cfg = JsonSerializer.Deserialize<ToolDeviceConfigFile>(File.ReadAllText(path), SharedJsonOpts);
+            return cfg?.Devices ?? [];
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "加载共享设备配置失败：{Path}", path);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 保存某工装的共享设备（标准模块）配置到 <c>.shared.json</c> 并镜像写回源码目录（空清单也落盘，表示显式清空）。
+    /// </summary>
+    /// <param name="deviceFamily">设备族。</param>
+    /// <param name="key">工装 Key。</param>
+    /// <param name="devices">共享设备清单。</param>
+    public void Save(string deviceFamily, string key, IReadOnlyList<ToolDeviceDescriptor> devices)
+    {
+        var path = SharedPathOf(deviceFamily, key);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        var json = JsonSerializer.Serialize(new ToolDeviceConfigFile { Devices = devices.ToList() }, SharedJsonOpts);
+        File.WriteAllText(path, json);
+        MirrorWriteSource(path, json);
+        _logger.LogInformation("已保存共享设备配置 {Family}/{Key} → {Path}", deviceFamily, key, path);
+    }
+
+    /// <summary>
+    /// 共享设备配置文件的落盘路径：<c>Manifests/&lt;设备族&gt;/&lt;Key&gt;.shared.json</c>（与清单同目录）。
+    /// </summary>
+    /// <param name="deviceFamily">设备族。</param>
+    /// <param name="key">工装 Key。</param>
+    /// <returns>文件路径。</returns>
+    private string SharedPathOf(string deviceFamily, string key)
+        => Path.Combine(_dir, Sanitize(deviceFamily), Sanitize(key) + ".shared.json");
 
     /// <summary>
     /// 把输出目录某清单文件的内容镜像写到源码目录同名相对路径（源码目录不存在则跳过）。

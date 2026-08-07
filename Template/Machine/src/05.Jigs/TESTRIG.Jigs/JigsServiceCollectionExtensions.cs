@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using TESTRIG.Core.Abstractions;
 
 namespace TESTRIG.Jigs;
 
@@ -15,6 +16,8 @@ public static class JigsServiceCollectionExtensions
     public static IServiceCollection AddPcbaJigs(this IServiceCollection services)
     {
         services.AddSingleton<JigCatalog>();
+        // 共享设备（标准模块）配置仓储 = 针床目录（读写在 Manifests 下 .shared.json）
+        services.AddSingleton<ISharedDeviceStore>(sp => sp.GetRequiredService<JigCatalog>());
         return services;
     }
 }

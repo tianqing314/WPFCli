@@ -38,6 +38,13 @@ public sealed class ConnectionSettings
     /// manifest <c>ToolDevices</c> 的 Key → 连接端点（串口）。**加法字段**：旧配置缺此项反序列化为空字典，不触发重建。
     /// </summary>
     public Dictionary<string, CommEndpoint> StandardModules { get; set; } = new();
+
+    /// <summary>
+    /// 标准模块序列号（用户可在连接配置页填写，覆盖 manifest 的 DevSn）：
+    /// manifest <c>ToolDevices</c> 的 Key → 序列号（连接时读设备 SN 比对，不填则只按 IsExist 判定）。
+    /// **加法字段**：旧配置缺此项反序列化为空字典，不触发重建。
+    /// </summary>
+    public Dictionary<string, string> StandardModuleSns { get; set; } = new();
 }
 
 /// <summary>

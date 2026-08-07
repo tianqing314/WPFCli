@@ -35,6 +35,11 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
     private readonly INotificationService _notify;
 
     /// <summary>
+    /// 共享设备（标准模块）配置仓储（读写在 Manifests 下 .shared.json，工装级）。
+    /// </summary>
+    private readonly ISharedDeviceStore _sharedStore;
+
+    /// <summary>
     /// 目录是否被改动过（增删改）——关闭时据此让主菜单重建。
     /// </summary>
     public bool CatalogChanged { get; private set; }
@@ -45,11 +50,13 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
     /// <param name="catalog">针床目录。</param>
     /// <param name="handlers">已注册测试项处理器。</param>
     /// <param name="notify">通知服务。</param>
-    public ManifestMaintenanceViewModel(JigCatalog catalog, IEnumerable<IStepHandler> handlers, INotificationService notify)
+    /// <param name="sharedStore">共享设备配置仓储。</param>
+    public ManifestMaintenanceViewModel(JigCatalog catalog, IEnumerable<IStepHandler> handlers, INotificationService notify, ISharedDeviceStore sharedStore)
     {
         _catalog = catalog;
         _handlers = handlers.ToList();
         _notify = notify;
+        _sharedStore = sharedStore;
         GroupsView = CollectionViewSource.GetDefaultView(Groups);
         GroupsView.Filter = o => o is ManifestGroupViewModel g && g.IsVisible;
         RefreshList(null);
@@ -159,6 +166,53 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
     [ObservableProperty] private PositionEditModel? _selectedPosition;
 
     /// <summary>
+    /// 当前编辑清单里选中的共享设备（删除目标）。
+    /// </summary>
+    [ObservableProperty] private ToolDeviceEditModel? _selectedSharedDevice;
+
+    /// <summary>
+    /// 通讯库实例下拉项（来源 refdlls 的 Xmas11.Comm.Devices.*.dll，反射枚举一次）。
+    /// </summary>
+    public IReadOnlyList<CommLibraryEntry> CommLibraries { get; } = CommLibraryScanner.Scan();
+
+    /// <summary>
+    /// 新增一条共享设备（标准模块）行（默认串口，未落盘）。
+    /// </summary>
+    [RelayCommand]
+    private void AddSharedDevice()
+    {
+        if (Current is null)
+        {
+            return;
+        }
+
+        var row = new ToolDeviceEditModel
+        {
+            Key = $"STD{Current.SharedDevices.Count + 1}",
+            Name = "标准模块",
+            Model = CommLibraries.FirstOrDefault()?.Model ?? "",
+            Link = LinkType.Serial,
+        };
+        Current.SharedDevices.Add(row);
+        SelectedSharedDevice = row;
+    }
+
+    /// <summary>
+    /// 删除选中的共享设备行。
+    /// </summary>
+    [RelayCommand]
+    private void RemoveSharedDevice()
+    {
+        if (Current is null || SelectedSharedDevice is null)
+        {
+            return;
+        }
+
+        Current.SharedDevices.Remove(SelectedSharedDevice);
+        SelectedSharedDevice = null;
+    }
+
+    /// <summary>
     /// 是否有清单在编辑区。
     /// </summary>
     public bool HasCurrent => Current is not null;
@@ -186,6 +240,13 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
         }
 
         Current = ManifestEditModel.From(m);
+        // 共享设备（标准模块）：独立配置优先（测试项维护写入的 .shared.json），否则回落 manifest 默认（References 转换）
+        Current.SharedDevices.Clear();
+        var shared = _sharedStore.Load(m.DeviceFamily, m.Key) ?? m.ToolDevices;
+        foreach (var t in shared)
+        {
+            Current.SharedDevices.Add(ToolDeviceEditModel.From(t));
+        }
         SelectedStep = null;
         SelectedPosition = null;
     }
@@ -339,11 +400,13 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
         try
         {
             _catalog.Save(m.ToManifest(), m.OriginalKey);
+            // 共享设备（标准模块）独立配置：存在即完全取代 manifest 默认（可删除），运行时与连接配置页均以它为准
+            _sharedStore.Save(m.DeviceFamily.Trim(), m.Key.Trim(), m.SharedDevices.Select(s => s.ToDescriptor()).ToList());
             m.OriginalKey = m.Key;
             CatalogChanged = true;
             _notify.Notify($"已保存 TESTRIG：{m.BoardName}");
             RefreshList(m.Key);
-            AppToast.Success($"已保存：{m.BoardName}", "清单已写回 JSON 并重载目录");
+            AppToast.Success($"已保存：{m.BoardName}", "清单与共享设备配置已写回 JSON 并重载目录");
         }
         catch (Exception ex)
         {
@@ -672,6 +735,9 @@ public partial class ManifestEditModel : ObservableObject
     /// <summary>测试项集合。</summary>
     public ObservableCollection<StepEditModel> Steps { get; } = [];
 
+    /// <summary>共享设备（标准模块）集合：整机等模板每套工装的共享设备清单（测试项维护中配置）。</summary>
+    public ObservableCollection<ToolDeviceEditModel> SharedDevices { get; } = [];
+
     /// <summary>
     /// 从不可变清单构建可编辑模型。
     /// </summary>
@@ -716,6 +782,7 @@ public partial class ManifestEditModel : ObservableObject
             Dut = new DeviceDescriptor(DutName.Trim(), DutModel.Trim(), DutComm),
             Positions = Positions.Select(p => new PositionDescriptor(p.Index, p.Name.Trim()) { Comm = p.Comm }).ToList(),
             Steps = Steps.Select(s => s.ToStep()).ToList(),
+            ToolDevices = SharedDevices.Select(s => s.ToDescriptor()).ToList(),
         };
     }
 
@@ -735,7 +802,129 @@ public partial class ManifestEditModel : ObservableObject
         {
             return "存在测试项的 Key/Kind/名称为空。";
         }
+        if (SharedDevices.Any(d => string.IsNullOrWhiteSpace(d.Key) || string.IsNullOrWhiteSpace(d.Model)))
+        {
+            return "存在共享设备的 Key/通讯库实例为空。";
+        }
+        if (SharedDevices.GroupBy(d => d.Key.Trim(), StringComparer.OrdinalIgnoreCase).Any(g => g.Count() > 1))
+        {
+            return "共享设备的 Key 不能重复。";
+        }
         return null;
+    }
+}
+
+/// <summary>
+/// 可编辑共享设备（标准模块）行：通讯库实例（Model）/名称/通讯方式（串口|网口）/串口或网口参数/序列号（可空）。
+/// </summary>
+public partial class ToolDeviceEditModel : ObservableObject
+{
+    /// <summary>实例键（如 DPSEX1/DPSEX2），处理器按此获取。</summary>
+    [ObservableProperty] private string _key = "";
+
+    /// <summary>标准设备名称（共享设备显示，如"正压模块"）。</summary>
+    [ObservableProperty] private string _name = "";
+
+    /// <summary>型号（通讯库实例去 Base 后缀，如 DPSEXBase → DPSEX），按 [DutDriver] 匹配驱动。</summary>
+    [ObservableProperty] private string _model = "";
+
+    /// <summary>通讯方式。</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsSerial))]
+    [NotifyPropertyChangedFor(nameof(IsEthernet))]
+    private LinkType _link = LinkType.Serial;
+
+    /// <summary>串口波特率。</summary>
+    [ObservableProperty] private int _baud = 4800;
+
+    /// <summary>串口数据位。</summary>
+    [ObservableProperty] private int _dataBits = 8;
+
+    /// <summary>串口停止位。</summary>
+    [ObservableProperty] private string _stopBits = "Two";
+
+    /// <summary>串口校验位。</summary>
+    [ObservableProperty] private string _parity = "None";
+
+    /// <summary>网口 IP。</summary>
+    [ObservableProperty] private string _ip = "";
+
+    /// <summary>网口端口。</summary>
+    [ObservableProperty] private int _port = 1030;
+
+    /// <summary>序列号（DevSn，可空 = 连接不校验序列号，按 IsExist 判定）。</summary>
+    [ObservableProperty] private string? _serialNumber;
+
+    /// <summary>是否串口通讯（XAML 可见性）。</summary>
+    public bool IsSerial => Link == LinkType.Serial;
+
+    /// <summary>是否网口通讯（XAML 可见性）。</summary>
+    public bool IsEthernet => Link == LinkType.Ethernet;
+
+    /// <summary>通讯方式（XAML 下拉）。</summary>
+    public IReadOnlyList<KeyValuePair<LinkType, string>> LinkOptions { get; } =
+    [
+        new(LinkType.Serial, "串口"),
+        new(LinkType.Ethernet, "网口"),
+    ];
+
+    /// <summary>波特率下拉。</summary>
+    public int[] BaudOptions { get; } = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200];
+
+    /// <summary>数据位下拉。</summary>
+    public int[] DataBitsOptions { get; } = [5, 6, 7, 8];
+
+    /// <summary>停止位下拉。</summary>
+    public string[] StopBitsOptions { get; } = ["One", "Two"];
+
+    /// <summary>校验位下拉。</summary>
+    public string[] ParityOptions { get; } = ["None", "Odd", "Even"];
+
+    /// <summary>
+    /// 转不可变描述（落盘用）。物理链路留空——实际 COM 在连接配置页按工装选择。
+    /// </summary>
+    /// <returns>标准模块描述。</returns>
+    public ToolDeviceDescriptor ToDescriptor()
+    {
+        return new ToolDeviceDescriptor(Key.Trim(), Name.Trim(), Model.Trim())
+        {
+            Comm = Link switch
+            {
+                LinkType.Ethernet => CommEndpoint.OfEthernet(Ip.Trim(), Port),
+                _ => CommEndpoint.OfSerial("", new SerialParams(Baud, DataBits, StopBits, Parity)),
+            },
+            SerialNumber = string.IsNullOrWhiteSpace(SerialNumber) ? null : SerialNumber.Trim(),
+        };
+    }
+
+    /// <summary>
+    /// 从不可变描述构建可编辑行。
+    /// </summary>
+    /// <param name="d">标准模块描述。</param>
+    /// <returns>可编辑行。</returns>
+    public static ToolDeviceEditModel From(ToolDeviceDescriptor d)
+    {
+        var em = new ToolDeviceEditModel
+        {
+            Key = d.Key,
+            Name = d.Name,
+            Model = d.Model,
+            SerialNumber = d.SerialNumber,
+        };
+        if (d.Comm is not null)
+        {
+            em.Link = d.Comm.Link;
+            em.Ip = d.Comm.Ip ?? "";
+            em.Port = d.Comm.Port ?? 1030;
+            if (d.Comm.Serial is not null)
+            {
+                em.Baud = d.Comm.Serial.Baud;
+                em.DataBits = d.Comm.Serial.DataBits;
+                em.StopBits = d.Comm.Serial.StopBits;
+                em.Parity = d.Comm.Serial.Parity;
+            }
+        }
+        return em;
     }
 }
 

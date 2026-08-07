@@ -1071,6 +1071,7 @@ public static class ReferencesAdapter
                 if (!(GetString(dev, "DeviceType") ?? "").Equals("Tool", StringComparison.OrdinalIgnoreCase)) continue;
                 var key = GetString(dev, "DeviceKey");
                 if (string.IsNullOrWhiteSpace(key)) continue;
+                string? toolSerialNumber = null;
                 var toolComm = new Dictionary<string, object?>
                 {
                     ["Link"] = "Serial",
@@ -1086,8 +1087,8 @@ public static class ReferencesAdapter
                 if (dev.TryGetProperty("CommConfigs", out var tcfg) &&
                     tcfg.ValueKind == JsonValueKind.Array && tcfg.GetArrayLength() > 0)
                 {
-                    // 旧串口配置：DevSn 作物理链路（按 SN 识别标准模块），Bauds/StopBits/Parity 为串口参数
-                    toolComm["PhysicalLink"] = GetString(tcfg[0], "DevSn") ?? "COM1";
+                    // 旧串口配置：DevSn 入 SerialNumber（连接时读设备 SN 比对），Bauds/StopBits/Parity 为串口参数；
+                    // PhysicalLink 保持 COM1（物理链路由连接配置页按实际选择，不预填序列号）
                     toolComm["Serial"] = new Dictionary<string, object?>
                     {
                         ["Baud"] = int.TryParse(GetString(tcfg[0], "Bauds"), out var tb2) ? tb2 : 4800,
@@ -1095,18 +1096,28 @@ public static class ReferencesAdapter
                         ["StopBits"] = GetString(tcfg[0], "StopBits") ?? "Two",
                         ["Parity"] = GetString(tcfg[0], "Parity") ?? "None",
                     };
+                    var devSn = GetString(tcfg[0], "DevSn");
+                    if (!string.IsNullOrWhiteSpace(devSn))
+                    {
+                        toolSerialNumber = devSn;
+                    }
                 }
                 // 型号取旧 $type 的类名（如 Bots.TestBench.Device.DPSEX → DPSEX），标准模块注册表按此匹配 [DutDriver]
                 var typeName = GetString(dev, "$type") ?? "";
                 var model = typeName.Split(',')[0].Trim().Split('.').LastOrDefault();
                 if (string.IsNullOrWhiteSpace(model)) model = key;
-                toolDevices.Add(new Dictionary<string, object?>
+                var toolEntry = new Dictionary<string, object?>
                 {
                     ["Key"] = key,
                     ["Name"] = GetString(dev, "DeviceName") ?? key,
                     ["Model"] = model,
                     ["Comm"] = toolComm,
-                });
+                };
+                if (!string.IsNullOrWhiteSpace(toolSerialNumber))
+                {
+                    toolEntry["SerialNumber"] = toolSerialNumber;
+                }
+                toolDevices.Add(toolEntry);
             }
         }
 

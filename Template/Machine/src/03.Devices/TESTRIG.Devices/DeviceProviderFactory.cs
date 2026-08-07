@@ -35,20 +35,27 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
     private readonly IConnectionResolver _resolver;
 
     /// <summary>
+    /// 共享设备配置仓储（测试项维护写入的 .shared.json；存在即取代 manifest 默认 ToolDevices）。
+    /// </summary>
+    private readonly ISharedDeviceStore _sharedStore;
+
+    /// <summary>
     /// 构造设备提供者工厂。
     /// </summary>
     /// <param name="registry">被检驱动注册表。</param>
     /// <param name="stdRegistry">标准模块注册表。</param>
     /// <param name="connections">连接配置。</param>
     /// <param name="resolver">连接解析器（串口物理链路 → 当前 COM）。</param>
+    /// <param name="sharedStore">共享设备配置仓储。</param>
     public DeviceProviderFactory(DutDriverRegistry registry, StandardModuleRegistry stdRegistry,
         ConnectionSettings connections,
-        IConnectionResolver resolver)
+        IConnectionResolver resolver, ISharedDeviceStore sharedStore)
     {
         _registry = registry;
         _stdRegistry = stdRegistry;
         _connections = connections;
         _resolver = resolver;
+        _sharedStore = sharedStore;
     }
 
     /// <summary>
@@ -82,12 +89,14 @@ public sealed class DeviceProviderFactory : IDeviceProviderFactory
 
         var dut = comm is not null ? manifest.Dut with { Comm = comm } : manifest.Dut;
 
-        // 标准模块（共享设备）：按 manifest.ToolDevices 每号位创建实例，处理器按 DeviceKey 获取
+        // 标准模块（共享设备）：独立配置优先（测试项维护 .shared.json，存在即完全取代），否则 manifest 默认（References 转换）
+        var toolSource = _sharedStore.Load(manifest.DeviceFamily, manifest.Key) ?? manifest.ToolDevices;
         var tools = new Dictionary<string, IStandardModule>(StringComparer.OrdinalIgnoreCase);
-        foreach (var tool in manifest.ToolDevices)
+        foreach (var tool in toolSource)
         {
             var toolComm = tool.Comm;
-            var expectedSn = tool.Comm?.PhysicalLink; // 配置 DevSn（解析前快照，连接时读设备 SN 比对）
+            // 期望序列号 = 清单 SerialNumber（用户配置）；连接时读设备 SN 比对（见 DPSEXStandardModule.ConnectAsync）
+            var expectedSn = tool.SerialNumber;
             if (toolComm is not null && toolComm.Link == LinkType.Serial)
             {
                 var tr = _resolver.Resolve(toolComm);

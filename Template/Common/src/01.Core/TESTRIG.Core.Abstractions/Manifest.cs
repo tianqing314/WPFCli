@@ -68,9 +68,54 @@ public sealed record JigManifest
 public sealed record ToolDeviceDescriptor(string Key, string Name, string Model)
 {
     /// <summary>
-    /// 该标准模块的连接端点（manifest 串口配置）。
+    /// 该标准模块的连接端点（通讯方式与串口/网口参数）。
     /// </summary>
     public CommEndpoint? Comm { get; init; }
+
+    /// <summary>
+    /// 期望设备序列号（DevSn；可空 = 不校验序列号，连接按 IsExist 判定）。
+    /// </summary>
+    public string? SerialNumber { get; init; }
+}
+
+/// <summary>
+/// 共享设备（标准模块）独立配置文件：整机等模板每套工装一份（<c>Manifests/&lt;设备族&gt;/&lt;Key&gt;.shared.json</c>），
+    /// 由测试项维护窗口增删改。运行时存在则**完全取代** manifest 的 <see cref="JigManifest.ToolDevices"/>
+/// （References 转换只提供初始默认，用户维护为准）；不存在则回落 manifest 默认。
+/// </summary>
+public sealed class ToolDeviceConfigFile
+{
+    /// <summary>
+    /// 配置格式版本（当前 1）。
+    /// </summary>
+    public int SchemaVersion { get; set; } = 1;
+
+    /// <summary>
+    /// 共享设备清单。
+    /// </summary>
+    public List<ToolDeviceDescriptor> Devices { get; set; } = [];
+}
+
+/// <summary>
+/// 共享设备（标准模块）配置仓储：按工装（设备族 + Key）读写独立配置文件。
+/// </summary>
+public interface ISharedDeviceStore
+{
+    /// <summary>
+    /// 加载某工装的共享设备配置。无独立配置文件返回 null（调用方回落 manifest 默认 ToolDevices）。
+    /// </summary>
+    /// <param name="deviceFamily">设备族（manifest.DeviceFamily）。</param>
+    /// <param name="key">工装 Key（manifest.Key）。</param>
+    /// <returns>共享设备清单，无配置返回 null。</returns>
+    IReadOnlyList<ToolDeviceDescriptor>? Load(string deviceFamily, string key);
+
+    /// <summary>
+    /// 保存某工装的共享设备配置（覆盖写 .shared.json；空清单也落盘，表示显式清空）。
+    /// </summary>
+    /// <param name="deviceFamily">设备族。</param>
+    /// <param name="key">工装 Key。</param>
+    /// <param name="devices">共享设备清单。</param>
+    void Save(string deviceFamily, string key, IReadOnlyList<ToolDeviceDescriptor> devices);
 }
 
 /// <summary>
