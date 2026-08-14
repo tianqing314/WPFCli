@@ -38,13 +38,9 @@ public static class CliOptionsParser
         string? business = null;
         string? code = null;
         string? output = null;
-        string? version = null;
-        string? gitLabUrl = null;
-        string? ftpHost = null;
-        string? ftpDirectory = null;
         string? dutType = null;
         string? referencesRoot = null;
-        bool? obfuscate = null;
+        string? importMethod = null;
         bool? package = null;
         var overwriteExisting = false;
         var dryRun = false;
@@ -62,28 +58,22 @@ public static class CliOptionsParser
                         return CliParseResult.Failure("--template-root 缺少目录参数");
                     break;
                 case "--output": output = NextValue(args, ref i); break;
-                case "--version": version = NextValue(args, ref i); break;
                 case "--dut": dutType = NextValue(args, ref i); break;
                 case "--references-root": referencesRoot = NextValue(args, ref i); break;
+                case "--import": importMethod = NextValue(args, ref i); break;
                 case "--force": overwriteExisting = true; break;
                 case "--dry-run": dryRun = true; break;
                 case "--no-build": skipBuild = true; break;
-                case "--obfuscate": obfuscate = true; break;
-                case "--no-obfuscate": obfuscate = false; break;
                 case "--pack": package = true; break;
                 case "--no-pack": package = false; break;
-                case "--gitlab": gitLabUrl = NextValue(args, ref i); break;
-                case "--ftp-host": ftpHost = NextValue(args, ref i); break;
-                case "--ftp-dir": ftpDirectory = NextValue(args, ref i); break;
                 default: return CliParseResult.Failure($"未知参数: {argument}");
             }
         }
 
         foreach (var missing in new[]
                  {
-                     ("--biz", business), ("--code", code), ("--output", output), ("--version", version),
-                     ("--dut", dutType), ("--references-root", referencesRoot),
-                     ("--gitlab", gitLabUrl), ("--ftp-host", ftpHost), ("--ftp-dir", ftpDirectory)
+                     ("--biz", business), ("--code", code), ("--output", output),
+                     ("--dut", dutType), ("--references-root", referencesRoot), ("--import", importMethod)
                  })
         {
             if (args.Contains(missing.Item1, StringComparer.Ordinal) && missing.Item2 == null)
@@ -102,14 +92,10 @@ public static class CliOptionsParser
         var codeError = InteractiveWizard.ValidateProjectCode(templateConfig, code);
         if (codeError != null)
             return CliParseResult.Failure($"代号 \"{code}\" 非法：{codeError}");
-        if (!string.IsNullOrWhiteSpace(version) && !VersionManager.IsValidVersion(version))
-            return CliParseResult.Failure($"版本号 \"{version}\" 非法，应为 major.minor.patch[.revision]");
-        if (!string.IsNullOrWhiteSpace(gitLabUrl) && !IsAbsoluteUri(gitLabUrl, "http", "https"))
-            return CliParseResult.Failure("--gitlab 必须是有效的 HTTP/HTTPS 仓库地址");
-        if (!string.IsNullOrWhiteSpace(ftpHost) && !IsAbsoluteUri(ftpHost, "ftp", "ftps"))
-            return CliParseResult.Failure("--ftp-host 必须是有效的 FTP/FTPS 地址");
-        if (!string.IsNullOrWhiteSpace(ftpDirectory) && string.IsNullOrWhiteSpace(ftpHost))
-            return CliParseResult.Failure("使用 --ftp-dir 时必须同时提供 --ftp-host");
+
+        var importMethodValue = ParseImportMethod(importMethod);
+        if (importMethodValue == null)
+            return CliParseResult.Failure($"--import 仅支持 original（原测试平台导入）或 excel（Excel 导入），当前值: {importMethod}");
 
         string outputDir;
         try
@@ -131,19 +117,13 @@ public static class CliOptionsParser
             BusinessTemplate = businessTemplate.Config,
             ProjectCode = code,
             OutputDir = outputDir,
-            Version = version ?? string.Empty,
             OverwriteExisting = overwriteExisting,
             DryRun = dryRun,
             SkipBuild = skipBuild,
-            EnableObfuscation = obfuscate ?? false,
             EnablePackaging = package ?? false,
-            EnableGitLab = !string.IsNullOrWhiteSpace(gitLabUrl),
-            GitLabRepoUrl = gitLabUrl ?? string.Empty,
-            EnableFtp = !string.IsNullOrWhiteSpace(ftpHost),
-            FtpHost = ftpHost ?? string.Empty,
-            FtpRemoteDir = ftpDirectory ?? string.Empty,
             DutType = dutType ?? string.Empty,
-            ReferencesRoot = referencesRoot ?? string.Empty
+            ReferencesRoot = referencesRoot ?? string.Empty,
+            ImportMethod = importMethodValue.Value
         });
     }
 
@@ -156,9 +136,13 @@ public static class CliOptionsParser
         return value;
     }
 
-    private static bool IsAbsoluteUri(string value, params string[] schemes)
-        => Uri.TryCreate(value, UriKind.Absolute, out var uri) &&
-           schemes.Contains(uri.Scheme, StringComparer.OrdinalIgnoreCase);
+    private static DutImportMethod? ParseImportMethod(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return DutImportMethod.OriginalPlatform;
+        if (value.Equals("original", StringComparison.OrdinalIgnoreCase)) return DutImportMethod.OriginalPlatform;
+        if (value.Equals("excel", StringComparison.OrdinalIgnoreCase)) return DutImportMethod.Excel;
+        return null;
+    }
 }
 
 public sealed record BootstrapParseResult(string? TemplateRoot, string? Error)

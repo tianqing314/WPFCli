@@ -21,28 +21,15 @@ public static class InteractiveWizard
             TemplatePath = templatePath
         };
 
-        PrintStep(1, 7, "选择业务模板", "模板决定生成项目的业务骨架和默认能力");
+        PrintStep(1, 5, "选择业务模板", "先选模板大类，再选具体业务模板");
         var businessType = PromptBusinessType(templatePath, opts);
         if (businessType == null) return null;
 
-        // 动态工装模板需要指定被检类型（如 PS02），替换模板中的被检占位符（如 TemplateUUT）
-        var hasDut = !string.IsNullOrWhiteSpace(opts.BusinessTemplate.DutPlaceholder);
-        var totalSteps = hasDut ? 7 : 6;
-        var step = 2;
-
-        if (hasDut)
-        {
-            PrintStep(step, totalSteps, "设置被检类型", $"替换模板中的被检占位符 {opts.BusinessTemplate.DutPlaceholder}");
-            opts.DutType = PromptDutType(opts.BusinessTemplate.DutPlaceholder!);
-            step++;
-        }
-
-        PrintStep(step++, totalSteps, "设置项目代号", "仅允许以字母开头的 2-20 位字母或数字");
+        PrintStep(2, 5, "设置项目代号", "仅允许以字母开头的 2-20 位字母或数字");
         var projectCode = PromptProjectCode(templateConfig);
         if (projectCode == null) return null;
         opts.ProjectCode = projectCode;
         opts.OutputDir = Path.Combine(workspaceRoot, "Output", projectCode);
-        opts.Version = PromptVersion();
         if (Directory.Exists(opts.OutputDir))
         {
             opts.OverwriteExisting = PromptYesNo(
@@ -55,36 +42,18 @@ public static class InteractiveWizard
             }
         }
 
-        PrintStep(step++, totalSteps, "编译选项", "可在最后的配置摘要中再次确认");
-        opts.EnableObfuscation = PromptYesNo("编译文件是否混淆？", defaultValue: false);
+        // 所有模板统一确认被检类型（无被检占位符的模板可回车跳过）
+        var dutPlaceholder = opts.BusinessTemplate.DutPlaceholder;
+        PrintStep(3, 5, "设置被检类型",
+            string.IsNullOrWhiteSpace(dutPlaceholder)
+                ? "该模板暂不支持被检占位符替换，可直接回车跳过"
+                : $"替换模板中的被检占位符 {dutPlaceholder}");
+        opts.DutType = PromptDutType(dutPlaceholder);
 
-        opts.EnablePackaging = PromptYesNo("编译后是否生成安装包？", defaultValue: true);
+        PrintStep(4, 5, "选择被检导入方式", "原测试平台导入：从 References 拉取旧 Bots.TestBench 资源自动转换；Excel 导入：预留");
+        opts.ImportMethod = PromptImportMethod();
 
-        PrintStep(step++, totalSteps, "GitLab 发布方案", "只生成发布文件，不会替你执行 git push");
-        opts.EnableGitLab = PromptYesNo("是否上传到 GitLab（生成 .gitlab-ci.yml + 推送脚本）？", defaultValue: false);
-        if (opts.EnableGitLab)
-        {
-            opts.GitLabRepoUrl = PromptText(
-                "请输入 GitLab 仓库地址",
-                "如 http://gitlab.const.cc/guanduzhen/tool/xxx.git",
-                required: true);
-        }
-
-        PrintStep(step++, totalSteps, "FTP 发布方案", "发布凭据通过环境变量配置，不会写入生成文件");
-        opts.EnableFtp = PromptYesNo("是否上传到 FTP 服务器（生成 FTP 发布脚本）？", defaultValue: false);
-        if (opts.EnableFtp)
-        {
-            opts.FtpHost = PromptText(
-                "请输入 FTP 服务器地址",
-                "如 ftp://imdtool.const.cc",
-                required: true);
-            opts.FtpRemoteDir = PromptText("请输入 FTP 远程目录", "如 /TestApp，留空则上传到根目录", required: false);
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("    发布前设置 TESTRIG_FTP_USER 和 TESTRIG_FTP_PASSWORD 环境变量");
-            Console.ResetColor();
-        }
-
-        PrintStep(step, totalSteps, "确认构建", "检查配置后开始生成、编译和产物自检");
+        PrintStep(5, 5, "确认构建", "检查配置后开始生成、编译和产物自检");
         PrintSummary(opts);
 
         if (!PromptYesNo("确认开始构建？", defaultValue: true))
@@ -98,27 +67,33 @@ public static class InteractiveWizard
         return opts;
     }
 
-    /// <summary>输入被检类型，校验合法性。回车默认使用模板占位符本身（不替换）。</summary>
-    private static string PromptDutType(string placeholder)
+    /// <summary>输入被检类型，校验合法性。有占位符时回车默认使用占位符本身（不替换）；无占位符时回车跳过。</summary>
+    private static string PromptDutType(string? placeholder)
     {
+        var hasPlaceholder = !string.IsNullOrWhiteSpace(placeholder);
         while (true)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("  被检类型");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.Write($" [如 PS02、P06，回车默认 {placeholder}]");
+            Console.Write(hasPlaceholder ? $" [如 PS02、P06，回车默认 {placeholder}]" : " [回车跳过]");
             Console.ResetColor();
             Console.Write("\n  > ");
 
             var input = Console.ReadLine()?.Trim();
             if (string.IsNullOrWhiteSpace(input))
             {
-                PrintAccepted($"使用默认被检类型: {placeholder}");
-                return placeholder;
+                if (hasPlaceholder)
+                {
+                    PrintAccepted($"使用默认被检类型: {placeholder}");
+                    return placeholder!;
+                }
+                PrintAccepted("已跳过被检类型设置");
+                return string.Empty;
             }
 
-            var error = ValidateDutType(input, placeholder);
+            var error = ValidateDutType(input, placeholder ?? "");
             if (error != null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -227,15 +202,14 @@ public static class InteractiveWizard
         if (line.Length > 0) yield return line.ToString();
     }
 
-    /// <summary>业务分类定义（顺序即展示顺序）：分类标识 → 显示名称。</summary>
-    private static readonly (string Category, string DisplayName)[] BusinessCategories =
+    /// <summary>模板大类定义（顺序即展示顺序）：大类标识 → 显示名称。</summary>
+    private static readonly (string Group, string DisplayName)[] BusinessGroups =
     {
-        ("aging", "① 老化模板"),
-        ("dynamic", "② 动态工装模板"),
-        ("machine", "③ 整机测试模板")
+        ("dedicated", "专线模板"),
+        ("general", "通用模板")
     };
 
-    /// <summary>选择业务类型：按业务分类分组展示 Template\ 下含 template.config.json 的子目录（排除 Common）。</summary>
+    /// <summary>选择业务模板：两级选择——先选模板大类（专线/通用），再选该大类下的具体业务模板。</summary>
     private static string? PromptBusinessType(string templatePath, BuildOptions opts)
     {
         IReadOnlyList<BusinessTemplateDescriptor> templates;
@@ -249,16 +223,17 @@ public static class InteractiveWizard
             return null;
         }
 
-        // 只保留已归入 3 个业务分类的模板（隐藏其余预留模板）
-        var grouped = BusinessCategories
-            .Select(category => (
-                Category: category,
+        // 按大类分组（仅保留声明了 group 的模板）
+        var grouped = BusinessGroups
+            .Select(group => (
+                Group: group,
                 Templates: templates
-                    .Where(template => template.Config.Category == category.Category)
+                    .Where(template => template.Config.Group.Equals(group.Group, StringComparison.OrdinalIgnoreCase))
                     .ToList()))
+            .Where(group => group.Templates.Count > 0)
             .ToList();
 
-        if (grouped.All(group => group.Templates.Count == 0))
+        if (grouped.Count == 0)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("  [ERROR] 未找到任何业务模板（Template\\<业务>\\template.config.json）。");
@@ -266,30 +241,73 @@ public static class InteractiveWizard
             return null;
         }
 
-        var choices = new List<ChoiceItem>();
-        foreach (var group in grouped)
-        {
-            if (group.Templates.Count == 0) continue;
-            choices.Add(new ChoiceItem(group.Category.DisplayName, "", false, IsHeader: true));
-            choices.AddRange(group.Templates.Select(template => new ChoiceItem(
-                template.DirectoryName,
-                template.Config.Description,
-                template.Config.Disabled)));
-        }
-
-        var selected = PromptChoice(choices);
-        if (selected == null)
+        // 第一步：选大类
+        var groupChoices = grouped
+            .Select(group => new ChoiceItem(
+                group.Group.Group,
+                $"包含 {group.Templates.Count} 个模板",
+                false,
+                DisplayName: group.Group.DisplayName))
+            .ToList();
+        var selectedGroup = PromptChoice(groupChoices);
+        if (selectedGroup == null)
         {
             PrintCancelled();
             return null;
         }
 
-        var selectedTemplate = templates.First(template =>
-            template.DirectoryName.Equals(selected.Value, StringComparison.OrdinalIgnoreCase));
-        opts.BusinessTemplatePath = selectedTemplate.DirectoryPath;
-        opts.BusinessTemplate = selectedTemplate.Config;
-        PrintAccepted($"业务类型: {selectedTemplate.DirectoryName}（{selectedTemplate.Config.Description}）");
-        return selectedTemplate.DirectoryName;
+        var chosenGroup = grouped.First(group =>
+            group.Group.Group.Equals(selectedGroup.Value, StringComparison.OrdinalIgnoreCase));
+
+        // 第二步：选该大类下的具体模板
+        var templateChoices = chosenGroup.Templates
+            .Select(template => new ChoiceItem(
+                template.DirectoryName,
+                template.Config.Description,
+                template.Config.Disabled,
+                DisplayName: ShortDisplayName(template.Config.Description)))
+            .ToList();
+        var selectedTemplate = PromptChoice(templateChoices);
+        if (selectedTemplate == null)
+        {
+            PrintCancelled();
+            return null;
+        }
+
+        var template = chosenGroup.Templates.First(template =>
+            template.DirectoryName.Equals(selectedTemplate.Value, StringComparison.OrdinalIgnoreCase));
+        opts.BusinessTemplatePath = template.DirectoryPath;
+        opts.BusinessTemplate = template.Config;
+        PrintAccepted($"业务模板: {ShortDisplayName(template.Config.Description)}（{template.Config.Description}）");
+        return template.DirectoryName;
+    }
+
+    /// <summary>从模板描述提取短显示名（取第一个全角括号前的前缀）。</summary>
+    private static string ShortDisplayName(string description)
+    {
+        var idx = description.IndexOf('（');
+        return idx > 0 ? description[..idx] : description;
+    }
+
+    /// <summary>选择被检导入方式：原测试平台导入（默认）/ 新方式 Excel 导入（预留）。</summary>
+    private static DutImportMethod PromptImportMethod()
+    {
+        var choices = new List<ChoiceItem>
+        {
+            new("original", "从 References 拉取旧 Bots.TestBench 资源自动转换", false, DisplayName: "原测试平台导入"),
+            new("excel", "预留，暂不实现解析", false, DisplayName: "新方式 Excel 导入")
+        };
+        var selected = PromptChoice(choices);
+        if (selected == null)
+        {
+            PrintAccepted("使用默认导入方式：原测试平台导入");
+            return DutImportMethod.OriginalPlatform;
+        }
+        var method = selected.Value.Equals("excel", StringComparison.OrdinalIgnoreCase)
+            ? DutImportMethod.Excel
+            : DutImportMethod.OriginalPlatform;
+        PrintAccepted($"被检导入方式: {(method == DutImportMethod.OriginalPlatform ? "原测试平台导入" : "新方式 Excel 导入")}");
+        return method;
     }
 
     /// <summary>校验项目代号合法性（CLI 与交互共用）。返回错误消息，null 表示通过。</summary>
@@ -330,17 +348,6 @@ public static class InteractiveWizard
         return null;
     }
 
-    private static string PromptVersion()
-    {
-        while (true)
-        {
-            var version = PromptText("项目版本", "留空则按模板版本自动递增 patch", required: false);
-            if (string.IsNullOrWhiteSpace(version) || VersionManager.IsValidVersion(version)) return version;
-            PrintWarning("版本号格式应为 major.minor.patch[.revision]。");
-        }
-    }
-
-    /// <summary>输入项目代号，校验合法性。</summary>
     private static string? PromptProjectCode(TemplateConfig cfg)
     {
         while (true)
@@ -365,44 +372,6 @@ public static class InteractiveWizard
             }
 
             PrintAccepted($"代号合法: {input}");
-            return input;
-        }
-    }
-
-    /// <summary>通用文本输入（必填/选填，带示例提示）。</summary>
-    private static string PromptText(string label, string example, bool required)
-    {
-        while (true)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"  > {label}");
-            Console.ResetColor();
-            if (!string.IsNullOrEmpty(example))
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write($" [{example}]");
-                Console.ResetColor();
-            }
-            Console.Write(": ");
-
-            var input = Console.ReadLine()?.Trim() ?? "";
-            if (string.IsNullOrEmpty(input) && required)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("    此项为必填，请输入。");
-                Console.ResetColor();
-                continue;
-            }
-
-            // 校验：禁止引号/反引号/美元符/反斜杠及 shell 元字符 —— 这些字符会被原样写入
-            // .gitlab-ci.yml / .ps1，可能破坏 YAML/PowerShell 语法（注入风险）
-            if (input.Any(c => c is '\'' or '"' or '`' or '$' or '\\' or ';' or '|' or '&'))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("    输入不能包含引号、反引号、$、反斜杠、分号、管道或 & 符号，请重新输入。");
-                Console.ResetColor();
-                continue;
-            }
             return input;
         }
     }
@@ -444,7 +413,12 @@ public static class InteractiveWizard
         }
     }
 
-    private sealed record ChoiceItem(string Value, string Description, bool Disabled, bool IsHeader = false);
+    private sealed record ChoiceItem(
+        string Value,
+        string Description,
+        bool Disabled,
+        bool IsHeader = false,
+        string? DisplayName = null);
 
     /// <summary>非分组标题行的索引列表，供序号快捷选择和序号输入复用。</summary>
     private static IReadOnlyList<int> GetSelectableIndexes(IReadOnlyList<ChoiceItem> choices)
@@ -551,18 +525,19 @@ public static class InteractiveWizard
                     continue;
                 }
                 itemIndex++;
+                var label = choices[i].DisplayName ?? choices[i].Value;
                 var state = choices[i].Disabled ? "[暂不可用]" : "[可用]";
-                Console.WriteLine($"    {itemIndex}. {choices[i].Value,-12} {state,-10} {choices[i].Description}");
+                Console.WriteLine($"    {itemIndex}. {label,-12} {state,-10} {choices[i].Description}");
                 Console.WriteLine();
             }
             Console.Write("  > ");
             var input = Console.ReadLine()?.Trim();
-            if (input is "q" or "Q") return null;
+            if (input is "q" or "Q" or null) return null; // null = 输入重定向时 stdin 耗尽，视为取消
             if (int.TryParse(input, out var index) && index >= 1 && index <= selectableIndexes.Count)
             {
                 var target = selectableIndexes[index - 1];
                 if (!choices[target].Disabled) return choices[target];
-                PrintWarning($"{choices[target].Value} 为预留模板，暂不可用。");
+                PrintWarning($"{choices[target].DisplayName ?? choices[target].Value} 为预留模板，暂不可用。");
             }
             else
             {
@@ -593,11 +568,12 @@ public static class InteractiveWizard
             itemIndex++;
             var marker = i == selected ? ">" : " ";
             var state = choices[i].Disabled ? "暂不可用" : "可用";
+            var label = choices[i].DisplayName ?? choices[i].Value;
             var description = WrapDisplayText(choices[i].Description, descriptionWidth).FirstOrDefault() ?? string.Empty;
             Console.ForegroundColor = choices[i].Disabled
                 ? ConsoleColor.DarkGray
                 : i == selected ? ConsoleColor.Cyan : ConsoleColor.White;
-            Console.Write($"  {marker} {itemIndex}. {choices[i].Value,-12} [{state,-5}]  {description}");
+            Console.Write($"  {marker} {itemIndex}. {label,-12} [{state,-5}]  {description}");
             Console.ResetColor();
             Console.Write(new string(' ', Math.Max(0, Console.WindowWidth - Console.CursorLeft - 1)));
 
@@ -663,11 +639,8 @@ public static class InteractiveWizard
             ("模板描述", opts.Template.Description),
             ("目标框架", opts.Template.TargetFramework),
             ("编译配置", opts.Template.Configuration),
-            ("混淆", opts.EnableObfuscation ? $"是 ({opts.Template.ObfuscationTargets.Count} 个 DLL)" : "否"),
-            ("安装包", opts.EnablePackaging ? "是" : "否"),
-            ("上传 GitLab", opts.EnableGitLab ? opts.GitLabRepoUrl : "否"),
-            ("上传 FTP", opts.EnableFtp ? $"{opts.FtpHost}{opts.FtpRemoteDir}" : "否"),
-            ("版本号", string.IsNullOrWhiteSpace(opts.Version) ? "自动（模板 patch +1）" : opts.Version)
+            ("被检导入方式", opts.ImportMethod == DutImportMethod.OriginalPlatform ? "原测试平台导入" : "新方式 Excel 导入"),
+            ("安装包", opts.EnablePackaging ? "是" : "否")
         });
         var labelWidth = rows.Max(row => DisplayWidth(row.Label));
         var valueWidth = Math.Max(28, Math.Min(72, GetTerminalWidth() - labelWidth - 9));

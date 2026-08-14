@@ -4,7 +4,7 @@ namespace WPFCli.Models;
 
 /// <summary>
 /// 模板元数据 —— 对应 Template/template.config.json。
-/// 声明占位符、排除规则、混淆目标等模板级配置。
+/// 声明占位符、排除规则等模板级配置。
 /// </summary>
 public class TemplateConfig
 {
@@ -44,10 +44,6 @@ public class TemplateConfig
     [JsonPropertyName("deleteFromOutput")]
     public List<string> DeleteFromOutput { get; set; } = new();
 
-    /// <summary>需要 Obfuscar 混淆的项目短名（如 Infrastructure → {代号}.Infrastructure.dll）。</summary>
-    [JsonPropertyName("obfuscationTargets")]
-    public List<string> ObfuscationTargets { get; set; } = new();
-
     /// <summary>保留名列表 —— 禁止用户作为项目代号（避免与模板中已有标识符冲突，如设备型号 PS02）。</summary>
     [JsonPropertyName("reservedNames")]
     public List<string> ReservedNames { get; set; } = new();
@@ -59,6 +55,10 @@ public class TemplateConfig
     /// <summary>业务分类（aging/dynamic/machine），用于向导中分组展示。</summary>
     [JsonPropertyName("category")]
     public string Category { get; set; } = "";
+
+    /// <summary>模板大类（dedicated=专线模板 / general=通用模板），用于向导一级分类。</summary>
+    [JsonPropertyName("group")]
+    public string Group { get; set; } = "";
 
     /// <summary>预留模板标记 —— 为 true 时向导中显示但不可选择（如动态工装预留）。</summary>
     [JsonPropertyName("disabled")]

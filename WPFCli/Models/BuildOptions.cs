@@ -26,29 +26,8 @@ public class BuildOptions
     /// <summary>业务类型标识（complete/machine/inspect/aging）。</summary>
     public string BusinessType => Path.GetFileName(BusinessTemplatePath);
 
-    /// <summary>是否上传到 GitLab（生成 .gitlab-ci.yml + 推送脚本）。</summary>
-    public bool EnableGitLab { get; set; }
-
-    /// <summary>GitLab 仓库地址（人工输入，如 http://gitlab.const.cc/xxx/yyy.git）。</summary>
-    public string GitLabRepoUrl { get; set; } = "";
-
-    /// <summary>是否上传到 FTP 服务器（生成 FTP 发布脚本）。</summary>
-    public bool EnableFtp { get; set; }
-
-    /// <summary>FTP 服务器地址（人工输入，如 ftp://imdtool.const.cc）。</summary>
-    public string FtpHost { get; set; } = "";
-
-    /// <summary>FTP 远程目录（人工输入，如 /TestApp）。</summary>
-    public string FtpRemoteDir { get; set; } = "";
-
-    /// <summary>是否生成混淆脚本。</summary>
-    public bool EnableObfuscation { get; set; }
-
     /// <summary>是否生成安装包脚本。</summary>
     public bool EnablePackaging { get; set; }
-
-    /// <summary>本次构建版本号；空值表示按模板版本自动递增 patch。</summary>
-    public string Version { get; set; } = "";
 
     /// <summary>输出已存在时是否允许在完整构建成功后替换。</summary>
     public bool OverwriteExisting { get; set; }
@@ -64,6 +43,9 @@ public class BuildOptions
 
     /// <summary>References 适配根目录（含 References\Dynamic\{被检类型}\ 子目录）。空值默认取模板根目录同级的 References。</summary>
     public string ReferencesRoot { get; set; } = "";
+
+    /// <summary>被检导入方式（原测试平台导入 / Excel 导入）。</summary>
+    public DutImportMethod ImportMethod { get; set; } = DutImportMethod.OriginalPlatform;
 
     /// <summary>主项目名（替换占位符后，如 PT01.App）。</summary>
     public string MainProjectName => Template.MainProjectName.Replace(Template.Placeholder, ProjectCode);
@@ -81,10 +63,16 @@ public class BuildOptions
 
     /// <summary>主 EXE 文件名（如 PT01.App.exe）。</summary>
     public string MainExeFileName => $"{MainProjectName}.exe";
+}
 
-    /// <summary>混淆目标 DLL 列表（绝对路径）。</summary>
-    public List<string> GetObfuscationTargetPaths() =>
-        Template.ObfuscationTargets
-            .Select(name => Path.Combine(PublishDir, $"{ProjectCode}.{name}.dll"))
-            .ToList();
+/// <summary>
+/// 被检导入方式：原测试平台导入（References 适配旧 Bots.TestBench 资源）或 Excel 导入（预留）。
+/// </summary>
+public enum DutImportMethod
+{
+    /// <summary>原测试平台导入（默认）。</summary>
+    OriginalPlatform,
+
+    /// <summary>新方式 Excel 导入（预留，暂不实现解析）。</summary>
+    Excel
 }

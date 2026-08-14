@@ -1,8 +1,9 @@
 {
   "schemaVersion": 1,
-  "description": "整机测试模板（TESTRIG 整机测试平台：ManualStep 人工确认 + 温控过程项，TemplateUUT 被检）",
+  "description": "整机测试工装模板（TESTRIG 整机测试平台：ManualStep 人工确认 + 温控过程项，TemplateUUT 被检）",
   "businessType": "machine",
   "category": "machine",
+  "group": "general",
   "disabled": false,
   "dutPlaceholder": "TemplateUUT",
   "excludeFromCopy": [],

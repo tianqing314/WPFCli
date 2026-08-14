@@ -100,14 +100,13 @@ public static class InstallerPackager
         var installerDir = Path.Combine(opts.OutputDir, "installer");
 
         sb.AppendLine("; 由 TestRig CLI 自动生成");
-        sb.AppendLine($"; 项目代号: {opts.ProjectCode}  版本: {opts.Version}  生成时间: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine($"; 项目代号: {opts.ProjectCode}  生成时间: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
         sb.AppendLine("[Setup]");
         sb.AppendLine($"AppName={opts.ProjectCode}");
-        sb.AppendLine($"AppVersion={opts.Version}");
         sb.AppendLine("AppPublisher=TestRig CLI");
         sb.AppendLine($"DefaultDirName={{autopf}}\\{opts.ProjectCode}");
         sb.AppendLine($"DefaultGroupName={opts.ProjectCode}");
-        sb.AppendLine($"OutputBaseFilename={opts.ProjectCode}-Setup-{opts.Version}");
+        sb.AppendLine($"OutputBaseFilename={opts.ProjectCode}-Setup");
         sb.AppendLine($"OutputDir={installerDir}");
         sb.AppendLine("Compression=lzma2");
         sb.AppendLine("SolidCompression=yes");
@@ -136,14 +135,13 @@ public static class InstallerPackager
     {
         var installerDir = Path.Combine(opts.OutputDir, "installer");
         var issFileName = $"{opts.ProjectCode}.iss";
-        var installerExe = $"{opts.ProjectCode}-Setup-{opts.Version}.exe";
+        var installerExe = $"{opts.ProjectCode}-Setup.exe";
 
         var sb = new StringBuilder();
         var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
         sb.AppendLine("# ===== Inno Setup 打包脚本（由 TestRig CLI 自动生成，请勿手动修改）=====");
         sb.AppendLine($"# 项目代号: {opts.ProjectCode}");
-        sb.AppendLine($"# 版本: {opts.Version}");
         sb.AppendLine($"# 生成时间: {timestamp}");
         sb.AppendLine();
         sb.AppendLine("$ErrorActionPreference = \"Stop\"");

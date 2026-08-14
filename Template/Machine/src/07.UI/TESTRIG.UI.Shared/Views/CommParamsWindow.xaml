@@ -11,8 +11,8 @@
                      Title="共享设备 · 通讯参数"
                      TitleIcon="Tune"
                      Style="{StaticResource ChromeWindow.Style}"
-                     Width="470"
-                     Height="300"
+                     Width="560"
+                     Height="340"
                      CanMaximize="False"
                      ShowInTaskbar="False"
                      WindowStartupLocation="CenterOwner">
@@ -65,9 +65,9 @@
                     Visibility="{Binding IsSerial, Converter={StaticResource BoolToVis}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="150" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="150" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -109,8 +109,10 @@
                         Grid.Row="1"
                         Grid.Column="1"
                         Margin="0,0,20,0"
+                        DisplayMemberPath="Label"
                         ItemsSource="{Binding StopBitsOptions}"
-                        SelectedValue="{Binding StopBits}" />
+                        SelectedValue="{Binding StopBits}"
+                        SelectedValuePath="Value" />
                     <TextBlock
                         Grid.Row="1"
                         Grid.Column="2"
@@ -121,8 +123,10 @@
                         Grid.Row="1"
                         Grid.Column="3"
                         Margin="0,0,0,0"
+                        DisplayMemberPath="Label"
                         ItemsSource="{Binding ParityOptions}"
-                        SelectedValue="{Binding Parity}" />
+                        SelectedValue="{Binding Parity}"
+                        SelectedValuePath="Value" />
                 </Grid>
 
                 <!--  网口：仅端口号，提示独立一行  -->

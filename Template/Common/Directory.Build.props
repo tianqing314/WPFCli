@@ -8,15 +8,9 @@
     <Product>TESTRIG 动态测试平台</Product>
 
     <!-- ===== 统一版本号（所有 TESTRIG.* 项目共享）===== -->
-    <!-- WPFCli 生成项目时自动递增 patch 段（1.0.0 → 1.0.1）-->
+    <!-- 模板自带版本；生成项目时保持不变 -->
     <Version>1.0.4</Version>
     <AssemblyVersion>1.0.4.0</AssemblyVersion>
     <FileVersion>1.0.4.0</FileVersion>
-
-    <!-- ===== 构建审计元数据（可选，由 WPFCli 在生成时回填）===== -->
-    <!-- 留空表示模板原始版本；WPFCli 生成项目后会写入 ProjectCode、生成时间等 -->
-    <BuildProjectCode></BuildProjectCode>
-    <BuildBaseVersion></BuildBaseVersion>
-    <BuildGeneratedAt></BuildGeneratedAt>
   </PropertyGroup>
 </Project>

@@ -101,8 +101,9 @@ public static class TemplateBuilder
         var deleted = DeleteConfiguredPaths(opts.OutputDir, deletePaths);
         if (deleted > 0) onProgress?.Invoke($"  按业务配置删除: {deleted}");
 
-        // 2.5 References 适配注入（仅动态工装模板；找到 References\Dynamic\{被检类型} 时，
-        //     从旧 Bots.TestBench 体系转换生成新 PCBA 体系产物并替换内置被检占位）
+        // 2.5 被检注入（仅声明了被检占位符的模板）：按被检导入方式路由——
+        //     原测试平台导入 → References 适配（从旧 Bots.TestBench 体系转换并替换内置被检占位）；
+        //     Excel 导入 → 预留，跳过适配、保留模板内置占位。
         var dutPlaceholder = opts.BusinessTemplate.DutPlaceholder;
         var hasDut = !string.IsNullOrWhiteSpace(dutPlaceholder);
         var dutValue = string.IsNullOrWhiteSpace(opts.DutType)
@@ -110,9 +111,16 @@ public static class TemplateBuilder
             : opts.DutType;
         if (hasDut && !string.IsNullOrWhiteSpace(dutValue))
         {
-            var refResult = ReferencesAdapter.Inject(opts, dutValue, opts.OutputDir, onProgress);
-            if (refResult.Found)
-                onProgress?.Invoke($"  References 适配: 生成 {refResult.GeneratedFiles.Count} / 删除 {refResult.RemovedFiles.Count} / TODO {refResult.TodoItems.Count}");
+            if (opts.ImportMethod == DutImportMethod.Excel)
+            {
+                onProgress?.Invoke("  被检导入方式：新方式 Excel 导入（预留，暂不实现解析），保留模板内置占位");
+            }
+            else
+            {
+                var refResult = ReferencesAdapter.Inject(opts, dutValue, opts.OutputDir, onProgress);
+                if (refResult.Found)
+                    onProgress?.Invoke($"  References 适配: 生成 {refResult.GeneratedFiles.Count} / 删除 {refResult.RemovedFiles.Count} / TODO {refResult.TodoItems.Count}");
+            }
         }
 
         // 3. 替换文件内容（排除目录、跳过二进制和模板元数据）
@@ -425,7 +433,6 @@ public static class TemplateBuilder
             ("{{ProjectName}}", opts.ProjectCode),
             ("{{MainProjectName}}", opts.MainProjectName),
             ("{{RootNamespace}}", opts.ProjectCode),
-            ("{{Version}}", opts.Version),
             ("{{BusinessType}}", opts.BusinessType),
             ("{{TargetFramework}}", opts.Template.TargetFramework)
         };

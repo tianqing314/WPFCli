@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
@@ -430,6 +430,56 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
         catch (Exception ex)
         {
             AppDialog.Error("保存失败", ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 导出当前清单为 <c>{设备族}_ControlBoard.json</c>（manifest 数据）与 <c>{设备族}_ControlBoard.cs</c>（处理器骨架源码），
+    /// 供后续功能实现/复用。选择目标文件夹后写入两个文件。
+    /// </summary>
+    [RelayCommand]
+    private void ExportManifest()
+    {
+        var m = Current;
+        if (m is null)
+        {
+            return;
+        }
+
+        var error = m.Validate();
+        if (error is not null)
+        {
+            AppDialog.Error("无法导出", error);
+            return;
+        }
+
+        var dut = ControlBoardSourceBuilder.SanitizeIdentifier(string.IsNullOrWhiteSpace(m.DeviceFamily) ? m.Key : m.DeviceFamily);
+        var baseName = $"{dut}_ControlBoard";
+
+        var dlg = new Microsoft.Win32.OpenFolderDialog
+        {
+            Title = $"导出 {baseName}.json / {baseName}.cs 到所选文件夹",
+        };
+        if (dlg.ShowDialog() != true)
+        {
+            return;
+        }
+
+        try
+        {
+            var manifest = m.ToManifest();
+            var jsonPath = System.IO.Path.Combine(dlg.FolderName, baseName + ".json");
+            System.IO.File.WriteAllText(jsonPath, ManifestWriter.ToJson(manifest), new System.Text.UTF8Encoding(false));
+
+            var csPath = System.IO.Path.Combine(dlg.FolderName, baseName + ".cs");
+            System.IO.File.WriteAllText(csPath, ControlBoardSourceBuilder.Build(manifest), new System.Text.UTF8Encoding(false));
+
+            _notify.Notify($"已导出 {baseName}.json / {baseName}.cs");
+            AppToast.Success($"已导出 {baseName}", $"{jsonPath}\n{csPath}");
+        }
+        catch (Exception ex)
+        {
+            AppDialog.Error("导出失败", ex.Message);
         }
     }
 
@@ -913,11 +963,13 @@ public partial class ToolDeviceEditModel : ObservableObject
     /// <summary>数据位下拉。</summary>
     public int[] DataBitsOptions { get; } = [5, 6, 7, 8];
 
-    /// <summary>停止位下拉。</summary>
-    public string[] StopBitsOptions { get; } = ["One", "Two"];
+    /// <summary>停止位下拉（值 + 中文）。</summary>
+    public NamedOption[] StopBitsOptions { get; } =
+        [new("One", "1"), new("OnePointFive", "1.5"), new("Two", "2")];
 
-    /// <summary>校验位下拉。</summary>
-    public string[] ParityOptions { get; } = ["None", "Odd", "Even"];
+    /// <summary>校验位下拉（值 + 中文）。</summary>
+    public NamedOption[] ParityOptions { get; } =
+        [new("None", "无"), new("Odd", "奇"), new("Even", "偶"), new("Mark", "标记"), new("Space", "空格")];
 
     /// <summary>
     /// 转不可变描述（落盘用）。物理链路留空——实际 COM 在连接配置页按工装选择。
@@ -1013,11 +1065,13 @@ public partial class CommParamsEditModel : ObservableObject
     /// <summary>数据位下拉。</summary>
     public int[] DataBitsOptions { get; } = [5, 6, 7, 8];
 
-    /// <summary>停止位下拉。</summary>
-    public string[] StopBitsOptions { get; } = ["One", "Two"];
+    /// <summary>停止位下拉（值 + 中文）。</summary>
+    public NamedOption[] StopBitsOptions { get; } =
+        [new("One", "1"), new("OnePointFive", "1.5"), new("Two", "2")];
 
-    /// <summary>校验位下拉。</summary>
-    public string[] ParityOptions { get; } = ["None", "Odd", "Even"];
+    /// <summary>校验位下拉（值 + 中文）。</summary>
+    public NamedOption[] ParityOptions { get; } =
+        [new("None", "无"), new("Odd", "奇"), new("Even", "偶"), new("Mark", "标记"), new("Space", "空格")];
 
     /// <summary>
     /// 关闭请求（true=确定，false=取消）。

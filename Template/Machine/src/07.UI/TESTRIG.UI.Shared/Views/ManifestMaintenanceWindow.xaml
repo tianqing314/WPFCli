@@ -324,6 +324,17 @@
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <Button
                             Height="36"
+                            Margin="0,0,10,0"
+                            Padding="18,0"
+                            Command="{Binding ExportManifestCommand}"
+                            Style="{StaticResource Btn.Secondary}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center" Kind="Export" />
+                                <TextBlock Margin="6,0,0,0" Text="导出" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            Height="36"
                             Padding="18,0"
                             Command="{Binding CancelEditCommand}"
                             Content="放弃"

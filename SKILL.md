@@ -1,6 +1,6 @@
 ---
 name: testrig-cli
-description: 使用或维护 TestRig CLI 多业务测试工装脚手架，包括生成项目、修改 Template、校验 template.config.json、扩展生成流水线，以及生成 GitLab/FTP 发布方案。
+description: 使用或维护 TestRig CLI 多业务测试工装脚手架，包括生成项目、修改 Template、校验 template.config.json、扩展生成流水线。
 tools: Read, Write, Edit, Bash, Grep, Glob
 version: 3.0.0
 ---
@@ -14,7 +14,7 @@ version: 3.0.0
 - 从 `Common + Machine` 生成当前完整的整机测试工装项目
 - 修改 CLI 参数、交互向导、模板目录或模板配置
 - 添加业务模板或模板令牌
-- 调整版本、混淆、安装包、GitLab 或 FTP 生成流程
+- 调整安装包生成流程
 - 排查模板生成、自检或编译失败
 
 普通 WPF/MVVM 问题且与本脚手架无关时不使用。
@@ -24,7 +24,7 @@ version: 3.0.0
 1. 从仓库根目录执行命令，不依赖固定盘符。
 2. 先运行 `testrig-cli --list-templates` 或读取 `TemplateCatalog`，不要维护业务类型硬编码列表。
 3. 模板配置必须通过 `TemplateCatalog` 加载；不要用宽松 JSON 反序列化绕过 schema 和路径校验。
-4. 生成过程不得修改 `Template/Common/Directory.Build.props` 的版本。
+4. 生成过程不得修改 `Template/Common/Directory.Build.props`（模板基线，含版本）。
 5. 不把密码、令牌、真实内网 URL 或真实硬件默认开关写入模板。
 6. 修改公共模板后至少构建 `PCBA.sln`；修改 DeviceLink 后还要构建 `DeviceLink.sln`。
 7. `Common` 只放跨业务公共层；业务前端逻辑、WPF UI、App 和完整解决方案放到对应业务目录。
@@ -46,25 +46,23 @@ dotnet run --project .\WPFCli\WPFCli.csproj -- --biz machine --code PT01
 dotnet run --project .\WPFCli\WPFCli.csproj -- --biz machine --code PT01 --dry-run --no-build
 
 # 使用外部模板和自定义输出
-dotnet run --project .\WPFCli\WPFCli.csproj -- --template-root D:\Templates --biz machine --code PT01 --output D:\Projects\PT01 --version 2.0.0
+dotnet run --project .\WPFCli\WPFCli.csproj -- --template-root D:\Templates --biz machine --code PT01 --output D:\Projects\PT01
 ```
 
-可用参数包括 `--template-root`、`--output`、`--version`、`--force`、`--dry-run`、`--no-build`、`--list-templates`、混淆/打包开关，以及 GitLab/FTP 配置。以 `--help` 的实时输出为准。
+可用参数包括 `--template-root`、`--output`、`--force`、`--dry-run`、`--no-build`、`--list-templates`、打包开关（`--pack`/`--no-pack`）。以 `--help` 的实时输出为准。
 
 ## 构建模型
 
 `BuildPipeline` 负责完整事务：
 
 1. 校验输出路径与环境。
-2. 从公共模板读取版本基线；默认 patch 加一，或采用 `--version`。
-3. 在最终输出同级的随机暂存目录中执行所有阶段。
-4. 合并 `Common` 与业务模板。
-5. 应用 `deleteFromOutput`、内容替换和路径重命名。
-6. 执行占位符与关键产物自检。
-7. 写入生成项目版本与审计元数据。
-8. 生成可选发布、混淆和打包脚本。
-9. 除 `--no-build`/`--dry-run` 外，编译生成的解决方案。
-10. 全部成功后才替换最终输出；失败时保留旧输出。
+2. 在最终输出同级的随机暂存目录中执行所有阶段。
+3. 合并 `Common` 与业务模板。
+4. 应用 `deleteFromOutput`、内容替换和路径重命名。
+5. 执行占位符与关键产物自检。
+6. 生成可选打包脚本。
+7. 除 `--no-build`/`--dry-run` 外，编译生成的解决方案。
+8. 全部成功后才替换最终输出；失败时保留旧输出。
 
 不要在流水线之外提前删除或覆盖输出。`--force` 只表示允许在成功时替换已有输出。
 
@@ -92,7 +90,6 @@ Template/
 - `{{ProjectCode}}`、`{{ProjectName}}`
 - `{{MainProjectName}}`
 - `{{RootNamespace}}`
-- `{{Version}}`
 - `{{BusinessType}}`
 - `{{TargetFramework}}`
 
@@ -108,9 +105,7 @@ Template/
 
 无需修改 `InteractiveWizard` 或 CLI 的业务类型列表。
 
-## 版本和依赖
-
-模板版本基线位于 `Template/Common/Directory.Build.props`。默认输出版本为基线 patch 加一；指定发布版本时使用 `--version`。流水线只写生成项目，不写回模板。
+## 依赖
 
 NuGet 版本集中在 `Template/Common/Directory.Packages.props`。新增或升级包时只在中央文件声明版本，各 `.csproj` 保留无版本的 `PackageReference`。
 
@@ -118,7 +113,6 @@ Machine 的 WPF 项目目标框架为 `net8.0-windows10.0.19041.0`。Common 公�
 
 ## 凭据与运行时默认值
 
-- FTP 用户名和密码只从 `TESTRIG_FTP_USER`、`TESTRIG_FTP_PASSWORD` 读取。
 - 登录历史只允许持久化用户名，不保存或恢复密码。
 - 外部 API 地址默认留空；未配置时客户端应短路，不访问占位地址。
 - 真实硬件默认关闭，必须由部署环境显式启用。

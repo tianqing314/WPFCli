@@ -1,12 +1,12 @@
 # TestRig CLI
 
-TestRig CLI 是面向 Windows/.NET 8 的测试工装脚手架。它将 `Template/Common` 公共 WPF 骨架与选定的业务模板合并，替换项目令牌、写入版本与审计信息、生成可选发布脚本，并在发布输出前完成编译验证。
+TestRig CLI 是面向 Windows/.NET 8 的测试工装脚手架。它将 `Template/Common` 公共 WPF 骨架与选定的业务模板合并，替换项目令牌、生成可选打包脚本，并在发布输出前完成编译验证。
 
 当前可生成的完整业务模板为 `Machine`。`Complete`、`Inspect`、`Aging` 和 `Dynamic` 暂为禁用预留模板，待各自补齐前端业务逻辑与 WPF UI 后再启用。
 
 ## 环境与安装
 
-要求 Windows 10/11 和 .NET 8 SDK。混淆和安装包功能分别依赖 Obfuscar 与 Inno Setup。
+要求 Windows 10/11 和 .NET 8 SDK。安装包功能依赖 Inno Setup。
 
 从源码运行：
 
@@ -37,7 +37,7 @@ testrig-cli
 
 ```powershell
 testrig-cli --biz machine --code PT01
-testrig-cli --biz machine --code PT02 --version 2.3.0 --output D:\Projects\PT02
+testrig-cli --biz machine --code PT02 --output D:\Projects\PT02
 testrig-cli --biz machine --code PT03 --dry-run --no-build
 ```
 
@@ -48,24 +48,19 @@ testrig-cli --biz machine --code PT03 --dry-run --no-build
 | `--list-templates` | 列出发现的业务模板及启用状态 |
 | `--template-root <目录>` | 使用指定的模板根目录 |
 | `--output <目录>` | 指定输出目录，默认 `Output/<项目代号>` |
-| `--version <版本>` | 指定 `major.minor.patch[.revision]` 版本 |
 | `--force` | 完整构建成功后替换已有输出 |
 | `--dry-run` | 在临时目录完成生成和自检，不发布输出 |
 | `--no-build` | 生成但不执行 `dotnet build` |
-| `--obfuscate` / `--no-obfuscate` | 是否生成混淆流程，默认关闭 |
 | `--pack` / `--no-pack` | 是否生成安装包流程，默认关闭 |
-| `--gitlab <URL>` | 生成 GitLab CI 与推送脚本，仅接受 HTTP/HTTPS URL |
-| `--ftp-host <地址>` | 生成 FTP 发布流程，仅接受 FTP/FTPS URL |
-| `--ftp-dir <目录>` | FTP 远程目录，必须与 `--ftp-host` 同时使用 |
 | `--help` / `-h` | 显示帮助 |
 
 ## 生成保证
 
-一次构建的模板合并、令牌替换、版本写入、脚本生成和项目编译全部发生在最终输出的同级随机暂存目录中。只有所有阶段成功后才发布结果；失败和 `--dry-run` 都不会修改已有输出。覆盖已有目录必须使用 `--force`。
+一次构建的模板合并、令牌替换、脚本生成和项目编译全部发生在最终输出的同级随机暂存目录中。只有所有阶段成功后才发布结果；失败和 `--dry-run` 都不会修改已有输出。覆盖已有目录必须使用 `--force`。
 
 以下输出目标会被拒绝：磁盘根目录、Git 仓库、链接目录、文件占用路径，以及与模板目录互相包含的路径。模板自身也不能包含文件或目录链接。
 
-默认版本是 `Template/Common/Directory.Build.props` 基线版本的 patch 加一，也可通过 `--version` 固定指定。生成过程永远不会写回模板基线，因此失败、预演和重复生成都不会悄悄改变仓库版本。
+生成项目保留 `Template/Common/Directory.Build.props` 中模板自带的版本号，生成过程永远不会写回模板基线，因此失败、预演和重复生成都不会悄悄改变仓库版本。
 
 ## 模板分层
 
@@ -90,7 +85,6 @@ testrig-cli --biz machine --code PT03 --dry-run --no-build
   "excludeFromCopy": ["bin", "obj", ".vs", ".git"],
   "excludeFromReplacement": ["src/libs/DeviceLink", "tools", "docs"],
   "deleteFromOutput": [],
-  "obfuscationTargets": ["Infrastructure", "Devices"],
   "reservedNames": ["PS02"]
 }
 ```
@@ -122,7 +116,6 @@ testrig-cli --biz machine --code PT03 --dry-run --no-build
 | `{{ProjectCode}}` / `{{ProjectName}}` | 项目代号 |
 | `{{MainProjectName}}` | 替换后的主项目名，例如 `PT01.App` |
 | `{{RootNamespace}}` | 项目代号 |
-| `{{Version}}` | 本次生成版本 |
 | `{{BusinessType}}` | 业务类型 |
 | `{{TargetFramework}}` | 根配置中的目标框架 |
 
@@ -132,12 +125,7 @@ testrig-cli --biz machine --code PT03 --dry-run --no-build
 
 模板依赖版本集中在 `Template/Common/Directory.Packages.props`，项目文件不再内联包版本。公共 WPF 项目统一到 `net8.0-windows10.0.19041.0`；DeviceLink 有意保留 `net6.0` 和 `netstandard2.0`，后续将作为 GitHub 子模块独立维护。
 
-生成项目不会预置内网 OA/API 地址，真实硬件默认关闭，未配置的外部 API 客户端会短路返回。登录历史只保存用户名，不持久化或恢复密码。FTP 凭据也不写入脚本和 Git 历史，发布时从以下环境变量读取：
-
-```powershell
-$env:TESTRIG_FTP_USER = "your-user"
-$env:TESTRIG_FTP_PASSWORD = "your-password"
-```
+生成项目不会预置内网 OA/API 地址，真实硬件默认关闭，未配置的外部 API 客户端会短路返回。登录历史只保存用户名，不持久化或恢复密码。
 
 ## 项目结构
 

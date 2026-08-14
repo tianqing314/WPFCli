@@ -8,6 +8,5 @@
   "excludeFromCopy": [ "bin", "obj", ".reasonix", ".vs", ".git", "src/libs/DeviceLink/tests", "src/libs/DeviceLink/docs" ],
   "excludeFromReplacement": [ "src/libs/DeviceLink", "tools", "docs", "refdlls" ],
   "deleteFromOutput": [],
-  "obfuscationTargets": [ "Infrastructure", "Devices", "TestSteps", "Core.Engine" ],
   "reservedNames": [ "PS02" ]
 }

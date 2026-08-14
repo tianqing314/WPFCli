@@ -424,7 +424,8 @@ public static class ReferencesAdapter
         sb.AppendLine("/// <summary>");
         sb.AppendLine($"/// {dut} 主板（设备族 {dut}）被检**真机驱动**：走 Xmas11 <see cref=\"DPG2SCPI\"/> 通讯库，");
         sb.AppendLine($"/// 命令层**自动转换**自旧 <c>Bots.TestBench.Device.{dut}_2</c>（内部转调 <c>DPG2SCPI.*</c>，返回 <c>iResponse</c>）。");
-        sb.AppendLine("/// 连接按 manifest 号位 <see cref=\"CommEndpoint\"/>（默认串口，对齐旧 Open 的 Board 分支）建连。");
+        sb.AppendLine("/// 连接按 manifest 号位 <see cref=\"CommEndpoint\"/> 的串口参数（波特率/停止位等）直接建连；");
+        sb.AppendLine("/// 针床被检在工装准备上电后才连接（工装准备前不连接，见工装准备处理器 ReplenishLinkAsync）。");
         sb.AppendLine("/// 每条命令 <c>iResponse.IsCorrect=false</c> 即抛 <see cref=\"DeviceCommException\"/>，交引擎按异常收尾。");
         sb.AppendLine("/// </summary>");
         sb.AppendLine($"[DutDriver(\"{dut}\")]");
@@ -467,7 +468,9 @@ public static class ReferencesAdapter
         sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine("    /// <summary>");
-        sb.AppendLine("    /// 连接被检：按端点（网络/串口）建 DPG2SCPI，Open 探活。PORT: 旧 ConST221_2.Open()。");
+        sb.AppendLine("    /// 连接被检：按端点（网络/串口）建 DPG2SCPI，Open 成功即连接成功。");
+        sb.AppendLine("    /// 针床被检由工装准备上电后经 <see cref=\"ReplenishLinkAsync\"/> 连接（工装准备前不连接），");
+        sb.AppendLine("    /// 串口参数取 manifest 号位配置（波特率/停止位等），不做旧体系 Board 分支的覆盖/探活指令。");
         sb.AppendLine("    /// </summary>");
         sb.AppendLine("    /// <param name=\"ct\">取消令牌。</param>");
         sb.AppendLine("    public Task ConnectAsync(CancellationToken ct = default)");
@@ -477,13 +480,13 @@ public static class ReferencesAdapter
         sb.AppendLine("            try { _dev?.Close(); } catch { }");
         sb.AppendLine("            _dev = Build(_comm);");
         sb.AppendLine("            var opened = _dev.Open();");
-        sb.AppendLine("            IsConnected = opened && _dev.IsExist();");
+        sb.AppendLine("            IsConnected = opened;");
         sb.AppendLine($"            _logger.LogInformation(IsConnected ? $\"{dut} 真机连接成功\" : $\"{dut} 连接未就绪（将重试）\");");
         sb.AppendLine("        }, ct);");
         sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine("    /// <summary>");
-        sb.AppendLine("    /// 按端点构造 DPG2SCPI（网络/串口）。PORT: 旧默认串口（Board 模式 19200/Two）。");
+        sb.AppendLine("    /// 按端点构造 DPG2SCPI（网络/串口）。串口参数取 manifest 号位配置（波特率/停止位/校验位），不覆盖。");
         sb.AppendLine("    /// </summary>");
         sb.AppendLine("    /// <param name=\"ep\">连接端点。</param>");
         sb.AppendLine("    /// <returns>通讯实例。</returns>");
@@ -741,7 +744,7 @@ public static class ReferencesAdapter
         sb.AppendLine();
         sb.AppendLine("/// <summary>");
         sb.AppendLine($"/// {dut} 主板（设备族 {dut}）测试**设备特有**处理器集合。**自动转换**自旧");
-        sb.AppendLine("/// <c>ConST221_MainBoard_Auto.cs</c> 的测试方法与 <c>.distributed.json</c> 任务配置：继电器指令序列");
+        sb.AppendLine($"/// <c>{dut}_MainBoard_Auto.cs</c> 的测试方法与 <c>.distributed.json</c> 任务配置：继电器指令序列");
         sb.AppendLine("/// （<see cref=\"BoxRelayCommand\"/>）、DAM6803D 通道电压、2 路电流表读数、被检 SCPI 指令与 Range 判定。");
         sb.AppendLine($"/// 工装用 <see cref=\"IConST326StandardBox\"/>，被检用 <see cref=\"I{dut}Dut\"/>。");
         sb.AppendLine("/// </summary>");
@@ -771,10 +774,18 @@ public static class ReferencesAdapter
         sb.AppendLine("    public void Report(string m, RealtimeLevel l = RealtimeLevel.Info) => _ctx.Report(m, l);");
         sb.AppendLine();
         sb.AppendLine("    /// <summary>真机稳定延时（继电器切档/设值后需等待）。PORT: 旧 Thread.Sleep / ScriptHelper.Thread_Sleep。</summary>");
-        sb.AppendLine("    public Task Sleep(int ms) => Box.IsRealHardware ? Task.Delay(ms, _ct) : Task.CompletedTask;");
+        sb.AppendLine("    public Task Sleep(int ms)");
+        sb.AppendLine("    {");
+        sb.AppendLine("        Report(Box.IsRealHardware ? $\"等待 {ms}ms\" : $\"等待 {ms}ms（仿真跳过）\");");
+        sb.AppendLine("        return Box.IsRealHardware ? Task.Delay(ms, _ct) : Task.CompletedTask;");
+        sb.AppendLine("    }");
         sb.AppendLine();
-        sb.AppendLine("    /// <summary>发继电器指令。PORT: DSTB.RespondToCommand。</summary>");
-        sb.AppendLine("    public Task Relay(R cmd) => Box.RelayCommandAsync(cmd, _ct);");
+        sb.AppendLine("    /// <summary>发继电器指令（含 UI 过程日志）。PORT: DSTB.RespondToCommand。</summary>");
+        sb.AppendLine("    public Task Relay(R cmd)");
+        sb.AppendLine("    {");
+        sb.AppendLine("        Report($\"继电器指令：{cmd}\");");
+        sb.AppendLine("        return Box.RelayCommandAsync(cmd, _ct);");
+        sb.AppendLine("    }");
         sb.AppendLine();
         sb.AppendLine("    /// <summary>读 DAM6803D 某通道电压。PORT: DSTB.GetVoltageMeasureValue。</summary>");
         sb.AppendLine("    public Task<double> ReadVolt(int channel) => Box.GetVoltageMeasureValueAsync(channel, false, _ct);");
@@ -797,7 +808,7 @@ public static class ReferencesAdapter
         sb.AppendLine("            return false;");
         sb.AppendLine("        }");
         sb.AppendLine("        var r = _ctx.Evaluator.Evaluate(cond, value);");
-        sb.AppendLine("        Report($\"{label} {F(value)}{unit}：{r.Message}\");");
+        sb.AppendLine("        Report($\"{label} {F(value)}{unit}：{r.Message}\", r.Passed ? RealtimeLevel.Info : RealtimeLevel.Warn);");
         sb.AppendLine("        return r.Passed;");
         sb.AppendLine("    }");
         sb.AppendLine();
@@ -839,6 +850,7 @@ public static class ReferencesAdapter
                 foreach (var line in lines)
                     sb.AppendLine($"        {line}");
             }
+            sb.AppendLine($"        op.Report(pass ? \"✓ {task.Name}通过\" : \"✗ {task.Name}未通过\", pass ? RealtimeLevel.Success : RealtimeLevel.Error);");
             sb.AppendLine($"        return pass ? StepResult.Pass(\"{task.Name}通过\") : StepResult.Fail(\"{task.Name}未通过\");");
             sb.AppendLine("    }");
             sb.AppendLine("}");

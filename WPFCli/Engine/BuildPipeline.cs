@@ -49,19 +49,8 @@ public sealed class BuildPipeline
             return 1;
         }
 
-        var commonPath = Path.Combine(opts.TemplatePath, "Common");
-        var baseVersion = VersionManager.DetectVersion(commonPath, opts.Template.MainProjectName) ?? "1.0.0";
-        opts.Version = string.IsNullOrWhiteSpace(opts.Version)
-            ? VersionManager.IncrementPatch(baseVersion)
-            : opts.Version;
-
-        Console.WriteLine();
-        WriteHeading("版本号管理");
-        WriteSuccess($"版本号: {baseVersion} -> {opts.Version}");
-
         Console.WriteLine();
         WriteHeading("开始构建");
-
         var totalSw = Stopwatch.StartNew();
         var stepSw = new Stopwatch();
         var compileSuccess = opts.SkipBuild || opts.DryRun;
@@ -80,30 +69,6 @@ public sealed class BuildPipeline
                     throw new InvalidOperationException("生成后自检失败");
                 }
             });
-
-            RunStep(++step, "写入版本号", stepSw, () =>
-            {
-                VersionManager.WriteVersion(opts.OutputDir, opts.Version,
-                    projectCode: opts.ProjectCode, baseVersion: baseVersion);
-                Console.WriteLine($"    版本号写入: {opts.Version}");
-                Console.WriteLine($"    审计元数据: ProjectCode={opts.ProjectCode}, BaseVersion={baseVersion}");
-            });
-
-            if (UploadScriptGenerator.IsEnabled(opts))
-            {
-                RunStep(++step, "生成上传方案脚本", stepSw, () =>
-                    UploadScriptGenerator.Generate(opts, message => Console.WriteLine($"    {message}")));
-            }
-
-            if (opts.EnableObfuscation)
-            {
-                RunStep(++step, "生成混淆脚本", stepSw, () =>
-                {
-                    var path = Path.Combine(opts.OutputDir, "obfuscate.ps1");
-                    File.WriteAllText(path, Obfuscator.GenerateObfuscatePs1(opts), new UTF8Encoding(false));
-                    Console.WriteLine($"    脚本已生成: {path}");
-                });
-            }
 
             if (opts.EnablePackaging)
             {
@@ -239,7 +204,6 @@ public sealed class BuildPipeline
             !line.Contains("Build succeeded", StringComparison.OrdinalIgnoreCase) &&
             !line.Contains("警告", StringComparison.OrdinalIgnoreCase) &&
             !line.Contains("Warning", StringComparison.OrdinalIgnoreCase) &&
-            !line.Contains("执行混淆脚本", StringComparison.OrdinalIgnoreCase) &&
             !line.Contains("执行打包脚本", StringComparison.OrdinalIgnoreCase)) return;
 
         if (line.Contains("error", StringComparison.OrdinalIgnoreCase)) WriteError(line);
@@ -287,13 +251,6 @@ public sealed class BuildPipeline
         Console.ResetColor();
     }
 
-    private static void WriteWarning(string text)
-    {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"    [WARNING] {text}");
-        Console.ResetColor();
-    }
-
     private static void WriteError(string text)
     {
         Console.ForegroundColor = ConsoleColor.Red;
@@ -331,32 +288,10 @@ public sealed class BuildPipeline
         PrintArtifact("编译产物目录", opts.PublishDir);
         PrintArtifact("主程序", Path.Combine(opts.PublishDir, opts.MainExeFileName));
 
-        if (opts.EnableObfuscation)
-            PrintArtifact("混淆脚本", Path.Combine(opts.OutputDir, "obfuscate.ps1"));
         if (opts.EnablePackaging)
         {
             PrintArtifact("打包脚本", Path.Combine(opts.OutputDir, "package.ps1"));
             PrintArtifact("安装包目录", Path.Combine(opts.OutputDir, "installer"));
-        }
-
-        if (opts.EnableGitLab && opts.EnableFtp)
-        {
-            PrintArtifact("GitLab CI", Path.Combine(opts.OutputDir, ".gitlab-ci.yml"));
-            PrintArtifact("发布脚本", Path.Combine(opts.OutputDir, "upgrade", "publish.ps1"));
-            PrintArtifact("版本同步", Path.Combine(opts.OutputDir, "upgrade", "ci_update_versions.ps1"));
-            PrintArtifact("本地模拟", Path.Combine(opts.OutputDir, "upgrade", "local_test_ci.ps1"));
-            PrintArtifact("推送脚本", Path.Combine(opts.OutputDir, "push_gitlab.ps1"));
-            PrintArtifact("版本文件", Path.Combine(opts.OutputDir, "AutoDeployConfig.xml"));
-        }
-        else if (opts.EnableGitLab)
-        {
-            PrintArtifact("GitLab CI", Path.Combine(opts.OutputDir, ".gitlab-ci.yml"));
-            PrintArtifact("推送脚本", Path.Combine(opts.OutputDir, "push_gitlab.ps1"));
-        }
-        else if (opts.EnableFtp)
-        {
-            PrintArtifact("FTP 发布脚本", Path.Combine(opts.OutputDir, "publish_ftp.ps1"));
-            PrintArtifact("版本文件", Path.Combine(opts.OutputDir, "AutoDeployConfig.xml"));
         }
     }
 

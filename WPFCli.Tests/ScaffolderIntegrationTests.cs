@@ -31,9 +31,6 @@ public sealed class ScaffolderIntegrationTests
             TemplateBuilder.Build(options);
 
             Assert.Empty(TemplateBuilder.RunPostBuildChecks(options));
-            // 构建流水线 [2] 步骤：合并后的根 props 必须能被版本管理更新（Dynamic 的转发 props 不得覆盖 Common 版本）
-            VersionManager.WriteVersion(output, "1.2.3", projectCode: "PT01", baseVersion: "1.0.0");
-            Assert.Contains("<Version>1.2.3</Version>", File.ReadAllText(Path.Combine(output, "Directory.Build.props")));
             Assert.True(File.Exists(options.SolutionPath));
             Assert.True(Directory.Exists(Path.Combine(output, "src", "07.UI")));
             Assert.True(Directory.Exists(Path.Combine(output, "src", "08.App")));
@@ -58,7 +55,7 @@ public sealed class ScaffolderIntegrationTests
             business!.Config.DeleteFromOutput.Add("remove.txt");
             File.WriteAllText(Path.Combine(root, "Common", "remove.txt"), "remove me");
             File.WriteAllText(Path.Combine(root, "Common", "{{ProjectCode}}.txt"),
-                "{{ProjectCode}}|{{MainProjectName}}|{{Version}}|PCBA_suffix");
+                "{{ProjectCode}}|{{MainProjectName}}|PCBA_suffix");
             var binary = new byte[] { 0xFF, 0xFE, 0x50, 0x43, 0x42, 0x41 };
             File.WriteAllBytes(Path.Combine(root, "Common", "payload.dat"), binary);
 
@@ -66,7 +63,7 @@ public sealed class ScaffolderIntegrationTests
             TemplateBuilder.Build(options);
 
             Assert.False(File.Exists(Path.Combine(output, "remove.txt")));
-            Assert.Equal("PT01|PT01.App|1.2.3|PT01_suffix",
+            Assert.Equal("PT01|PT01.App|PT01_suffix",
                 File.ReadAllText(Path.Combine(output, "PT01.txt")));
             Assert.Equal(binary, File.ReadAllBytes(Path.Combine(output, "payload.dat")));
         }
@@ -104,7 +101,7 @@ public sealed class ScaffolderIntegrationTests
     }
 
     [Fact]
-    public void Dry_run_does_not_publish_or_mutate_template_version()
+    public void Dry_run_does_not_publish_or_modify_template()
     {
         var root = CreateMinimalTemplate(includeRequiredFiles: true);
         var output = Path.Combine(Path.GetDirectoryName(root)!, "dry-output");
@@ -129,7 +126,7 @@ public sealed class ScaffolderIntegrationTests
     }
 
     [Fact]
-    public void Business_forward_import_props_keep_common_version_and_write_version_succeeds()
+    public void Business_forward_import_props_keep_common_version()
     {
         var root = CreateMinimalTemplate(includeRequiredFiles: true);
         var output = Path.Combine(Path.GetDirectoryName(root)!, $"output-{Guid.NewGuid():N}");
@@ -144,14 +141,10 @@ public sealed class ScaffolderIntegrationTests
             var options = CreateOptions(rootConfig, root, business!, output);
             TemplateBuilder.Build(options);
 
-            // 扁平化合并后，转发文件不得覆盖 Common 的版本文件（否则 [2] 步骤报“版本文件中没有 Version/…”，且 ..\Common\ 不可达）
+            // 扁平化合并后，转发文件不得覆盖 Common 的版本文件（否则 ..\Common\ 不可达）
             var mergedProps = File.ReadAllText(Path.Combine(output, "Directory.Build.props"));
             Assert.Contains("<Version>1.0.0</Version>", mergedProps);
             Assert.DoesNotContain("<Import", mergedProps);
-
-            // 构建流水线 [2] 步骤：写入版本号必须成功
-            VersionManager.WriteVersion(output, "1.2.3", projectCode: "PT01", baseVersion: "1.0.0");
-            Assert.Contains("<Version>1.2.3</Version>", File.ReadAllText(Path.Combine(output, "Directory.Build.props")));
         }
         finally
         {
@@ -222,8 +215,7 @@ public sealed class ScaffolderIntegrationTests
             TemplatePath = templateRoot,
             BusinessTemplate = business.Config,
             BusinessTemplatePath = business.DirectoryPath,
-            OutputDir = output,
-            Version = "1.2.3"
+            OutputDir = output
         };
 
     private static string CreateMinimalTemplate(bool includeRequiredFiles)
@@ -245,7 +237,6 @@ public sealed class ScaffolderIntegrationTests
               "excludeFromCopy": ["bin", "obj"],
               "excludeFromReplacement": [],
               "deleteFromOutput": [],
-              "obfuscationTargets": [],
               "reservedNames": []
             }
             """);

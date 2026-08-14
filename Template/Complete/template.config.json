@@ -1,9 +1,11 @@
 {
   "schemaVersion": 1,
-  "description": "组件测试模板（TESTRIG 组件测试平台：工装/治具管理，TemplateUUT 被检）",
+  "description": "仪表自动化模板（TESTRIG 仪表自动化平台：工装/治具管理，TemplateUUT 被检）",
   "businessType": "complete",
   "category": "complete",
+  "group": "dedicated",
   "disabled": false,
+  "dutPlaceholder": "TemplateUUT",
   "excludeFromCopy": [],
   "excludeFromReplacement": []
 }

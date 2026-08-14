@@ -73,16 +73,28 @@ internal sealed class {{DutType}}Ops
     /// <param name="ms">毫秒。</param>
     public Task Sleep(int ms)
     {
+        Report(Box.IsRealHardware ? $"等待 {ms}ms" : $"等待 {ms}ms（仿真跳过）");
         return Box.IsRealHardware ? Task.Delay(ms, _ct) : Task.CompletedTask;
     }
 
     /// <summary>
-    /// 发继电器指令。PORT: DSTB.RespondToCommand。
+    /// 发继电器指令（含 UI 过程日志）。PORT: DSTB.RespondToCommand。
     /// </summary>
     /// <param name="cmd">继电器指令。</param>
     public Task Relay(R cmd)
     {
+        Report($"继电器指令：{cmd}");
         return Box.RelayCommandAsync(cmd, _ct);
+    }
+
+    /// <summary>
+    /// 切换 ConST326 测量档（含 UI 过程日志）。PORT: DSTB.ConST326SetMeasureGear。
+    /// </summary>
+    /// <param name="gear">测量档。</param>
+    public Task SetGear(Gear326 gear)
+    {
+        Report($"ConST326 切测量档：{gear}");
+        return Box.SetMeasureGearAsync(gear, _ct);
     }
 
     /// <summary>
@@ -147,7 +159,7 @@ internal sealed class {{DutType}}Ops
             return false;
         }
         var r = _ctx.Evaluator.Evaluate(cond, value);
-        Report($"{label} {F(value)}{unit}：{r.Message}");
+        Report($"{label} {F(value)}{unit}：{r.Message}", r.Passed ? RealtimeLevel.Info : RealtimeLevel.Warn);
         return r.Passed;
     }
 }
@@ -188,6 +200,7 @@ public sealed class Prep{{DutType}}Handler : IStepHandler
             }
         }
         op.Report($"被检建立连接：{(connected ? "成功" : "失败")}", connected ? RealtimeLevel.Info : RealtimeLevel.Warn);
+        op.Report(connected ? "✓ 工装准备完成" : "✗ 被检建立连接失败", connected ? RealtimeLevel.Success : RealtimeLevel.Error);
         return connected ? StepResult.Pass("工装准备完成") : StepResult.Fail("被检建立连接失败");
     }
 }
@@ -212,6 +225,7 @@ public sealed class Version{{DutType}}Handler : IStepHandler
         var soft = await op.Dut.ReadCtlVersionAsync(ct);
         var hard = await op.Dut.ReadCtlHardVersionAsync(ct);
         op.Report($"控制器软件版本 {soft}，硬件版本 {hard}");
+        op.Report($"✓ 版本读取完成 软件={soft} 硬件={hard}", RealtimeLevel.Success);
         return StepResult.Pass($"版本读取完成 软件={soft} 硬件={hard}", soft);
     }
 }
@@ -244,7 +258,7 @@ public sealed class PowerTrack{{DutType}}Handler : IStepHandler
     public async Task<StepResult> ExecuteAsync(ITestContext ctx, CancellationToken ct = default)
     {
         var op = new {{DutType}}Ops(ctx, ct);
-        await op.Box.SetMeasureGearAsync(Gear326.V, ct);
+        await op.SetGear(Gear326.V);
         await op.Relay(R.继电器B_14档位_测试类型选择_电压输出);
         ctx.BeginSampling("V", "通道电压");
         var pass = true;
@@ -257,6 +271,7 @@ public sealed class PowerTrack{{DutType}}Handler : IStepHandler
             ctx.ReportSample(idx++, v);
             pass &= op.Judge(cond, v, label, "V");
         }
+        op.Report(pass ? "✓ 电源轨测试通过" : "✗ 电源轨某路超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("电源轨测试通过") : StepResult.Fail("电源轨某路超差");
     }
 }
@@ -286,6 +301,7 @@ public sealed class PowerStatus{{DutType}}Handler : IStepHandler
         pass &= op.Judge("BOOST-SENSOR", boost, "BOOST-SENSOR电压", "V");
         var vacuum = await op.Dut.ReadVacuumVoltAsync(ct);
         pass &= op.Judge("VACUUM-SENSOR", vacuum, "VACUUM-SENSOR电压", "V");
+        op.Report(pass ? "✓ 电源状态测试通过" : "✗ 电源状态某路超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("电源状态测试通过") : StepResult.Fail("电源状态某路超差");
     }
 }
@@ -307,6 +323,7 @@ public sealed class Consume{{DutType}}Handler : IStepHandler
     public async Task<StepResult> ExecuteAsync(ITestContext ctx, CancellationToken ct = default)
     {
         var op = new {{DutType}}Ops(ctx, ct);
+        op.Report("开始功耗采样（目标 30 点，间隔 500ms）");
         await op.Sleep(2000);
         var currents = new List<double>();
         ctx.BeginSampling("mA", "功耗电流");
@@ -326,7 +343,10 @@ public sealed class Consume{{DutType}}Handler : IStepHandler
         currents.Sort();
         var trimmed = currents.Count > 10 ? currents.GetRange(5, currents.Count - 10) : new List<double>();
         var avg = trimmed.Count > 0 ? trimmed.Average() / Math.Pow(10, 6) : double.NaN;
+        op.Report($"采集 {currents.Count} 点，掐头去尾取中段均值 {{{DutType}}Ops.F(avg)}mA");
         var pass = op.Judge("功耗范围", avg, "功耗均值电流", "mA");
+        op.Report(pass ? $"✓ 功耗测试通过 均值={{{DutType}}Ops.F(avg)}mA" : $"✗ 功耗超差 均值={{{DutType}}Ops.F(avg)}mA",
+            pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass($"功耗测试通过 均值={{{DutType}}Ops.F(avg)}mA", {{DutType}}Ops.F(avg))
                     : StepResult.Fail($"功耗超差 均值={{{DutType}}Ops.F(avg)}mA", {{DutType}}Ops.F(avg));
     }
@@ -354,7 +374,7 @@ public sealed class Buzzer{{DutType}}Handler : IStepHandler
         {
             await op.Dut.SetBuzzerAsync(false, ct);
             op.Report("关闭蜂鸣器");
-            await op.Box.SetMeasureGearAsync(Gear326.V, ct);
+            await op.SetGear(Gear326.V);
             await op.Relay(R.继电器B_8档位_测试通道选择_连接E8通道);
             await op.Relay(R.继电器B_14档位_测试类型选择_电压输出);
             await op.Sleep(2000);
@@ -371,6 +391,7 @@ public sealed class Buzzer{{DutType}}Handler : IStepHandler
         {
             await op.Dut.SetBuzzerAsync(false, ct);
         }
+        op.Report(pass ? "✓ 蜂鸣器测试通过" : "✗ 蜂鸣器电压超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("蜂鸣器测试通过") : StepResult.Fail("蜂鸣器电压超差");
     }
 }
@@ -538,9 +559,12 @@ public sealed class ScreenSerial{{DutType}}Handler : IStepHandler
         if (!foundPort)
         {
             op.Report("未找到大彩屏串口", RealtimeLevel.Warn);
+            op.Report("✗ 未找到大彩屏串口", RealtimeLevel.Error);
             return StepResult.Fail("未找到大彩屏串口");
         }
         op.Report($"找到大彩屏串口：{foundPortName}，通讯正常={commOk}");
+        op.Report(commOk ? $"✓ 大彩屏串口通讯正常（{foundPortName}）" : $"✗ 大彩屏串口通讯异常（{foundPortName}）",
+            commOk ? RealtimeLevel.Success : RealtimeLevel.Error);
         return commOk ? StepResult.Pass($"大彩屏串口通讯正常（{foundPortName}）", foundPortName)
                       : StepResult.Fail($"大彩屏串口通讯异常（{foundPortName}）", foundPortName);
     }
@@ -569,6 +593,8 @@ public sealed class PressureSensor{{DutType}}Handler : IStepHandler
         var vacuum = await op.Dut.ReadPressureAsync({{DutType}}Module.Vacuum, ct);
         var vacuumOk = Math.Abs(vacuum) > 1e-9;
         op.Report($"真空组件压力 {{{DutType}}Ops.F(vacuum)}：传感器通讯{(vacuumOk ? "正常" : "异常")}");
+        op.Report(boostOk && vacuumOk ? "✓ 压力传感器通讯正常" : "✗ 压力传感器通讯异常",
+            boostOk && vacuumOk ? RealtimeLevel.Success : RealtimeLevel.Error);
         return boostOk && vacuumOk ? StepResult.Pass("压力传感器通讯正常")
                                    : StepResult.Fail("压力传感器通讯异常");
     }
@@ -617,6 +643,7 @@ public sealed class TempSensor{{DutType}}Handler : IStepHandler
             var t = await _envTemp.ReadAsync(sns, ct);
             if (t is null)
             {
+                op.Report("✗ 环境温度获取失败（温湿度计无新鲜数据）", RealtimeLevel.Error);
                 return StepResult.Fail("环境温度获取失败（温湿度计无新鲜数据）");
             }
 
@@ -647,6 +674,7 @@ public sealed class TempSensor{{DutType}}Handler : IStepHandler
             pass &= op.Judge("温差合格", diff, $"{label}温差", "℃");
         }
 
+        op.Report(pass ? "✓ 温度传感器测试通过" : "✗ 温度传感器温差超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("温度传感器测试通过") : StepResult.Fail("温度传感器温差超差");
     }
 }
@@ -685,6 +713,7 @@ public sealed class Fan{{DutType}}Handler : IStepHandler
         var boostSpeed = await op.Dut.ReadFanSpeedAsync({{DutType}}Module.Boost, ct);
         pass &= op.Judge("转速范围", boostSpeed, "增压风扇转速", "rpm");
 
+        op.Report(pass ? "✓ 风扇测试通过" : "✗ 风扇转速超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("风扇测试通过") : StepResult.Fail("风扇转速超差");
     }
 }
@@ -754,6 +783,7 @@ public sealed class ControlValve{{DutType}}Handler : IStepHandler
         {
             await op.Dut.SetDiagnosticTestAsync(false, ct);
         }
+        op.Report(pass ? "✓ 控制阀测试通过" : "✗ 控制阀电压超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("控制阀测试通过") : StepResult.Fail("控制阀电压超差");
     }
 }
@@ -791,6 +821,7 @@ public sealed class VacuumCtl{{DutType}}Handler : IStepHandler
             await op.Dut.SetPumpAsync({{DutType}}Module.Vacuum, false, ct);
             op.Report("关闭真空组件泵动作");
         }
+        op.Report(pass ? "✓ 真空组件泵控制通过" : "✗ 真空组件泵电压超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("真空组件泵控制通过") : StepResult.Fail("真空组件泵电压超差");
     }
 }
@@ -828,6 +859,7 @@ public sealed class BoostCtl{{DutType}}Handler : IStepHandler
             await op.Dut.SetPumpAsync({{DutType}}Module.Boost, false, ct);
             op.Report("关闭增压组件泵动作");
         }
+        op.Report(pass ? "✓ 增压组件泵控制通过" : "✗ 增压组件泵电压超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("增压组件泵控制通过") : StepResult.Fail("增压组件泵电压超差");
     }
 }
@@ -866,6 +898,7 @@ public sealed class PreCtl{{DutType}}Handler : IStepHandler
             await op.Dut.SetPumpAsync({{DutType}}Module.Vacuum, false, ct);
             op.Report("关闭前级组件泵动作");
         }
+        op.Report(pass ? "✓ 前级组件泵控制通过" : "✗ 前级组件泵电压超差", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("前级组件泵控制通过") : StepResult.Fail("前级组件泵电压超差");
     }
 }
@@ -933,6 +966,7 @@ public sealed class FocDriver{{DutType}}Handler : IStepHandler
             await op.Dut.SetPumpAsync({{DutType}}Module.Boost, false, ct);
             await op.Dut.SetDiagnosticTestAsync(false, ct);
         }
+        op.Report(pass ? "✓ FOC驱动测试通过" : "✗ FOC驱动异常", pass ? RealtimeLevel.Success : RealtimeLevel.Error);
         return pass ? StepResult.Pass("FOC驱动测试通过") : StepResult.Fail("FOC驱动异常");
     }
 }
@@ -958,6 +992,8 @@ public sealed class FocComm{{DutType}}Handler : IStepHandler
         op.Report($"增压组件 FOC 芯片状态：{(boostOk ? "正常" : "异常")}");
         var preOk = await op.Dut.IsFocNormalAsync({{DutType}}Module.Pre, ct);
         op.Report($"前级组件 FOC 芯片状态：{(preOk ? "正常" : "异常")}");
+        op.Report(boostOk && preOk ? "✓ FOC芯片通讯正常" : "✗ FOC芯片通讯异常",
+            boostOk && preOk ? RealtimeLevel.Success : RealtimeLevel.Error);
         return boostOk && preOk ? StepResult.Pass("FOC芯片通讯正常") : StepResult.Fail("FOC芯片通讯异常");
     }
 }
@@ -981,7 +1017,7 @@ public sealed class Finish{{DutType}}Handler : IStepHandler
         var op = new {{DutType}}Ops(ctx, ct);
         await op.Relay(R.继电器C_9档位_5通道控制_常闭点);
         await op.Relay(R.继电器C_19档位_CHB_7_8_9_10_11_12_通道电源控制_断电);
-        op.Report("工装复位，测试完成", RealtimeLevel.Success);
+        op.Report("✓ 测试完成", RealtimeLevel.Success);
         return StepResult.Pass("测试完成");
     }
 }

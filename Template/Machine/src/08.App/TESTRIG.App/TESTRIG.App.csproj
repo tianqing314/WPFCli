@@ -25,6 +25,19 @@
     <ProjectReference Include="..\..\06.Automation\TESTRIG.Automation\TESTRIG.Automation.csproj" />
     <ProjectReference Include="..\..\05.Jigs\TESTRIG.Jigs\TESTRIG.Jigs.csproj" />
     <ProjectReference Include="..\..\07.UI\TESTRIG.UI.Shared\TESTRIG.UI.Shared.csproj" />
+    <!--
+      升级器（net48 独立小 exe）：不参与引用，只把 TESTRIG.Updater.exe 复制到输出/发布目录。
+      否则在线升级时 UpdateService.StageUpdater 在程序目录找不到 {代号}.Updater.exe，
+      报「缺少升级器 …（发布包应包含，请重新发布）」。
+    -->
+    <ProjectReference Include="..\..\09.Updater\TESTRIG.Updater\TESTRIG.Updater.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <!-- 跳过目标框架兼容性检查，避免 net8 主项目引用 net48 升级器时产生 NU1702 警告 -->
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

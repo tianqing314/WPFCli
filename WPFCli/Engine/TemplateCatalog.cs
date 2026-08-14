@@ -112,7 +112,6 @@ public static class TemplateCatalog
         ValidateList(config.ExcludeFromCopy, "excludeFromCopy", errors);
         ValidateList(config.ExcludeFromReplacement, "excludeFromReplacement", errors);
         ValidateList(config.DeleteFromOutput, "deleteFromOutput", errors);
-        ValidateList(config.ObfuscationTargets, "obfuscationTargets", errors, paths: false);
         ValidateList(config.ReservedNames, "reservedNames", errors, paths: false);
 
         if (isRoot)
@@ -137,6 +136,10 @@ public static class TemplateCatalog
             if (!string.IsNullOrWhiteSpace(directoryName) &&
                 !directoryName.Equals(config.BusinessType, StringComparison.OrdinalIgnoreCase))
                 errors.Add($"businessType '{config.BusinessType}' 必须与目录名 '{directoryName}' 一致");
+            if (!string.IsNullOrWhiteSpace(config.Group) &&
+                !config.Group.Equals("dedicated", StringComparison.OrdinalIgnoreCase) &&
+                !config.Group.Equals("general", StringComparison.OrdinalIgnoreCase))
+                errors.Add($"group '{config.Group}' 无效，仅支持 dedicated（专线模板）/ general（通用模板）");
         }
 
         return errors;

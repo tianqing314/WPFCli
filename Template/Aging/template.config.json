@@ -1,8 +1,9 @@
 {
   "schemaVersion": 1,
-  "description": "老化模板",
+  "description": "老化工装模板",
   "businessType": "aging",
   "category": "aging",
+  "group": "dedicated",
   "disabled": true,
   "excludeFromCopy": [],
   "excludeFromReplacement": []

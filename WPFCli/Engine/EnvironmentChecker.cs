@@ -4,7 +4,7 @@ using WPFCli.Models;
 namespace WPFCli.Engine;
 
 /// <summary>
-/// 环境检测器 —— 在流水线开始前检测 .NET SDK（必需）、Obfuscar / ISCC（按需，可选）。
+/// 环境检测器 —— 在流水线开始前检测 .NET SDK（必需）、ISCC（按需，可选）。
 /// 缺失必需项时报错退出；缺失可选项时给出安装提示但不阻塞。
 /// </summary>
 public static class EnvironmentChecker
@@ -14,8 +14,6 @@ public static class EnvironmentChecker
         public bool DotnetAvailable { get; set; }
         public string? DotnetVersion { get; set; }
         public bool SdkVersionSufficient { get; set; }
-        public bool ObfuscarAvailable { get; set; }
-        public string? ObfuscarPath { get; set; }
         public bool InnoSetupAvailable { get; set; }
         public string? InnoSetupPath { get; set; }
     }
@@ -62,27 +60,7 @@ public static class EnvironmentChecker
             }
         }
 
-        // 2. Obfuscar（可选，仅当用户开启混淆时检测）
-        if (opts.EnableObfuscation)
-        {
-            result.ObfuscarPath = Obfuscator.FindObfuscar();
-            result.ObfuscarAvailable = !string.IsNullOrEmpty(result.ObfuscarPath);
-            if (!result.ObfuscarAvailable)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("  [!] 未检测到 Obfuscar（混淆脚本仍会生成，但执行时会失败）");
-                Console.WriteLine("      请安装: dotnet tool install -g Obfuscar.GlobalTool");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"  [✓] Obfuscar: {result.ObfuscarPath}");
-                Console.ResetColor();
-            }
-        }
-
-        // 3. Inno Setup（可选，仅当用户开启打包时检测）
+        // 2. Inno Setup（可选，仅当用户开启打包时检测）
         if (opts.EnablePackaging)
         {
             result.InnoSetupPath = InstallerPackager.FindInnoSetup();
