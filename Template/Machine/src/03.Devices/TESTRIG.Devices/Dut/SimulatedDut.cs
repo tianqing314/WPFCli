@@ -113,6 +113,51 @@ public sealed class SimulatedDut : IDutDevice
     }
 
     /// <summary>
+    /// 设置被检序列号（仿真直接返回成功）。
+    /// </summary>
+    public Task<bool> SetSerialNumberAsync(string serialNumber, CancellationToken ct = default)
+    {
+        _logger.LogInformation("{Model} 设置序列号：{SN}", Model, serialNumber);
+        return Task.FromResult(true);
+    }
+
+    /// <summary>
+    /// 设置产品型号/主设备类型（仿真直接返回成功）。
+    /// </summary>
+    public Task<bool> SetPrimaryDeviceTypeAsync(string deviceType, CancellationToken ct = default)
+    {
+        _logger.LogInformation("{Model} 设置产品型号：{Type}", Model, deviceType);
+        return Task.FromResult(true);
+    }
+
+    /// <summary>
+    /// 通用布尔查询（仿真返回随机值）。
+    /// </summary>
+    public Task<bool> QueryBooleanAsync(string method, object? arg, CancellationToken ct = default)
+    {
+        _logger.LogDebug("{Model} QueryBoolean: {Method}", Model, method);
+        return Task.FromResult(_rng.Next(2) == 0);
+    }
+
+    /// <summary>
+    /// 通用文本查询（仿真返回空字符串）。
+    /// </summary>
+    public Task<string> QueryTextAsync(string method, object? arg, CancellationToken ct = default)
+    {
+        _logger.LogDebug("{Model} QueryText: {Method}", Model, method);
+        return Task.FromResult(string.Empty);
+    }
+
+    /// <summary>
+    /// 通用指令执行（仿真仅记录日志）。
+    /// </summary>
+    public Task CommandAsync(string method, object? arg, CancellationToken ct = default)
+    {
+        _logger.LogDebug("{Model} Command: {Method}", Model, method);
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
     /// 释放（置未连接）。
     /// </summary>
     public ValueTask DisposeAsync()

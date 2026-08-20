@@ -29,7 +29,8 @@ public sealed class CoreFlowTests
             var config = new TemplateConfig { Placeholder = "PCBA", MainProjectName = "PCBA.App" };
             TemplateBuilder.Build(new BuildOptions
             {
-                ProductCode = "PT01",
+                ProjectPrefix = "PT01",
+                ProductCode = "PS02",
                 OutputDir = output,
                 TemplatePath = templateRoot,
                 BusinessTemplatePath = business,
@@ -62,6 +63,7 @@ public sealed class CoreFlowTests
             templatePath);
 
         Assert.True(result.IsSuccess);
+        Assert.Equal("PT01", result.Options!.ProjectPrefix);
         Assert.Equal("PT01", result.Options!.ProductCode);
     }
 

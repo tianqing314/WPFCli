@@ -34,8 +34,7 @@ internal static class TestStepSourceGenerator
         sb.AppendLine("    private readonly CancellationToken _ct;");
         sb.AppendLine();
         sb.AppendLine("    /// <summary>GZP21 共享工装（继电器输出）。</summary>");
-        var gzp21Type = dut.Equals("ConST811A", StringComparison.OrdinalIgnoreCase) ? "IConST811ATestTool" : "IMachineTestTool";
-        sb.AppendLine($"    public readonly {gzp21Type} Gzp21;");
+        sb.AppendLine("    public readonly IMachineTestTool Gzp21;");
         sb.AppendLine("    /// <summary>P06/ConST810 共享设备（电压/电流采样）。</summary>");
         sb.AppendLine("    public readonly IMachineTestTool P06;");
         sb.AppendLine();
@@ -46,7 +45,7 @@ internal static class TestStepSourceGenerator
         sb.AppendLine("    {");
         sb.AppendLine("        _ctx = ctx;");
         sb.AppendLine("        _ct = ct;");
-        sb.AppendLine($"        Gzp21 = ctx.GetDevice<{gzp21Type}>(\"GZP21\");");
+        sb.AppendLine("        Gzp21 = ctx.GetDevice<IMachineTestTool>(\"GZP21\");");
         sb.AppendLine("        P06 = ctx.GetDevice<IMachineTestTool>(\"P06\");");
         sb.AppendLine($"        Dut = ctx.GetDevice<I{dut}Dut>();");
         sb.AppendLine("    }");
@@ -88,10 +87,8 @@ internal static class TestStepSourceGenerator
         sb.AppendLine("            if (device == \"GZP21\")");
         sb.AppendLine("            {");
         sb.AppendLine("                var open = !arg.Contains(\"Close\", StringComparison.OrdinalIgnoreCase);");
-        sb.AppendLine("                if (method.Equals(\"Set27VState\", StringComparison.OrdinalIgnoreCase)) await Gzp21.Set27VAsync(open, ct);");
-        sb.AppendLine("                else if (method.Equals(\"SetEleState\", StringComparison.OrdinalIgnoreCase)) await Gzp21.SetElectricalAsync(open, ct);");
-        sb.AppendLine("                else if (method.Equals(\"SetHartState\", StringComparison.OrdinalIgnoreCase)) await Gzp21.SetHartAsync(open, ct);");
-        sb.AppendLine("                else if (method.Equals(\"SetPAState\", StringComparison.OrdinalIgnoreCase)) await Gzp21.SetPaAsync(open, ct);");
+        sb.AppendLine("                var outputName = method.Replace(\"Set\", \"\").Replace(\"State\", \"\");");
+        sb.AppendLine("                await Gzp21.SetOutputAsync(outputName, open, ct);");
         sb.AppendLine("                continue;");
         sb.AppendLine("            }");
         sb.AppendLine("            if (device == \"P21\")");

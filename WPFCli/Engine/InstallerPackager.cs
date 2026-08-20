@@ -100,13 +100,13 @@ public static class InstallerPackager
         var installerDir = Path.Combine(opts.OutputDir, "installer");
 
         sb.AppendLine("; 由 TestRig CLI 自动生成");
-        sb.AppendLine($"; 产品代号: {opts.ProductCode}  生成时间: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine($"; 项目代号: {opts.ProjectPrefix}  生成时间: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
         sb.AppendLine("[Setup]");
-        sb.AppendLine($"AppName={opts.ProductCode}");
+        sb.AppendLine($"AppName={opts.ProjectPrefix}");
         sb.AppendLine("AppPublisher=TestRig CLI");
-        sb.AppendLine($"DefaultDirName={{autopf}}\\{opts.ProductCode}");
-        sb.AppendLine($"DefaultGroupName={opts.ProductCode}");
-        sb.AppendLine($"OutputBaseFilename={opts.ProductCode}-Setup");
+        sb.AppendLine($"DefaultDirName={{autopf}}\\{opts.ProjectPrefix}");
+        sb.AppendLine($"DefaultGroupName={opts.ProjectPrefix}");
+        sb.AppendLine($"OutputBaseFilename={opts.ProjectPrefix}-Setup");
         sb.AppendLine($"OutputDir={installerDir}");
         sb.AppendLine("Compression=lzma2");
         sb.AppendLine("SolidCompression=yes");
@@ -118,8 +118,8 @@ public static class InstallerPackager
         sb.AppendLine($"Source: \"{publishDir}\\*\"; DestDir: \"{{app}}\"; Flags: ignoreversion recursesubdirs createallsubdirs");
         sb.AppendLine();
         sb.AppendLine("[Icons]");
-        sb.AppendLine($"Name: \"{{group}}\\{opts.ProductCode}\"; Filename: \"{{app}}\\{opts.MainExeFileName}\"");
-        sb.AppendLine($"Name: \"{{userdesktop}}\\{opts.ProductCode}\"; Filename: \"{{app}}\\{opts.MainExeFileName}\"; Tasks: desktopicon");
+        sb.AppendLine($"Name: \"{{group}}\\{opts.ProjectPrefix}\"; Filename: \"{{app}}\\{opts.MainExeFileName}\"");
+        sb.AppendLine($"Name: \"{{userdesktop}}\\{opts.ProjectPrefix}\"; Filename: \"{{app}}\\{opts.MainExeFileName}\"; Tasks: desktopicon");
         sb.AppendLine();
         sb.AppendLine("[Tasks]");
         sb.AppendLine("Name: \"desktopicon\"; Description: \"创建桌面快捷方式\"; Flags: unchecked");
@@ -134,14 +134,14 @@ public static class InstallerPackager
     public static string GeneratePackagePs1(BuildOptions opts)
     {
         var installerDir = Path.Combine(opts.OutputDir, "installer");
-        var issFileName = $"{opts.ProductCode}.iss";
-        var installerExe = $"{opts.ProductCode}-Setup.exe";
+        var issFileName = $"{opts.ProjectPrefix}.iss";
+        var installerExe = $"{opts.ProjectPrefix}-Setup.exe";
 
         var sb = new StringBuilder();
         var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
         sb.AppendLine("# ===== Inno Setup 打包脚本（由 TestRig CLI 自动生成，请勿手动修改）=====");
-        sb.AppendLine($"# 产品代号: {opts.ProductCode}");
+        sb.AppendLine($"# 项目代号: {opts.ProjectPrefix}");
         sb.AppendLine($"# 生成时间: {timestamp}");
         sb.AppendLine();
         sb.AppendLine("$ErrorActionPreference = \"Stop\"");

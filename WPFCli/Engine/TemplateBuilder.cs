@@ -124,7 +124,7 @@ public static class TemplateBuilder
         }
 
         // 3. 替换文件内容（排除目录、跳过二进制和模板元数据）
-        onProgress?.Invoke($"  替换占位符 '{opts.Template.Placeholder}' → '{opts.ProductCode}'");
+        onProgress?.Invoke($"  替换占位符 '{opts.Template.Placeholder}' → '{opts.ProjectPrefix}'");
         var replaced = ReplaceContentInFiles(opts.OutputDir, opts, excludeReplace);
         onProgress?.Invoke($"  内容替换文件: {replaced}");
 
@@ -163,7 +163,7 @@ public static class TemplateBuilder
         var issues = new List<string>();
         var rootDir = opts.OutputDir;
         var placeholder = opts.Template.Placeholder;
-        var productCode = opts.ProductCode;
+        var productCode = opts.ProjectPrefix;
 
         // 1. 关键产物存在性
         if (!File.Exists(opts.SolutionPath))
@@ -430,19 +430,20 @@ public static class TemplateBuilder
         var replacements = new List<(string Token, string Value)>
         {
             ("{{ProductCode}}", opts.ProductCode),
-            ("{{ProductName}}", opts.ProductCode),
+            ("{{ProjectPrefix}}", opts.ProjectPrefix),
+            ("{{ProductName}}", opts.ProjectPrefix),
             ("{{MainProjectName}}", opts.MainProjectName),
-            ("{{RootNamespace}}", opts.ProductCode),
+            ("{{RootNamespace}}", opts.ProjectPrefix),
             ("{{BusinessType}}", opts.BusinessType),
             ("{{TargetFramework}}", opts.Template.TargetFramework)
         };
 
-        // 产品代号占位符：边界感知替换（仅独立词），并缓存对应正则
+        // 项目代号占位符：边界感知替换（仅独立词），并缓存对应正则
         var placeholder = opts.Template.Placeholder;
         if (placeholder.Length > 0)
         {
             GetPlaceholderBoundaryRegex(placeholder);
-            replacements.Add((placeholder, opts.ProductCode));
+            replacements.Add((placeholder, opts.ProjectPrefix));
         }
 
         // 被检类型占位符替换（仅动态工装模板配置了 dutPlaceholder）

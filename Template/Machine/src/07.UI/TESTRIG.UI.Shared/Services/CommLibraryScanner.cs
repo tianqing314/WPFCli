@@ -42,7 +42,7 @@ public static class CommLibraryScanner
                         continue;
                     }
 
-                    // 通讯驱动基类约定以 Base 结尾（DPSEXBase / DPC2Base / ConST171Base ...）
+                    // 通讯驱动基类约定以 Base 结尾（DPSEXBase / DPC2Base 等）
                     if (!t.Name.EndsWith("Base", StringComparison.Ordinal))
                     {
                         continue;

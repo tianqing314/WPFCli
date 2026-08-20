@@ -494,7 +494,7 @@ internal static class LegacyScriptTranslator
             m = Gzp21NullCheck27VPattern.Match(line);
             if (m.Success)
             {
-                lines.Add($"var {m.Groups[1].Value} = await op.Gzp21.Get27VStateAsync(ct);");
+                lines.Add($"var {m.Groups[1].Value} = await op.Gzp21.GetOutputStateAsync(\"27V\", ct);");
                 continue;
             }
 
@@ -508,16 +508,16 @@ internal static class LegacyScriptTranslator
             {
                 var targetMethod = m.Groups[1].Value switch
                 {
-                    "PA" => "SetPaAsync",
-                    "27V" => "Set27VAsync",
-                    "Ele" => "SetElectricalAsync",
-                    "Hart" => "SetHartAsync",
+                    "PA" => "PA",
+                    "27V" => "27V",
+                    "Ele" => "Ele",
+                    "Hart" => "Hart",
                     _ => null
                 };
                 if (targetMethod != null)
                 {
                     var openFlag = m.Groups[2].Value == "Open";
-                    lines.Add($"await op.Gzp21.{targetMethod}({(openFlag ? "true" : "false")}, ct);");
+                    lines.Add($"await op.Gzp21.SetOutputAsync(\"{targetMethod}\", {(openFlag ? "true" : "false")}, ct);");
                     continue;
                 }
             }

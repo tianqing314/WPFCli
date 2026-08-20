@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xmas11.Comm.Data.Common;
 using Xmas11.Comm.Device;
@@ -312,6 +313,40 @@ namespace Bots.TestBench.Device
             iResponse<OpenCloseState> result = GZ811A.GetY4SwitchState();
             state = result.Result;
             return result.IsCorrect;
+        }
+
+        /// <summary>
+        /// 通用输出控制（按名称路由到具体继电器）
+        /// </summary>
+        public Task SetOutputAsync(string outputName, bool on, CancellationToken ct = default)
+        {
+            var state = on ? OpenCloseState.Open : OpenCloseState.Close;
+            var ok = outputName.ToUpperInvariant() switch
+            {
+                "27V" => Set27VState(state),
+                "HART" => SetHartState(state),
+                "PA" => SetPAState(state),
+                "ELE" or "ELECTRICAL" => SetEleState(state),
+                _ => throw new ArgumentException($"未知输出通道: {outputName}")
+            };
+            if (!ok) throw new InvalidOperationException($"设置 {outputName} 失败");
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 读取继电器状态（按名称路由到具体继电器）
+        /// </summary>
+        public Task<bool> GetOutputStateAsync(string outputName, CancellationToken ct = default)
+        {
+            var result = outputName.ToUpperInvariant() switch
+            {
+                "27V" => Get27VState(),
+                "HART" => GetHartState(),
+                "PA" => GetPAState(),
+                "ELE" or "ELECTRICAL" => GetEleState(),
+                _ => throw new ArgumentException($"未知输出通道: {outputName}")
+            };
+            return Task.FromResult(result == OpenCloseState.Open);
         }
 
         #endregion

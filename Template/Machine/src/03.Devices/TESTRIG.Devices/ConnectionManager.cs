@@ -61,7 +61,7 @@ public sealed class ConnectionManager
     }
 
     /// <summary>
-    /// **真连**被检（如 ConST171A）：按型号建驱动并 Connect 探活，测完关闭。
+    /// **真连**被检：按型号建驱动并 Connect 探活，测完关闭。
     /// 用于连接配置页被检行的一键连接/单行连接。
     /// </summary>
     /// <param name="dut">被检描述符（型号/键）。</param>

@@ -36,6 +36,7 @@ public static class CliOptionsParser
             return CliParseResult.ListTemplates();
 
         string? business = null;
+        string? prefix = null;
         string? code = null;
         string? output = null;
         string? dutType = null;
@@ -52,6 +53,7 @@ public static class CliOptionsParser
             switch (argument)
             {
                 case "--biz": business = NextValue(args, ref i); break;
+                case "--prefix": prefix = NextValue(args, ref i); break;
                 case "--code": code = NextValue(args, ref i); break;
                 case "--template-root":
                     if (NextValue(args, ref i) == null)
@@ -72,7 +74,7 @@ public static class CliOptionsParser
 
         foreach (var missing in new[]
                  {
-                     ("--biz", business), ("--code", code), ("--output", output),
+                     ("--biz", business), ("--prefix", prefix), ("--code", code), ("--output", output),
                      ("--dut", dutType), ("--references-root", referencesRoot), ("--import", importMethod)
                  })
         {
@@ -84,6 +86,10 @@ public static class CliOptionsParser
             return CliParseResult.Failure("缺少必填参数 --biz <业务类型>");
         if (string.IsNullOrWhiteSpace(code))
             return CliParseResult.Failure("缺少必填参数 --code <产品代号>");
+
+        // 项目代号未指定时默认使用产品代号（向后兼容）
+        if (string.IsNullOrWhiteSpace(prefix))
+            prefix = code;
 
         var businessError = TemplateCatalog.TryResolve(templatePath, business, out var businessTemplate);
         if (businessError != null)
@@ -115,6 +121,7 @@ public static class CliOptionsParser
             TemplatePath = templatePath,
             BusinessTemplatePath = businessTemplate!.DirectoryPath,
             BusinessTemplate = businessTemplate.Config,
+            ProjectPrefix = prefix ?? "",
             ProductCode = code,
             OutputDir = outputDir,
             OverwriteExisting = overwriteExisting,

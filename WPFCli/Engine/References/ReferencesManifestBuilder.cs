@@ -35,7 +35,7 @@ internal static class ReferencesManifestBuilder
             new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
         var root = doc.RootElement;
 
-        // 项目代号 = 被检 DUT 的 DeviceKey（如 ConST811A 产线为 P21）。作为所有清单的 DeviceFamily（菜单一级）。
+        // 项目代号 = 被检 DUT 的 DeviceKey，作为所有清单的 DeviceFamily（菜单一级）。
         var dutDeviceKey = ResolveDutDeviceKey(root, dut);
 
         // 任务序列（Entry 为权威来源）。无 Entry 的旧人工项也保留，转成新体系 ManualConfirm。
@@ -65,18 +65,26 @@ internal static class ReferencesManifestBuilder
             }
         }
 
-        var variants = ReadVariants(root);
+        // 从任务列表中提取基础分类（出现最频繁的 Categories 值），用于区分基础任务和变体任务。
+        // 例如任务 Categories 为 "P21_D"，变体为 "P21_DP"/"P21_BP"/"P21_MLP"。
+        var baseCategory = tasks
+            .Where(t => !string.IsNullOrWhiteSpace(t.Categories))
+            .GroupBy(t => t.Categories, StringComparer.OrdinalIgnoreCase)
+            .OrderByDescending(g => g.Count())
+            .FirstOrDefault()?.Key;
+
+        var variants = ReadVariants(root, baseCategory);
         var handlerFiles = new List<string>();
         var manifestFiles = new List<string>();
         foreach (var variant in variants)
         {
-            // 旧版动态工装脚本经常没有 P21_D 分类（只有 Type/设备分类），
-            // 此时不能把全部任务误过滤掉；存在明确分类时才按版本筛选。
-            var hasP21Categories = tasks.Any(t => t.Categories.StartsWith("P21_D", StringComparison.OrdinalIgnoreCase));
-            var variantTasks = hasP21Categories
+            // 存在明确分类时才按变体筛选：基础分类 + 当前变体分类的任务。
+            var hasBaseCategories = !string.IsNullOrEmpty(baseCategory) &&
+                tasks.Any(t => t.Categories.Equals(baseCategory, StringComparison.OrdinalIgnoreCase));
+            var variantTasks = hasBaseCategories
                 ? tasks.Where(t =>
-                    t.Categories.Equals("P21_D", StringComparison.OrdinalIgnoreCase) ||
-                    t.Categories.Equals($"P21_D_{variant.Value}", StringComparison.OrdinalIgnoreCase)).ToList()
+                    t.Categories.Equals(baseCategory, StringComparison.OrdinalIgnoreCase) ||
+                    t.Categories.Equals($"{baseCategory}_{variant.Value}", StringComparison.OrdinalIgnoreCase)).ToList()
                 : tasks.ToList();
             if (variantTasks.Count == 0)
             {
@@ -87,8 +95,8 @@ internal static class ReferencesManifestBuilder
             var variantSuffix = variant.Value.Equals("Default", StringComparison.OrdinalIgnoreCase)
                 ? suffix
                 : $"{variant.Value}_{suffix}";
-            // DeviceFamily 统一为项目代号（P21），同名 Kind 由 handler 的 DeviceFamily（=清单 Key）在运行时区分。
-            // Dut.Model 仍统一为实际设备族名称（ConST811A），结果查询不受版本目录影响。
+            // DeviceFamily 统一为项目代号，同名 Kind 由 handler 的 DeviceFamily（=清单 Key）在运行时区分。
+            // Dut.Model 仍统一为实际设备族名称，结果查询不受版本目录影响。
             var handlerDir = Path.Combine(outputDir, "src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_{variantSuffix}");
             var manifestDir = Path.Combine(outputDir, "src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dutDeviceKey);
             Directory.CreateDirectory(handlerDir);
@@ -107,7 +115,11 @@ internal static class ReferencesManifestBuilder
         return (handlerFiles, manifestFiles, todos);
     }
 
-    private static List<JigVariant> ReadVariants(JsonElement root)
+    /// <summary>
+    /// 从 TestCategoriesItems 读取变体列表，过滤掉与 baseCategory 相同的基础分类。
+    /// baseCategory 通常就是 Categories 字段的值。
+    /// </summary>
+    private static List<JigVariant> ReadVariants(JsonElement root, string? baseCategory)
     {
         var result = new List<JigVariant>();
         if (root.TryGetProperty("Type", out var type) &&
@@ -118,7 +130,9 @@ internal static class ReferencesManifestBuilder
             {
                 var value = GetString(item, "Value");
                 var name = GetString(item, "Name");
-                if (!string.IsNullOrWhiteSpace(value) && !value.Equals("P21_D", StringComparison.OrdinalIgnoreCase))
+                // 过滤掉基础分类（即 Categories 本身），只保留真正的变体
+                if (!string.IsNullOrWhiteSpace(value) &&
+                    (string.IsNullOrEmpty(baseCategory) || !value.Equals(baseCategory, StringComparison.OrdinalIgnoreCase)))
                     result.Add(new JigVariant(value, string.IsNullOrWhiteSpace(name) ? value : name));
             }
         }
@@ -156,14 +170,13 @@ internal static class ReferencesManifestBuilder
     }
 
     /// <summary>
-    /// 解析被检 DUT 的 DeviceKey（项目代号，如 ConST811A 产线为 "P21"），
-    /// 作为所有清单的 DeviceFamily（菜单一级）。优先取 P21，其次任意 DUT 的 DeviceKey，最后回退 dut。
+    /// 解析被检 DUT 的 DeviceKey（项目代号），作为所有清单的 DeviceFamily（菜单一级）。
+    /// 取第一个 DUT 设备的 DeviceKey，无则回退 dut。
     /// </summary>
     private static string ResolveDutDeviceKey(JsonElement root, string dut)
     {
         if (root.TryGetProperty("Devices", out var devices) && devices.ValueKind == JsonValueKind.Array)
         {
-            JsonElement? anyDut = null;
             foreach (var dev in devices.EnumerateArray())
             {
                 if (!"DUT".Equals(GetString(dev, "DeviceType"), StringComparison.OrdinalIgnoreCase))
@@ -171,18 +184,9 @@ internal static class ReferencesManifestBuilder
                     continue;
                 }
                 var key = GetString(dev, "DeviceKey") ?? "";
-                if (key.Equals("P21", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(key))
                 {
                     return key;
-                }
-                anyDut ??= dev;
-            }
-            if (anyDut is not null)
-            {
-                var k = GetString(anyDut.Value, "DeviceKey") ?? "";
-                if (!string.IsNullOrWhiteSpace(k))
-                {
-                    return k;
                 }
             }
         }
@@ -256,7 +260,7 @@ internal static class ReferencesManifestBuilder
         var variantSuffix = variant.Value.Equals("Default", StringComparison.OrdinalIgnoreCase)
             ? suffix
             : $"{variant.Value}_{suffix}";
-        var productModel = ReferencesAdapter.ProductModelForVariant(variant.Value);
+        var productModel = ReferencesAdapter.ProductModelForVariant(dut, variant.Value);
 
         // 旧 JSON 的设备顺序并不可靠：按 DeviceType/DeviceKey 找 DUT 与共享设备，且始终取首个通讯配置。
         JsonElement? dutDevice = null;
@@ -267,10 +271,10 @@ internal static class ReferencesManifestBuilder
             {
                 var deviceType = GetString(dev, "DeviceType") ?? "";
                 var key = GetString(dev, "DeviceKey") ?? "";
-                if (deviceType.Equals("DUT", StringComparison.OrdinalIgnoreCase) &&
-                    key.Equals("P21", StringComparison.OrdinalIgnoreCase))
+                if (deviceType.Equals("DUT", StringComparison.OrdinalIgnoreCase))
                 {
-                    dutDevice = dev;
+                    // 取第一个 DUT 设备作为被检设备
+                    dutDevice ??= dev;
                     deviceName = GetString(dev, "DeviceName") ?? deviceName;
                     continue;
                 }

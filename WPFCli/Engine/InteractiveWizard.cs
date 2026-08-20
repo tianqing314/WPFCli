@@ -21,15 +21,20 @@ public static class InteractiveWizard
             TemplatePath = templatePath
         };
 
-        PrintStep(1, 5, "选择业务模板", "先选模板大类，再选具体业务模板");
+        PrintStep(1, 6, "选择业务模板", "先选模板大类，再选具体业务模板");
         var businessType = PromptBusinessType(templatePath, opts);
         if (businessType == null) return null;
 
-        PrintStep(2, 5, "设置产品代号", "仅允许以字母开头的 2-20 位字母或数字");
+        PrintStep(2, 6, "设置项目代号", $"替换模板中的占位符 {opts.Template.Placeholder}（用于命名空间、项目名等）");
+        var projectPrefix = PromptProjectPrefix(templateConfig);
+        if (projectPrefix == null) return null;
+        opts.ProjectPrefix = projectPrefix;
+
+        PrintStep(3, 6, "设置产品代号", "用于替换 {{ProductCode}}（DeviceFamily）和创建产品目录，仅允许以字母开头的 2-20 位字母或数字");
         var productCode = PromptProductCode(templateConfig);
         if (productCode == null) return null;
         opts.ProductCode = productCode;
-        opts.OutputDir = Path.Combine(workspaceRoot, "Output", productCode);
+        opts.OutputDir = Path.Combine(workspaceRoot, "Output", projectPrefix);
         if (Directory.Exists(opts.OutputDir))
         {
             opts.OverwriteExisting = PromptYesNo(
@@ -44,16 +49,16 @@ public static class InteractiveWizard
 
         // 所有模板统一确认被检类型（无被检占位符的模板可回车跳过）
         var dutPlaceholder = opts.BusinessTemplate.DutPlaceholder;
-        PrintStep(3, 5, "设置被检类型",
+        PrintStep(4, 6, "设置被检类型",
             string.IsNullOrWhiteSpace(dutPlaceholder)
                 ? "该模板暂不支持被检占位符替换，可直接回车跳过"
                 : $"替换模板中的被检占位符 {dutPlaceholder}");
         opts.DutType = PromptDutType(dutPlaceholder);
 
-        PrintStep(4, 5, "选择被检导入方式", "原测试平台导入：从 References 拉取旧 Bots.TestBench 资源自动转换；Excel 导入：预留");
+        PrintStep(5, 6, "选择被检导入方式", "原测试平台导入：从 References 拉取旧 Bots.TestBench 资源自动转换；Excel 导入：预留");
         opts.ImportMethod = PromptImportMethod();
 
-        PrintStep(5, 5, "确认构建", "检查配置后开始生成、编译和产物自检");
+        PrintStep(6, 6, "确认构建", "检查配置后开始生成、编译和产物自检");
         PrintSummary(opts);
 
         if (!PromptYesNo("确认开始构建？", defaultValue: true))
@@ -348,15 +353,15 @@ public static class InteractiveWizard
         return null;
     }
 
-    private static string? PromptProductCode(TemplateConfig cfg)
+    private static string? PromptProjectPrefix(TemplateConfig cfg)
     {
         while (true)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("  产品代号");
+            Console.Write("  项目代号");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.Write(" [如 PT01、MyApp]");
+            Console.Write($" [如 PS02Item、MyProject，替换 {cfg.Placeholder}]");
             Console.ResetColor();
             Console.Write("\n  > ");
 
@@ -371,7 +376,35 @@ public static class InteractiveWizard
                 continue;
             }
 
-            PrintAccepted($"代号合法: {input}");
+            PrintAccepted($"项目代号: {input}");
+            return input;
+        }
+    }
+
+    private static string? PromptProductCode(TemplateConfig cfg)
+    {
+        while (true)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("  产品代号");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write(" [如 PS02、P06，用于 DeviceFamily 和产品目录]");
+            Console.ResetColor();
+            Console.Write("\n  > ");
+
+            var input = Console.ReadLine()?.Trim();
+
+            var error = ValidateProductCode(cfg, input ?? "");
+            if (error != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"    {error}");
+                Console.ResetColor();
+                continue;
+            }
+
+            PrintAccepted($"产品代号: {input}");
             return input;
         }
     }
@@ -634,6 +667,7 @@ public static class InteractiveWizard
 
         rows.AddRange(new[]
         {
+            ("项目代号", opts.ProjectPrefix),
             ("产品代号", opts.ProductCode),
             ("输出目录", opts.OutputDir),
             ("模板描述", opts.Template.Description),

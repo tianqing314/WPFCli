@@ -8,7 +8,6 @@ namespace WPFCli.Engine;
 /// <c>SimpleCommandEnum</c> 字典，生成新体系两份文件：
 ///   1) <c>TESTRIG.Devices.Abstractions\Dut\I{dut}Dut.cs</c>（命令枚举 + 接口）
 ///   2) <c>TESTRIG.Devices\Dut\{dut}\{dut}Dut.cs</c>（[DutDriver] 真机驱动，走 Xmas11 DPG2SCPI）
-/// ConST811A 走 APC2Device 反射映射，使用专用模板。
 /// </summary>
 internal static class DutSourceGenerator
 {
@@ -35,13 +34,9 @@ internal static class DutSourceGenerator
         var ifaceRel = Path.Combine("src", "03.Devices", "TESTRIG.Devices.Abstractions", "Dut", $"I{dut}Dut.cs");
         var driverRel = Path.Combine("src", "03.Devices", "TESTRIG.Devices", "Dut", dut, $"{dut}Dut.cs");
         ReferencesAdapter.WriteIfNotExists(Path.Combine(outputDir, ifaceRel), () =>
-            dut.Equals("ConST811A", StringComparison.OrdinalIgnoreCase)
-                ? BuildConST811AInterfaceSource(bizType)
-                : BuildInterfaceSource(dut, commands, bizType));
+            BuildInterfaceSource(dut, commands, bizType));
         ReferencesAdapter.WriteIfNotExists(Path.Combine(outputDir, driverRel), () =>
-            dut.Equals("ConST811A", StringComparison.OrdinalIgnoreCase)
-                ? BuildConST811ADriverSource(dut, bizType)
-                : BuildDriverSource(dut, commands, bizType));
+            BuildDriverSource(dut, commands, bizType));
 
         if (commands.Count == 0)
             todos.Add($"{Path.GetFileName(sourceFile)}：未解析到 SimpleCommands 字典，{dut}Command 枚举为空");
@@ -97,30 +92,6 @@ internal static class DutSourceGenerator
         }
         sb.AppendLine("}");
         return sb.ToString();
-    }
-
-    private static string BuildConST811AInterfaceSource(string bizType)
-    {
-        var label = ReferencesAdapter.BizLabel(bizType);
-        return """
-using TESTRIG.Core.Abstractions;
-
-namespace TESTRIG.Devices.Abstractions;
-
-/// <summary>ConST811A {label}被检设备的真实 APC2 通讯契约。</summary>
-public interface IConST811ADut : IDutDevice
-{{
-    Task<bool> ReplenishLinkAsync(CancellationToken ct = default);
-    Task<bool> SetSerialNumberAsync(string serialNumber, CancellationToken ct = default);
-    Task<bool> SetPrimaryDeviceTypeAsync(string deviceType, CancellationToken ct = default);
-    Task CommandAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default);
-    Task<string> QueryTextAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default);
-    Task<double> QueryDoubleAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default);
-    Task<bool> QueryBooleanAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default);
-}}
-""".Replace("{{", "{", StringComparison.Ordinal)
-            .Replace("}}", "}", StringComparison.Ordinal)
-            .Replace("{label}", label, StringComparison.Ordinal);
     }
 
     private static string BuildDriverSource(string dut, IReadOnlyList<(string Name, string Scpi)> commands, string bizType)
@@ -283,6 +254,26 @@ public interface IConST811ADut : IDutDevice
         sb.AppendLine("    public Task<double> MeasureAsync(string point, CancellationToken ct = default)");
         sb.AppendLine("        => Task.FromResult(0d);");
         sb.AppendLine();
+        sb.AppendLine("    /// <summary>设置被检序列号。PORT: 旧 SetDUTSN。</summary>");
+        sb.AppendLine("    public Task<bool> SetSerialNumberAsync(string serialNumber, CancellationToken ct = default)");
+        sb.AppendLine("        => Task.FromResult(true);");
+        sb.AppendLine();
+        sb.AppendLine("    /// <summary>设置产品型号/主设备类型。PORT: 旧 SetPrimaryDeviceType。</summary>");
+        sb.AppendLine("    public Task<bool> SetPrimaryDeviceTypeAsync(string deviceType, CancellationToken ct = default)");
+        sb.AppendLine("        => Task.FromResult(true);");
+        sb.AppendLine();
+        sb.AppendLine("    /// <summary>通用布尔查询（遗留脚本自动转换）。</summary>");
+        sb.AppendLine("    public Task<bool> QueryBooleanAsync(string method, object? arg, CancellationToken ct = default)");
+        sb.AppendLine("        => Task.FromResult(false);");
+        sb.AppendLine();
+        sb.AppendLine("    /// <summary>通用文本查询（遗留脚本自动转换）。</summary>");
+        sb.AppendLine("    public Task<string> QueryTextAsync(string method, object? arg, CancellationToken ct = default)");
+        sb.AppendLine("        => Task.FromResult(string.Empty);");
+        sb.AppendLine();
+        sb.AppendLine("    /// <summary>通用指令执行（遗留脚本自动转换）。</summary>");
+        sb.AppendLine("    public Task CommandAsync(string method, object? arg, CancellationToken ct = default)");
+        sb.AppendLine("        => Task.CompletedTask;");
+        sb.AppendLine();
         sb.AppendLine("    // ===== iResponse 包装：失败抛 DeviceCommException =====");
         sb.AppendLine();
         sb.AppendLine("    /// <summary>执行一条返回字符串的命令，失败抛通讯异常。</summary>");
@@ -309,288 +300,4 @@ public interface IConST811ADut : IDutDevice
         return sb.ToString();
     }
 
-    private static string BuildConST811ADriverSource(string dut, string bizType)
-    {
-        return """
-using System.Globalization;
-using System.IO.Ports;
-using System.Net;
-using System.Reflection;
-using Microsoft.Extensions.Logging;
-using TESTRIG.Core.Abstractions;
-using TESTRIG.Devices.Abstractions;
-using Xmas11.Comm.Devices;
-
-namespace TESTRIG.Devices.Dut.ConST811A;
-
-/// <summary>ConST811A 被检真机驱动，使用 Xmas11 APC2Device。</summary>
-[DutDriver("ConST811A")]
-public sealed class ConST811ADut : IConST811ADut
-{
-    private readonly ILogger _logger;
-    private readonly CommEndpoint? _comm;
-    private APC2Device? _dev;
-
-    public ConST811ADut(DeviceDescriptor descriptor, ILogger logger)
-    {
-        Key = descriptor.Name;
-        Model = descriptor.Model;
-        _comm = descriptor.Comm;
-        _logger = logger;
-    }
-
-    public string Key { get; }
-    public string Model { get; }
-    public bool IsConnected { get; private set; }
-    private APC2Device Dev => _dev ?? throw Error("ConST811A 未连接", TestResultStatus.CommunicationError);
-
-    public Task ConnectAsync(CancellationToken ct = default) => Task.Run(() =>
-    {
-        try { _dev?.Close(); } catch { }
-        _dev = Build(_comm);
-        IsConnected = _dev.Open();
-        if (!IsConnected)
-            throw Error("ConST811A 连接失败", TestResultStatus.CommunicationError);
-        _logger.LogInformation("P21/ConST811A 连接成功");
-    }, ct);
-
-    private static APC2Device Build(CommEndpoint? ep)
-    {
-        if (ep is null || ep.Link == LinkType.Ethernet)
-            return new APC2Device(IPAddress.Parse(ep?.Ip ?? "192.168.40.107"), ep?.Port ?? 8000);
-        if (ep.Link == LinkType.Usb)
-            return new APC2Device((ushort)(ep.Vid ?? 0x2E19), (ushort)(ep.Pid ?? 0x02F9), ep.PhysicalLink ?? "");
-        if (ep.Link == LinkType.Serial)
-        {
-            var sp = ep.Serial ?? new SerialParams();
-            var stop = Enum.TryParse<StopBits>(sp.StopBits, true, out var sb) ? sb : StopBits.One;
-            var parity = Enum.TryParse<Parity>(sp.Parity, true, out var pa) ? pa : Parity.None;
-            return new APC2Device(ep.PhysicalLink ?? "COM1", sp.Baud, sp.DataBits, stop, parity);
-        }
-        throw Error($"ConST811A 不支持连接类型 {ep.Link}", TestResultStatus.CommunicationError);
-    }
-
-    public async Task<bool> ReplenishLinkAsync(CancellationToken ct = default)
-    {
-        await ConnectAsync(ct);
-        return IsConnected;
-    }
-
-    public Task<string> ReadSerialNumberAsync(CancellationToken ct = default)
-        => QueryTextAsync("GetSerialNumber", null, ct);
-
-    public Task<string> ReadFirmwareVersionAsync(CancellationToken ct = default)
-        => QueryTextAsync("GetVersion", null, ct);
-
-    public async Task<bool> SetSerialNumberAsync(string serialNumber, CancellationToken ct = default)
-    {
-        await CommandAsync("SetSerialNumber", [serialNumber], ct);
-        return string.Equals(await ReadSerialNumberAsync(ct), serialNumber, StringComparison.Ordinal);
-    }
-
-    public async Task<bool> SetPrimaryDeviceTypeAsync(string deviceType, CancellationToken ct = default)
-    {
-        await CommandAsync("SetPrimaryDevType", [deviceType], ct);
-        return string.Equals(await QueryTextAsync("GetDevType", null, ct), deviceType, StringComparison.OrdinalIgnoreCase);
-    }
-
-    public async Task WriteInitInfoAsync(string boardType, CancellationToken ct = default)
-    {
-        if (string.IsNullOrWhiteSpace(boardType))
-            throw Error("设备类型不能为空", TestResultStatus.HardwareError);
-        if (!await SetPrimaryDeviceTypeAsync(boardType, ct))
-            throw Error("设备类型写入后回读不一致", TestResultStatus.HardwareError);
-    }
-
-    public Task<double> MeasureAsync(string point, CancellationToken ct = default)
-    {
-        if (string.IsNullOrWhiteSpace(point))
-            throw Error("测量点不能为空", TestResultStatus.HardwareError);
-        return QueryDoubleAsync(point, null, ct);
-    }
-
-    public Task CommandAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default)
-        => Task.Run(() => { _ = Invoke(operation, arguments); }, ct);
-
-    public Task<string> QueryTextAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default)
-        => Task.Run(() => Convert.ToString(Invoke(operation, arguments), CultureInfo.InvariantCulture) ?? "", ct);
-
-    public Task<double> QueryDoubleAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default)
-        => Task.Run(() => ToDouble(Invoke(operation, arguments), operation), ct);
-
-    public Task<bool> QueryBooleanAsync(string operation, IReadOnlyList<string>? arguments = null, CancellationToken ct = default)
-        => Task.Run(() => ToBoolean(Invoke(operation, arguments), operation), ct);
-
-    private object? Invoke(string operation, IReadOnlyList<string>? arguments)
-    {
-        if (string.IsNullOrWhiteSpace(operation))
-            throw Error("APC2 操作名不能为空", TestResultStatus.HardwareError);
-
-        operation = NormalizeOperation(operation);
-
-        var separator = operation.IndexOf('|');
-        var methodName = separator < 0 ? operation : operation[..separator];
-        var selector = separator < 0 ? null : operation[(separator + 1)..];
-        var sourceArgs = arguments?.ToArray() ?? [];
-        var candidates = typeof(APC2Device).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.Equals(methodName, StringComparison.Ordinal) && m.GetParameters().Length == sourceArgs.Length)
-            .ToArray();
-
-        Exception? last = null;
-        foreach (var method in candidates)
-        {
-            try
-            {
-                var parameters = method.GetParameters();
-                var converted = new object?[parameters.Length];
-                for (var i = 0; i < parameters.Length; i++)
-                    converted[i] = ConvertArgument(sourceArgs[i], parameters[i].ParameterType);
-                var response = method.Invoke(Dev, converted);
-                var result = UnwrapResponse(response, methodName);
-                return Select(result, selector);
-            }
-            catch (TargetInvocationException ex) when (ex.InnerException is not null)
-            {
-                last = ex.InnerException;
-            }
-            catch (Exception ex)
-            {
-                last = ex;
-            }
-        }
-
-        if (sourceArgs.Length == 0 && TryGetDefaultArguments(methodName, out var defaults))
-            return Invoke(methodName, defaults);
-
-        var detail = last is null ? "未找到参数匹配的方法" : last.Message;
-        throw Error($"APC2 操作 {methodName} 失败：{detail}", TestResultStatus.HardwareError);
-    }
-
-    private static bool TryGetDefaultArguments(string methodName, out IReadOnlyList<string> arguments)
-    {
-        arguments = methodName switch
-        {
-            "SetCheckerOpen" or "SetCheckerSelect" or "GetCheckerState" => new[] { "KeyBoard" },
-            "GetPressureModelStableState" => new[] { "1" },
-            "SetPressureModelStableParam" => new[] { "1", "1", "5" },
-            "SetModuleStableEnable" => new[] { "InnerModule_H", "false" },
-            "SetPressureModelUnit" => new[] { "ControllerModule", "kPa" },
-            "SetPressureControlMode" => new[] { "MEASURE" },
-            "SetPressureModelPressureType" => new[] { "ControllerModule", "Absolute" },
-            "SetBlueToothState" or "SetWifiState" => new[] { "Open" },
-            "SetSetPointLimitState" => new[] { "Close" },
-            _ => Array.Empty<string>(),
-        };
-        return arguments.Count > 0;
-    }
-
-    private static string NormalizeOperation(string operation)
-    {
-        var aliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["GetDUTSN"] = "GetSerialNumber",
-            ["GetVersion"] = "GetVersion_Application",
-            ["GetAtmosSensor"] = "GetAtmos",
-            ["GetBatteryValue"] = "GetBATTery",
-            ["GetValveStateValue"] = "GetSwitchValveState",
-            ["SetValveStata"] = "SetSwitchValveState",
-            ["SetTargetPressure"] = "SetTargetPressureValue",
-            ["GetPressureStableState"] = "GetPressureModelStableState",
-            ["GetAtmosSensorSN"] = "GetAtmosSensorSN",
-            ["OpenBlueTooth"] = "SetBlueToothState",
-            ["CloseBlueTooth"] = "SetBlueToothState",
-            ["OpenWLANFunction"] = "SetWifiState",
-            ["CloseWLANFunction"] = "SetWifiState",
-            ["OpenPressureModelLimit"] = "SetSetPointLimitState",
-            ["CloseSetPointLimitPressureRange"] = "SetSetPointLimitState"
-        };
-        var separator = operation.IndexOf('|');
-        var method = separator < 0 ? operation : operation[..separator];
-        return aliases.TryGetValue(method, out var mapped)
-            ? mapped + (separator < 0 ? "" : operation[separator..])
-            : operation;
-    }
-
-    private static object? ConvertArgument(string value, Type type)
-    {
-        var target = Nullable.GetUnderlyingType(type) ?? type;
-        if (target == typeof(string)) return value;
-        if (target == typeof(bool)) return bool.Parse(value);
-        if (target == typeof(int)) return int.Parse(value, CultureInfo.InvariantCulture);
-        if (target == typeof(short)) return short.Parse(value, CultureInfo.InvariantCulture);
-        if (target == typeof(ushort)) return ushort.Parse(value, CultureInfo.InvariantCulture);
-        if (target == typeof(double)) return double.Parse(value, CultureInfo.InvariantCulture);
-        if (target == typeof(float)) return float.Parse(value, CultureInfo.InvariantCulture);
-        if (target.IsEnum)
-        {
-            if (long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number))
-                return Enum.ToObject(target, number);
-            return Enum.Parse(target, value, true);
-        }
-        return Convert.ChangeType(value, target, CultureInfo.InvariantCulture);
-    }
-
-    private static object? UnwrapResponse(object? response, string operation)
-    {
-        if (response is null) return null;
-        var type = response.GetType();
-        var correct = type.GetProperty("IsCorrect", BindingFlags.Public | BindingFlags.Instance);
-        if (correct?.PropertyType == typeof(bool) && !(bool)(correct.GetValue(response) ?? false))
-            throw Error($"APC2 操作 {operation} 返回失败：{response}", TestResultStatus.HardwareError);
-        var result = type.GetProperty("Result", BindingFlags.Public | BindingFlags.Instance);
-        return result is null ? response : result.GetValue(response);
-    }
-
-    private static object? Select(object? value, string? selector)
-    {
-        if (value is null || string.IsNullOrWhiteSpace(selector)) return value;
-        foreach (var member in selector.Split('.', StringSplitOptions.RemoveEmptyEntries))
-        {
-            var property = value.GetType().GetProperty(member, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
-                ?? throw Error($"响应 {value.GetType().Name} 没有属性 {member}", TestResultStatus.HardwareError);
-            value = property.GetValue(value);
-            if (value is null) break;
-        }
-        return value;
-    }
-
-    private static double ToDouble(object? value, string operation)
-    {
-        if (value is null) throw Error($"APC2 操作 {operation} 没有返回值", TestResultStatus.HardwareError);
-        if (value is IConvertible convertible)
-        {
-            try { return convertible.ToDouble(CultureInfo.InvariantCulture); } catch { }
-        }
-        var property = value.GetType().GetProperty("Value", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-        if (property is not null) return ToDouble(property.GetValue(value), operation);
-        throw Error($"APC2 操作 {operation} 返回值 {value.GetType().Name} 不能转换为数值", TestResultStatus.HardwareError);
-    }
-
-    private static bool ToBoolean(object? value, string operation)
-    {
-        if (value is bool b) return b;
-        if (value is null) throw Error($"APC2 操作 {operation} 没有返回值", TestResultStatus.HardwareError);
-        var text = Convert.ToString(value, CultureInfo.InvariantCulture) ?? "";
-        if (bool.TryParse(text, out var parsed)) return parsed;
-        if (int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number)) return number != 0;
-        return text.Equals("Open", StringComparison.OrdinalIgnoreCase)
-            || text.Equals("Pass", StringComparison.OrdinalIgnoreCase)
-            || text.Equals("Passed", StringComparison.OrdinalIgnoreCase)
-            || text.Equals("Connected", StringComparison.OrdinalIgnoreCase)
-            || text.Equals("Online", StringComparison.OrdinalIgnoreCase)
-            || text.Equals("Stable", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static DeviceCommException Error(string message, TestResultStatus status) => new(message, status);
-
-    public ValueTask DisposeAsync()
-    {
-        try { _dev?.Close(); } catch { }
-        _dev = null;
-        IsConnected = false;
-        return ValueTask.CompletedTask;
-    }
-}
-""";
-    }
 }

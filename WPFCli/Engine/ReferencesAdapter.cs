@@ -145,8 +145,8 @@ public static class ReferencesAdapter
             if (stdFile != null)
             {
                 report.Add($"- StandardBox：{Path.GetFileName(stdFile)} 标准模块已识别（manifest ToolDevices 生成），"
-                    + "驱动按 IStandardModule 接口模板内置/人工实现（见 DPSEXStandardModule 示例）");
-                todos.Add($"{Path.GetFileName(stdFile)}：标准模块驱动需实现 IStandardModule（如 DPSEXStandardModule 示例）");
+                    + "驱动按 IStandardModule 接口模板由人工实现");
+                todos.Add($"{Path.GetFileName(stdFile)}：标准模块驱动需实现 IStandardModule");
             }
         }
 
@@ -196,15 +196,14 @@ public static class ReferencesAdapter
     internal static string BizLabel(string bizType)
         => bizType.Equals("Machine", StringComparison.OrdinalIgnoreCase) ? "整机" : "主板";
 
-    internal static string ProductModelForVariant(string value)
-        => value.ToUpperInvariant() switch
-        {
-            "MP" => "ConST811A-G",
-            "DP" => "ConST811A-D",
-            "LLP" => "ConST811A-LLP",
-            "BP" => "ConST811A-BP",
-            _ => "ConST811A",
-        };
+    /// <summary>
+    /// 根据变体名生成产品型号：Default → 仅 DUT 名，其余 → DUT-变体。
+    /// 如 dut="MyProduct", variant="MP" → "MyProduct-MP"。
+    /// </summary>
+    internal static string ProductModelForVariant(string dut, string variantValue)
+        => variantValue.Equals("Default", StringComparison.OrdinalIgnoreCase)
+            ? dut
+            : $"{dut}-{variantValue}";
 
     // =====================================================================
     // 1. Xmas11 → csproj 联动

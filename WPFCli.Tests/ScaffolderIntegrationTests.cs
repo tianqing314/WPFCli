@@ -78,8 +78,8 @@ public sealed class ScaffolderIntegrationTests
             TemplateBuilder.Build(options);
 
             Assert.False(File.Exists(Path.Combine(output, "remove.txt")));
-            Assert.Equal("PT01|PT01.App|PT01_suffix",
-                File.ReadAllText(Path.Combine(output, "PT01.txt")));
+            Assert.Equal("PS02|PT01.App|PT01_suffix",
+                File.ReadAllText(Path.Combine(output, "PS02.txt")));
             Assert.Equal(binary, File.ReadAllBytes(Path.Combine(output, "payload.dat")));
         }
         finally
@@ -225,7 +225,8 @@ public sealed class ScaffolderIntegrationTests
         string output)
         => new()
         {
-            ProductCode = "PT01",
+            ProjectPrefix = "PT01",
+            ProductCode = "PS02",
             Template = rootConfig,
             TemplatePath = templateRoot,
             BusinessTemplate = business.Config,

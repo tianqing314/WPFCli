@@ -11,7 +11,7 @@
 | 数据查询 | 含"工位"列 | 无"工位"列 |
 | 人工确认步 | 无（全自动） | ManualStep：LCD/扬声器等人工观察项弹确认框（OK/NG，可选超时） |
 | 温控过程项 | 无 | Process 步：高温炉等分钟级过程，实时曲线 + 条件等待（ProcessWaiter） |
-| Manifest | 一变体一清单（ConST171A_Machine） | 同上；整机专属处理器放 `TestSteps/<设备族>/`，通用放 `Shared/` |
+| Manifest | 一变体一清单（<产品代号>_Machine） | 同上；整机专属处理器放 `TestSteps/<设备族>/`，通用放 `Shared/` |
 
 ## 内置占位（TemplateUUT_Machine）
 
@@ -23,8 +23,8 @@
 4. `OvenWarmup` 高温炉升温（**Process**，ProcessWaiter 轮询炉温至 660℃±5，实时曲线）
 5. `MachineFinish` 整机结束（Auto）
 
-真实整机产品（如 ConST171A）接入：建 `ConST171A_Machine` 清单（一变体一清单），
-整机处理器放 `TestSteps/ConST171A/`，通用处理器放 `Shared/` 复用。
+真实整机产品接入：建 `<产品代号>_Machine` 清单（一变体一清单），
+整机处理器放 `TestSteps/<产品代号>/`，通用处理器放 `Shared/` 复用。
 
 ## 构建
 

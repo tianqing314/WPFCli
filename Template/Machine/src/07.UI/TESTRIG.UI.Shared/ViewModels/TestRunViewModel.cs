@@ -244,9 +244,11 @@ public partial class TestRunViewModel : ObservableObject
     /// </summary>
     private void GenerateSerialNumbers()
     {
-        var selected = Positions.Where(p => p.IsSelected).Select(p => p.Index).ToList();
-        var sns = SerialNumberFactory.Generate(selected);
-        foreach (var p in Positions.Where(p => p.IsSelected))
+        var emptySelected = Positions.Where(p => p.IsSelected && string.IsNullOrWhiteSpace(p.SerialNumber)).Select(p => p.Index).ToList();
+        if (emptySelected.Count == 0) return;
+
+        var sns = SerialNumberFactory.Generate(emptySelected);
+        foreach (var p in Positions.Where(p => p.IsSelected && string.IsNullOrWhiteSpace(p.SerialNumber)))
         {
             p.SerialNumber = sns[p.Index];
         }
