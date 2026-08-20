@@ -449,6 +449,21 @@ pass &= prevPassN;                           // 合并本段结果到整体结�
 
 **验证**：`dotnet build P21.TestSteps.csproj` 0 警告 0 错误；重跑 `P21.CrashVerify` 12/12 场景通过（构建 0 警告 0 错误），电池功耗测试逻辑未受影响。
 
+### 4.9 Machine 模板三处修复（✅ 已完成，2026-08-20，端到端验证）
+
+> 针对现场反馈的三个问题修复 `Template\Machine` + `Template\Common` 模板源，并用 CLI 完整重建验证：
+> `dotnet run --project WPFCli\WPFCli.csproj -- --biz machine --code VerifyFix --force --no-pack` → **0 错误**（仅 1 个无关 MSB3245 警告，`Xmas11.Comm.Device.ConSTGZ811A` 引用未随模板下发，属预存）。
+
+| # | 问题 | 根因 | 修复 | 文件 |
+|---|---|---|---|---|
+| 1 | admin 登录报 MySqlConnector Connect Timeout expired | DI 解析远程库工厂时 `ServerVersion.AutoDetect(remoteConn)` 发起真实 MySQL 连接，现场 MySQL 不可达即阻塞超时，连累仅用本地 SQLite 的登录/开板流程 | 改用固定版本 `new MySqlServerVersion(new Version(8,0,21))`，DI 阶段不再建连 | `Template\Common\src\02.Infrastructure\TESTRIG.Infrastructure\InfrastructureServiceCollectionExtensions.cs` L73-76 |
+| 2 | 测试项维护选中共享设备后无法删除；选中样式差 | ① `SelectedItem` 绑到 `Current`（行内模型）而非窗口 VM 的 `SelectedSharedDevice`；② 行内 TextBox/ComboBox 拦截鼠标按下，点控件不选中行；③ 无选中视觉反馈 | ① 绑定改 `DataContext.SelectedSharedDevice`（AncestorType=Window）；② 行 Border 加 `PreviewMouseLeftButtonDown` 手动选中；③ `ItemContainerStyle` 加 `IsSelected` 触发器（PrimaryPale 背景 + Primary 边框） | `Template\Machine\src\07.UI\TESTRIG.UI.Shared\Views\ManifestMaintenanceWindow.xaml`（L611-656）、`.xaml.cs`（`SharedDeviceRow_PreviewMouseLeftButtonDown`） |
+| 3 | 主页序列号文本框无法输入 | `TextBox` 继承了 `Text.Plain` 样式的 `IsReadOnly=True` | 去掉样式继承，显式可编辑属性（BorderThickness/Background 等） | `Template\Machine\src\07.UI\TESTRIG.UI.Shared\Views\TestRunView.xaml` L312-320 |
+
+**顺带修复**：Machine 模板 `TemplateUUTDut.cs` 未实现 `IDutDevice` 新增的 5 个通用成员（`SetSerialNumberAsync`/`SetPrimaryDeviceTypeAsync`/`QueryBooleanAsync`/`QueryTextAsync`/`CommandAsync`，G1 迁移时给接口扩展但漏更新占位驱动），阻塞完整构建（CS0535×5）。已按占位语义补齐（参照 `SimulatedDut`），构建 0 错误。后续若 References 引擎为具体产品生成真实 DUT，其实现由 `DutSourceGenerator.cs` 产出，不受此占位影响。
+
+**运行时补修（2026-08-20）**：序列号 TextBox 的 `BorderBrush` 原引用不存在的资源 `Brush.Border`（DesignSystem.xaml 只有 `Brush.BorderStrong`），运行到 TestRunView 模板应用时抛 `XamlParseException`（"无法找到名为 Brush.Border 的资源"）。已改为 `Brush.BorderStrong`（[TestRunView.xaml](file:///E:/WPFCli/Template/Machine/src/07.UI/TESTRIG.UI.Shared/Views/TestRunView.xaml#L318)），并对 Machine 模板全部 XAML 做 StaticResource 全量校验，无其他缺失引用；重新 CLI 生成 0 错误。
+
 ---
 
 ## 五、关键文件索引

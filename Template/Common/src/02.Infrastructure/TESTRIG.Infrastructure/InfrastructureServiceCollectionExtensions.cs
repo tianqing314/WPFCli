@@ -70,8 +70,10 @@ public static class InfrastructureServiceCollectionExtensions
         {
             // 现场数据库未启用 TLS；显式关闭可避免 MySqlConnector 在无凭证环境下启动失败。
             remoteConn = AppendSslModeNone(remoteConn);
+            // 固定 MySQL 8.0 版本，不用 ServerVersion.AutoDetect：后者在 DI 解析工厂时会发起真实连接，
+            // 现场 MySQL 不可达时直接阻塞超时，连累 admin 等仅用本地 SQLite 的登录/开板流程。
             services.AddDbContextFactory<RemoteResultDbContext>(o =>
-                o.UseMySql(remoteConn, ServerVersion.AutoDetect(remoteConn)));
+                o.UseMySql(remoteConn, new MySqlServerVersion(new Version(8, 0, 21))));
             services.AddSingleton<IExternalSync, MySqlExternalSync>();
         }
         else

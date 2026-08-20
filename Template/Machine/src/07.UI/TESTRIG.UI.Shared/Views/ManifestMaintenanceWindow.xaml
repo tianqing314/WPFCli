@@ -608,16 +608,52 @@
                                     </StackPanel>
                                 </DockPanel>
                                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                                    <ItemsControl ItemsSource="{Binding SharedDevices}">
-                                        <ItemsControl.ItemTemplate>
+                                    <ListBox x:Name="SharedDevicesBox"
+                                             ItemsSource="{Binding SharedDevices}"
+                                             SelectedItem="{Binding DataContext.SelectedSharedDevice, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}"
+                                             BorderThickness="0" Background="Transparent"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                <Setter Property="Focusable" Value="True"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ListBoxItem">
+                                                            <Border
+                                                                x:Name="bd"
+                                                                Margin="0,2"
+                                                                Background="Transparent"
+                                                                BorderBrush="Transparent"
+                                                                BorderThickness="1.5"
+                                                                CornerRadius="4">
+                                                                <ContentPresenter />
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="bd" Property="Background" Value="{StaticResource Brush.Surface2}" />
+                                                                </Trigger>
+                                                                <Trigger Property="IsSelected" Value="True">
+                                                                    <Setter TargetName="bd" Property="Background" Value="{StaticResource Brush.PrimaryPale}" />
+                                                                    <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Brush.Primary}" />
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
+                                        <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <Border
-                                                    Margin="0,2"
+                                                    Margin="0,0"
                                                     Padding="6,5"
-                                                    Background="{StaticResource Brush.Surface}"
-                                                    BorderBrush="{StaticResource Brush.BorderStrong}"
-                                                    BorderThickness="1"
-                                                CornerRadius="4">
+                                                    Background="Transparent"
+                                                    BorderBrush="Transparent"
+                                                    BorderThickness="0"
+                                                    CornerRadius="4"
+                                                    PreviewMouseLeftButtonDown="SharedDeviceRow_PreviewMouseLeftButtonDown">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock
                                                         Width="56"
@@ -692,8 +728,8 @@
                                                 </StackPanel>
                                             </Border>
                                         </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                                 </ScrollViewer>
                             </StackPanel>
                         </materialDesign:Card>

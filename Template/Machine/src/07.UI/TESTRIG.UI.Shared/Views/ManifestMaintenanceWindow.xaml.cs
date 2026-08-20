@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using TESTRIG.UI.Shared.ViewModels;
 using TESTRIG.UI.Shared.Views.Chrome;
@@ -46,6 +47,21 @@ public partial class ManifestMaintenanceWindow : ChromeWindow
             && vm.EditPositionCommand.CanExecute(pos))
         {
             vm.EditPositionCommand.Execute(pos);
+        }
+    }
+
+    /// <summary>
+    /// 点击共享设备行的任意位置都选中该行：行内的 TextBox/ComboBox 会拦截鼠标左键按下，
+    /// 仅靠 ListBox 默认行为点击控件时不会选中项，导致无法删除。
+    /// </summary>
+    /// <param name="sender">事件源（行 Border）。</param>
+    /// <param name="e">鼠标事件。</param>
+    private void SharedDeviceRow_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is FrameworkElement fe
+            && ItemsControl.ContainerFromElement(SharedDevicesBox, fe) is ListBoxItem item)
+        {
+            item.IsSelected = true;
         }
     }
 }

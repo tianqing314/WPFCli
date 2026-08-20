@@ -306,20 +306,18 @@
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" FontWeight="SemiBold"
                                               VerticalAlignment="Center" ToolTip="勾选纳入 全自动/运行 测试"/>
-                                    <!-- SN：运行生成后才显示，可选中复制 -->
+                                    <!-- SN：可手动输入，留空时自动生成 -->
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
-                                        <StackPanel.Style>
-                                            <Style TargetType="StackPanel">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding SerialNumber}" Value="">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
                                         <TextBlock Text="SN :" VerticalAlignment="Center" Foreground="{StaticResource Brush.TextWeak}" Margin="0,0,5,0"/>
-                                        <TextBox Text="{Binding SerialNumber}" Style="{StaticResource Text.Plain}" FontFamily="{StaticResource Font.Mono}"
-                                                 Foreground="{StaticResource Brush.Primary}" MinWidth="118" ToolTip="可选中复制"/>
+                                        <TextBox Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                 FontFamily="{StaticResource Font.Mono}"
+                                                 Foreground="{StaticResource Brush.Primary}"
+                                                 MinWidth="118" MinHeight="28" Padding="6,0"
+                                                 VerticalContentAlignment="Center"
+                                                 BorderThickness="1"
+                                                 BorderBrush="{StaticResource Brush.BorderStrong}"
+                                                 Background="{StaticResource Brush.Surface}"
+                                                 ToolTip="可手动输入序列号，留空则自动生成"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
