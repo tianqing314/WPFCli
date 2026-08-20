@@ -625,8 +625,9 @@ internal static class LegacyScriptTranslator
                 var condName = m.Groups[4].Value.Trim();
                 var varName = m.Groups[1].Value;
                 // 同一变量名重复绑定时省略 var，避免 CS0128 重复声明
+                // op.Cond 返回 ConditionDescriptor?（条件缺失返回 null），追加 ! 抑制后续 .Expected 解引用的 CS8602
                 var prefix = declaredCondVars.Contains(varName) ? "" : "var ";
-                lines.Add($"{prefix}{varName} = op.Cond(\"{condName}\");");
+                lines.Add($"{prefix}{varName} = op.Cond(\"{condName}\")!;");
                 condVars[varName] = condName;
                 declaredCondVars.Add(varName);
                 continue;
@@ -639,7 +640,7 @@ internal static class LegacyScriptTranslator
                 var varName = m.Groups[1].Value;
                 var ci = int.Parse(m.Groups[2].ValueSpan, CultureInfo.InvariantCulture);
                 var prefix = declaredCondVars.Contains(varName) ? "" : "var ";
-                lines.Add($"{prefix}{varName} = ctx.Conditions[{ci}]; // TODO(自动转换-G6): 人工核对条件名");
+                lines.Add($"{prefix}{varName} = ctx.Conditions[{ci}]!; // TODO(自动转换-G6): 人工核对条件名");
                 todos.Add($"G6 条件索引 {ci} 无行尾注释，按位置回退，需人工核对名称");
                 declaredCondVars.Add(varName);
                 continue;
@@ -867,6 +868,13 @@ internal static class LegacyScriptTranslator
             if (j < lines.Count && IsDeclarationStatement(lines[j]))
                 lines[i] = cur + " { }";
         }
+
+        // CS0219/CS8600 清理：
+        // 1) List<T> X = null; → List<T> X = null!;（消除 CS8600：null 文本赋给不可为 null 类型）
+        // 2) 删除未被实际引用的局部变量声明（消除 CS0219：变量已赋值但从未使用）。
+        //    带 await 设备调用的声明降级为裸调用语句，保留读操作副作用。
+        FixListNullAssignments(lines);
+        RemoveUnusedLocalVariables(lines);
 
         return (lines, todos);
     }
@@ -1613,5 +1621,182 @@ internal static class LegacyScriptTranslator
             "ElectricMeasure" => "new ElectricMeasure(0, \"\", ElectricMeasureFunction.None)",
             _ => null, // 未知类型 → 不构造，调用方留 TODO
         };
+    }
+
+    /// <summary>匹配「类型 变量名 = RHS;」形式的局部变量声明行（用于 CS0219 未使用变量清理）。</summary>
+    private static readonly Regex LocalDeclPattern = new(
+        @"^(?<type>\w+(?:<[^>]+>)?)\s+(?<name>\w+)\s*=\s*(?<rhs>.+);$", RegexOptions.Compiled);
+
+    /// <summary>
+    /// CS8600 清理：List&lt;T&gt; X = null; → List&lt;T&gt; X = null!;。
+    /// 旧脚本常以「声明 List 置 null、后续再填充」的方式编码，新体系可空上下文中
+    /// null 文本直接赋给非空 List&lt;T&gt; 会触发 CS8600，且后续索引解引用连锁 CS8602。
+    /// 保留原 null 语义，用 null! 抑制编译警告。
+    /// </summary>
+    private static void FixListNullAssignments(List<string> lines)
+    {
+        for (var i = 0; i < lines.Count; i++)
+        {
+            var t = lines[i].TrimStart();
+            if (!t.StartsWith("List<", StringComparison.Ordinal)) continue;
+            if (t.Contains(" = null;", StringComparison.Ordinal))
+                lines[i] = t.Replace(" = null;", " = null!;");
+        }
+    }
+
+    /// <summary>
+    /// CS0219 清理：迭代删除方法体内从未被「读取」的局部变量声明及其纯赋值行。
+    /// 旧脚本的计数器/中间变量（int trynum = 0; double rate = 0; 等）常因引用语句被
+    /// TODO 化而失去唯一用途，保留原声明会触发 CS0219（变量已赋值但从未使用其值）。
+    /// 注意：变量被再次赋值（eleData = 0;）不构成「读取」，编译器仍报 CS0219，
+    /// 故判定依据是「读取」而非「出现」；同时连带删除该变量的纯赋值行（同为死代码）。
+    /// 带 await 设备调用的声明（var v = await op.ReadXxx(...);）降级为裸调用语句，
+    /// 保留读操作副作用。
+    /// 必须迭代至稳定：某变量的「读取」可能来自另一个未读取变量的赋值行
+    /// （如 dtgap = (ReadDT - DateTime.Now)... 被删后，ReadDT 才失去全部引用），
+    /// 一轮删除后需重新扫描，否则残留声明触发 CS0219。
+    /// </summary>
+    private static void RemoveUnusedLocalVariables(List<string> lines)
+    {
+        while (RemoveUnusedPass(lines)) { }
+    }
+
+    /// <summary>单轮未读取变量清理；返回是否删除了任何行（供外层迭代）。</summary>
+    private static bool RemoveUnusedPass(List<string> lines)
+    {
+        // 1) 收集声明行（类型 名称 = RHS;）
+        var decls = new List<(int Index, string Name, string RHS)>();
+        for (var i = 0; i < lines.Count; i++)
+        {
+            var raw = lines[i].TrimStart();
+            if (raw.Length == 0 || raw.StartsWith("//", StringComparison.Ordinal)) continue;
+            if (raw.StartsWith("#", StringComparison.Ordinal)) continue;
+            // 含花括号的行视为控制语句/块结构，不参与（避免误删 if/while 头等）
+            if (raw.Contains('{') || raw.Contains('}')) continue;
+            // 剥离行尾注释：取最后一个分号之前的文本作为语句体
+            var semi = raw.LastIndexOf(';');
+            if (semi < 0) continue;
+            var m = LocalDeclPattern.Match(raw.Substring(0, semi + 1));
+            if (!m.Success) continue;
+            decls.Add((i, m.Groups["name"].Value, m.Groups["rhs"].Value.Trim()));
+        }
+        if (decls.Count == 0) return false;
+
+        // 2) 判定变量是否被「读取」过（纯赋值目标不算读取）
+        var unread = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var d in decls)
+        {
+            if (!unread.Contains(d.Name) && !IsLocalVarRead(lines, d.Name))
+                unread.Add(d.Name);
+        }
+        if (unread.Count == 0) return false;
+
+        // 3) 从后往前删除：未读取变量的声明行（await 降级为裸调用）与纯赋值行
+        var removedAny = false;
+        for (var i = lines.Count - 1; i >= 0; i--)
+        {
+            var raw = lines[i].TrimStart();
+            if (raw.Length == 0 || raw.StartsWith("//", StringComparison.Ordinal)) continue;
+            if (raw.Contains('{') || raw.Contains('}')) continue;
+            var semi = raw.LastIndexOf(';');
+            if (semi < 0) continue;
+            var stmt = raw.Substring(0, semi + 1);
+            var dm = LocalDeclPattern.Match(stmt);
+            if (dm.Success)
+            {
+                var name = dm.Groups["name"].Value;
+                if (!unread.Contains(name)) continue;
+                var rhs = dm.Groups["rhs"].Value.Trim();
+                // 带 await 副作用的声明 → 降级为裸调用语句（保留设备读操作）
+                if (rhs.StartsWith("await ", StringComparison.Ordinal) && rhs.Contains('('))
+                    lines[i] = rhs + ";";
+                else
+                    lines.RemoveAt(i);
+                removedAny = true;
+                continue;
+            }
+            // 未读取变量的纯赋值行（name = ...;）同为死代码，一并删除
+            if (IsUnreadAssignment(stmt, unread))
+            {
+                lines.RemoveAt(i);
+                removedAny = true;
+            }
+        }
+        return removedAny;
+    }
+
+    /// <summary>判断变量名在生成代码中是否被「读取」过；纯赋值目标（name = ...）不算读取。
+    /// 注释行与行尾注释（// 之后）不计，避免 G10 占位注释里的「msg.Content→msg」等文本被误判为读取。</summary>
+    private static bool IsLocalVarRead(List<string> lines, string name)
+    {
+        var pattern = new Regex($@"\b{Regex.Escape(name)}\b", RegexOptions.Compiled);
+        for (var i = 0; i < lines.Count; i++)
+        {
+            if (lines[i].TrimStart().StartsWith("//", StringComparison.Ordinal)) continue;
+            var code = StripLineComment(lines[i]);
+            if (code.Length == 0) continue;
+            foreach (Match m in pattern.Matches(code))
+            {
+                if (IsPureAssignmentTarget(code, m.Index + m.Length)) continue;
+                return true; // 存在读取
+            }
+        }
+        return false;
+    }
+
+    /// <summary>剥离行内 // 注释（跳过字符串字面量内的 //，如 "http://..."）。</summary>
+    private static string StripLineComment(string line)
+    {
+        var inStr = false;
+        var escaped = false;
+        for (var i = 0; i < line.Length - 1; i++)
+        {
+            var c = line[i];
+            if (inStr)
+            {
+                if (escaped) { escaped = false; continue; }
+                if (c == '\\') { escaped = true; continue; }
+                if (c == '"') inStr = false;
+                continue;
+            }
+            if (c == '"') { inStr = true; continue; }
+            if (c == '/' && line[i + 1] == '/') return line.Substring(0, i);
+        }
+        return line;
+    }
+
+    /// <summary>name 出现位置之后是否为「纯赋值目标」：紧跟 =，且非 ==/!=/&lt;=/&gt;=/=&gt;/复合赋值（+= 等）/??=。</summary>
+    private static bool IsPureAssignmentTarget(string line, int afterName)
+    {
+        var j = afterName;
+        while (j < line.Length && char.IsWhiteSpace(line[j])) j++;
+        if (j >= line.Length || line[j] != '=') return false;
+        if (j > 0 && line[j - 1] == '>') return false; // => 箭头（lambda/switch）
+        // = 后紧跟运算符（==、=>、复合赋值 ??= 等）视为读取或非赋值
+        if (j + 1 < line.Length && line[j + 1] is '=' or '>' or '!' or '<' or '+' or '-' or '*' or '/' or '%' or '&' or '|' or '^' or '?')
+            return false;
+        return true;
+    }
+
+    /// <summary>整行语句是否为某个未读取变量的纯赋值行（name = ...;，无类型前缀、非复合赋值、非比较）。</summary>
+    private static bool IsUnreadAssignment(string stmt, HashSet<string> unread)
+    {
+        var t = stmt.TrimStart();
+        var j = 0;
+        // 注意用 IsLetterOrDigit：变量名可能含数字（condition0、tryCount1 等），
+        // 仅按字母解析会把 condition0 拆成 condition，导致赋值行残留而声明行被删（CS0103）
+        while (j < t.Length && (char.IsLetterOrDigit(t[j]) || t[j] == '_')) j++;
+        if (j == 0 || j >= t.Length) return false;
+        var word = t.Substring(0, j);
+        if (!unread.Contains(word)) return false;
+        // name 后必须是完整标识符边界（排除 xx_2 之类前缀）
+        if (char.IsLetterOrDigit(t[j]) || t[j] == '_') return false;
+        while (j < t.Length && char.IsWhiteSpace(t[j])) j++;
+        if (j >= t.Length || t[j] != '=') return false;
+        // 排除 == / => / != / <= / >= 与复合赋值
+        if (j + 1 < t.Length && (t[j + 1] == '=' || t[j + 1] == '>' || t[j + 1] == '<' || t[j + 1] == '!' || t[j + 1] == '+' || t[j + 1] == '-' || t[j + 1] == '*' || t[j + 1] == '/' || t[j + 1] == '%' || t[j + 1] == '&' || t[j + 1] == '|' || t[j + 1] == '^' || t[j + 1] == '?'))
+            return false;
+        if (t[j - 1] == '>') return false; // => 无空格形式
+        return true;
     }
 }
