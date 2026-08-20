@@ -326,3 +326,6 @@ MigrationBackup/
 # ===== TestRig CLI ���ɲ��� / ���ع������� =====
 Output/
 .reasonix/
+
+# 旧平台参考代码（仅用于提取参考，不纳入仓库）
+References/OldPlatform/
