@@ -35,6 +35,9 @@ internal static class ReferencesManifestBuilder
             new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
         var root = doc.RootElement;
 
+        // 项目代号 = 被检 DUT 的 DeviceKey（如 ConST811A 产线为 P21）。作为所有清单的 DeviceFamily（菜单一级）。
+        var dutDeviceKey = ResolveDutDeviceKey(root, dut);
+
         // 任务序列（Entry 为权威来源）。无 Entry 的旧人工项也保留，转成新体系 ManualConfirm。
         var tasks = new List<JigTask>();
         if (root.TryGetProperty("TaskCollection", out var tc) && tc.ValueKind == JsonValueKind.Array)
@@ -84,14 +87,14 @@ internal static class ReferencesManifestBuilder
             var variantSuffix = variant.Value.Equals("Default", StringComparison.OrdinalIgnoreCase)
                 ? suffix
                 : $"{variant.Value}_{suffix}";
-            // 每个版本使用独立 DeviceFamily，避免四份独立产品的同名 Kind 在运行时冲突。
+            // DeviceFamily 统一为项目代号（P21），同名 Kind 由 handler 的 DeviceFamily（=清单 Key）在运行时区分。
             // Dut.Model 仍统一为实际设备族名称（ConST811A），结果查询不受版本目录影响。
             var handlerDir = Path.Combine(outputDir, "src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_{variantSuffix}");
-            var manifestDir = Path.Combine(outputDir, "src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dut);
+            var manifestDir = Path.Combine(outputDir, "src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dutDeviceKey);
             Directory.CreateDirectory(handlerDir);
             Directory.CreateDirectory(manifestDir);
             var handlerRel = Path.Combine("src", "04.TestSteps", "TESTRIG.TestSteps", dut, $"{dut}_{variantSuffix}", $"{dut}_{variantSuffix}.cs");
-            var manifestRel = Path.Combine("src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dut, $"{dut}_{variantSuffix}.json");
+            var manifestRel = Path.Combine("src", "05.Jigs", "TESTRIG.Jigs", "Manifests", dutDeviceKey, $"{dut}_{variantSuffix}.json");
             ReferencesAdapter.WriteIfNotExists(Path.Combine(outputDir, handlerRel),
                 () => TestStepSourceGenerator.BuildHandlerSource(script, variantTasks, dut, variantSuffix,
                     variant.Value.Equals("Default", StringComparison.OrdinalIgnoreCase) ? dut : $"{dut}_{variantSuffix}", todos));
@@ -150,6 +153,40 @@ internal static class ReferencesManifestBuilder
             return candidate.ValueKind == JsonValueKind.String ? candidate.GetString() : candidate.ToString();
         }
         return null;
+    }
+
+    /// <summary>
+    /// 解析被检 DUT 的 DeviceKey（项目代号，如 ConST811A 产线为 "P21"），
+    /// 作为所有清单的 DeviceFamily（菜单一级）。优先取 P21，其次任意 DUT 的 DeviceKey，最后回退 dut。
+    /// </summary>
+    private static string ResolveDutDeviceKey(JsonElement root, string dut)
+    {
+        if (root.TryGetProperty("Devices", out var devices) && devices.ValueKind == JsonValueKind.Array)
+        {
+            JsonElement? anyDut = null;
+            foreach (var dev in devices.EnumerateArray())
+            {
+                if (!"DUT".Equals(GetString(dev, "DeviceType"), StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                var key = GetString(dev, "DeviceKey") ?? "";
+                if (key.Equals("P21", StringComparison.OrdinalIgnoreCase))
+                {
+                    return key;
+                }
+                anyDut ??= dev;
+            }
+            if (anyDut is not null)
+            {
+                var k = GetString(anyDut.Value, "DeviceKey") ?? "";
+                if (!string.IsNullOrWhiteSpace(k))
+                {
+                    return k;
+                }
+            }
+        }
+        return dut;
     }
 
     private static string GetGuid(JsonElement item)
@@ -282,7 +319,7 @@ internal static class ReferencesManifestBuilder
         var json = new Dictionary<string, object?>
         {
             ["Key"] = $"{dut}_{variantSuffix}",
-            ["DeviceFamily"] = $"{dut}_{variantSuffix}",
+            ["DeviceFamily"] = ResolveDutDeviceKey(root, dut),
             ["BoardName"] = boardName,
             ["Description"] = $"{dut} {variant.Name}{label}测试（自动转换自 References\\{bizType}\\{dut}\\Jigs）",
             ["Dut"] = new Dictionary<string, object?>

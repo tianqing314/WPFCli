@@ -473,7 +473,8 @@ public sealed class TestRunner
                 var fatal = false;
                 try
                 {
-                    var handler = ResolveHandler(manifest.DeviceFamily, step.Kind);
+                    // handler 的 DeviceFamily 即其所属清单 Key（转换生成），故按清单 Key 解析
+                    var handler = ResolveHandler(manifest.Key, step.Kind);
                     if (handler is null)
                     {
                         result = StepResult.Error($"未注册测试项处理器：设备={manifest.DeviceFamily} Kind={step.Kind}");

@@ -19,7 +19,8 @@ public static class ControlBoardSourceBuilder
     public static string Build(JigManifest m)
     {
         var nsPrefix = ResolveNamespacePrefix();
-        var dut = SanitizeIdentifier(m.DeviceFamily);
+        // 类名/命名空间用清单 Key（同一 DeviceFamily 下多份清单须各自独立，避免同名冲突）
+        var dut = SanitizeIdentifier(m.Key);
         var sb = new StringBuilder();
         sb.AppendLine("using System.Globalization;");
         sb.AppendLine($"using {nsPrefix}.Core.Abstractions;");
@@ -86,7 +87,8 @@ public static class ControlBoardSourceBuilder
             sb.AppendLine($"public sealed class {handlerName} : IStepHandler");
             sb.AppendLine("{");
             sb.AppendLine($"    public string Kind => \"{Cs(s.Key)}\";");
-            sb.AppendLine($"    public string? DeviceFamily => \"{Cs(m.DeviceFamily)}\";");
+            // DeviceFamily 输出清单 Key（转换生成 handler 亦为 Key，运行时按 manifest.Key 解析）
+            sb.AppendLine($"    public string? DeviceFamily => \"{Cs(m.Key)}\";");
             sb.AppendLine();
             sb.AppendLine("    /// <summary>执行本测试项。</summary>");
             sb.AppendLine("    public Task<StepResult> ExecuteAsync(ITestContext ctx, CancellationToken ct = default)");

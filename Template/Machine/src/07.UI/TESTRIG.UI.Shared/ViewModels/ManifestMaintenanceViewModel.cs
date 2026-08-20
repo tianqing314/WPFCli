@@ -318,13 +318,14 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 当前清单设备族下可用的测试项 Kind（含通用处理器：DeviceFamily 为空）。
+    /// 当前清单下可用的测试项 Kind（含通用处理器：DeviceFamily 为空）。
+    /// handler 的 DeviceFamily 即其所属清单 Key（转换生成），故按 Key 匹配。
     /// </summary>
     public IReadOnlyList<string> CurrentKinds
     {
         get
         {
-            var family = Current?.DeviceFamily ?? "";
+            var family = Current?.Key ?? "";
             return _handlers
                 .Where(h => string.IsNullOrEmpty(h.DeviceFamily)
                             || string.Equals(h.DeviceFamily, family, StringComparison.OrdinalIgnoreCase))
@@ -453,7 +454,8 @@ public partial class ManifestMaintenanceViewModel : ObservableObject
             return;
         }
 
-        var dut = ControlBoardSourceBuilder.SanitizeIdentifier(string.IsNullOrWhiteSpace(m.DeviceFamily) ? m.Key : m.DeviceFamily);
+        // 类名/文件名用清单 Key（同一 DeviceFamily 下多份清单须各自独立，避免同名冲突）
+        var dut = ControlBoardSourceBuilder.SanitizeIdentifier(m.Key);
         var baseName = $"{dut}_ControlBoard";
 
         var dlg = new Microsoft.Win32.OpenFolderDialog
