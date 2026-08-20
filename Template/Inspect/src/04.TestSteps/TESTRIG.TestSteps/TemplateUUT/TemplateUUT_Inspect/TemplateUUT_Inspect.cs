@@ -50,7 +50,7 @@ public sealed class InspectPrepTemplateUUTHandler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "InspectPrep";
     /// <summary>限定设备家族（仅 TemplateUUT 的出厂使用）。</summary>
-    public string? DeviceFamily => "TemplateUUT";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -82,7 +82,7 @@ public sealed class InspectCheckTemplateUUTHandler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "InspectCheck";
     /// <summary>限定设备家族（仅 TemplateUUT 的出厂使用）。</summary>
-    public string? DeviceFamily => "TemplateUUT";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -107,7 +107,7 @@ public sealed class InspectFinishTemplateUUTHandler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "InspectFinish";
     /// <summary>限定设备家族（仅 TemplateUUT 的出厂使用）。</summary>
-    public string? DeviceFamily => "TemplateUUT";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>

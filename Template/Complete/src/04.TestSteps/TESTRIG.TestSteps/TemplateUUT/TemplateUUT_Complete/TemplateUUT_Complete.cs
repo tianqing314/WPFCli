@@ -57,7 +57,7 @@ public sealed class CompletePrepTemplateUUTHandler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "CompletePrep";
     /// <summary>限定设备家族（仅 TemplateUUT 的组件使用）。</summary>
-    public string? DeviceFamily => "TemplateUUT";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -89,7 +89,7 @@ public sealed class CompleteCheckTemplateUUTHandler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "CompleteCheck";
     /// <summary>限定设备家族（仅 TemplateUUT 的组件使用）。</summary>
-    public string? DeviceFamily => "TemplateUUT";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -114,7 +114,7 @@ public sealed class ToolingBindTemplateUUTHandler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "ToolingBind";
     /// <summary>限定设备家族（仅 TemplateUUT 的组件使用）。</summary>
-    public string? DeviceFamily => "TemplateUUT";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -137,7 +137,7 @@ public sealed class CompleteFinishTemplateUUTHandler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "CompleteFinish";
     /// <summary>限定设备家族（仅 TemplateUUT 的组件使用）。</summary>
-    public string? DeviceFamily => "TemplateUUT";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>

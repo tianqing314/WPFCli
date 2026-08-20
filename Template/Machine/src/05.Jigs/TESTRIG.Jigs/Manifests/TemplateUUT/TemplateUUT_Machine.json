@@ -1,6 +1,6 @@
 {
   "Key": "TemplateUUT_Machine",
-  "DeviceFamily": "TemplateUUT",
+  "DeviceFamily": "{{ProductCode}}",
   "BoardName": "TemplateUUT 整机",
   "Description": "TemplateUUT 整机测试（内置占位：一变体一清单。演示 ManualStep 人工确认步与温控过程项；真实整机产品如 ConST171A 接入时建 ConST171A_Machine 清单并填充整机处理器）",
   "Dut": {

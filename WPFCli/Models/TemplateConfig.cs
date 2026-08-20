@@ -12,7 +12,7 @@ public class TemplateConfig
     [JsonPropertyName("schemaVersion")]
     public int SchemaVersion { get; set; } = 1;
 
-    /// <summary>模板占位符（项目代号），如 "TESTRIG"。生成时全词替换为用户输入。</summary>
+    /// <summary>模板占位符（产品代号），如 "TESTRIG"。生成时全词替换为用户输入。</summary>
     [JsonPropertyName("placeholder")]
     public string Placeholder { get; set; } = "TESTRIG";
 
@@ -44,7 +44,7 @@ public class TemplateConfig
     [JsonPropertyName("deleteFromOutput")]
     public List<string> DeleteFromOutput { get; set; } = new();
 
-    /// <summary>保留名列表 —— 禁止用户作为项目代号（避免与模板中已有标识符冲突，如设备型号 PS02）。</summary>
+    /// <summary>保留名列表 —— 禁止用户作为产品代号（避免与模板中已有标识符冲突，如设备型号 PS02）。</summary>
     [JsonPropertyName("reservedNames")]
     public List<string> ReservedNames { get; set; } = new();
 

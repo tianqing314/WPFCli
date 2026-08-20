@@ -1,6 +1,6 @@
 {
   "Key": "TemplateUUT_Complete",
-  "DeviceFamily": "TemplateUUT",
+  "DeviceFamily": "{{ProductCode}}",
   "BoardName": "TemplateUUT 组件",
   "Description": "TemplateUUT 组件测试（内置占位：组件装配/功能检查 + 工装绑定。组件模板专属 UI 为工装/治具管理）",
   "Dut": {

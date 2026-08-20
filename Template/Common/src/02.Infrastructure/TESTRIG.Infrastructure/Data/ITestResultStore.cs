@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TESTRIG.Core.Abstractions;
+using TESTRIG.Infrastructure.Configuration;
 
 namespace TESTRIG.Infrastructure.Data;
 
@@ -136,6 +137,8 @@ public sealed class EfTestResultStore : ITestResultStore
     /// </summary>
     private readonly IDbContextFactory<RemoteResultDbContext>? _remoteFactory;
 
+    private readonly ResultStoreOptions _options;
+
     /// <summary>
     /// 远程上报适配器（未配置时为 <see cref="NullExternalSync"/>）。
     /// </summary>
@@ -159,10 +162,13 @@ public sealed class EfTestResultStore : ITestResultStore
     /// <param name="sync">远程上报适配器。</param>
     /// <param name="session">当前用户会话（测试账号门）。</param>
     /// <param name="logger">日志。</param>
-    public EfTestResultStore(IDbContextFactory<ResultDbContext> factory, IDbContextFactory<RemoteResultDbContext>? remoteFactory, IExternalSync sync, Auth.IUserSession session, ILogger<EfTestResultStore> logger)
+    public EfTestResultStore(IDbContextFactory<ResultDbContext> factory,
+        IDbContextFactory<RemoteResultDbContext>? remoteFactory, ResultStoreOptions options,
+        IExternalSync sync, Auth.IUserSession session, ILogger<EfTestResultStore> logger)
     {
         _factory = factory;
         _remoteFactory = remoteFactory;
+        _options = options;
         _sync = sync;
         _session = session;
         _logger = logger;
@@ -203,7 +209,7 @@ public sealed class EfTestResultStore : ITestResultStore
     {
         await using (var db = await _factory.CreateDbContextAsync(ct))
         {
-            await ResultWriter.WriteSessionAsync(db, result, ct);
+            await ResultWriter.WriteSessionAsync(db, result, _options, ct);
             await db.SaveChangesAsync(ct);
         }
 
@@ -240,6 +246,11 @@ public sealed class EfTestResultStore : ITestResultStore
     public async Task<TestDataPage> QueryMainAsync(TestRecordFilter filter, int page, int pageSize, bool useRemote = false, CancellationToken ct = default)
     {
         await using var db = await CreateQueryDbAsync(useRemote, ct);
+        if (_options.ResolvedSchema == ResultSchema.Product)
+        {
+            return await QueryProductMainAsync(db, filter, page, pageSize, ct);
+        }
+
         var q = db.TestData.AsQueryable();
         if (filter.From is { } f)
         {
@@ -291,6 +302,28 @@ public sealed class EfTestResultStore : ITestResultStore
         return new TestDataPage(items, total);
     }
 
+    private static async Task<TestDataPage> QueryProductMainAsync(ResultDbContextBase db, TestRecordFilter filter,
+        int page, int pageSize, CancellationToken ct)
+    {
+        var q = db.ProductTestData.AsQueryable();
+        if (filter.From is { } from) q = q.Where(x => x.EndTime >= from);
+        if (filter.To is { } to) q = q.Where(x => x.EndTime <= to);
+        if (!string.IsNullOrWhiteSpace(filter.BatchNo)) q = q.Where(x => x.BatchNo == filter.BatchNo);
+        if (filter.IsPass is { } pass) q = q.Where(x => x.IsFinalPass == pass);
+        if (!string.IsNullOrWhiteSpace(filter.DeviceModel)) q = q.Where(x => x.DeviceModel == filter.DeviceModel);
+
+        var total = await q.CountAsync(ct);
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 20 : Math.Min(pageSize, 100);
+        var items = await q.OrderByDescending(x => x.EndTime)
+            .Skip((page - 1) * pageSize).Take(pageSize)
+            .Select(x => new MainTestRecord(x.DeviceSn, x.BatchNo, x.DeviceModel,
+                x.StationNo.HasValue ? x.StationNo.Value.ToString() : null,
+                x.IsFinalPass ?? false, false, x.Operator, x.StartTime, x.EndTime))
+            .ToListAsync(ct);
+        return new TestDataPage(items, total);
+    }
+
     /// <summary>
     /// 取某 SN 所有测试项（同代码多次取最近一次），按开始时间排序。
     /// </summary>
@@ -301,6 +334,18 @@ public sealed class EfTestResultStore : ITestResultStore
     public async Task<IReadOnlyList<StoredStepDetail>> GetStepsBySnAsync(string deviceSn, bool useRemote = false, CancellationToken ct = default)
     {
         await using var db = await CreateQueryDbAsync(useRemote, ct);
+        if (_options.ResolvedSchema == ResultSchema.Product)
+        {
+            var productRows = await db.ProductTestDataDetails
+                .Where(d => d.DeviceSn == deviceSn).ToListAsync(ct);
+            return productRows.GroupBy(d => d.TestItemCode)
+                .Select(g => g.OrderByDescending(d => d.EndTime).First())
+                .OrderBy(d => d.StartTime)
+                .Select(d => new StoredStepDetail(d.TestItemName, d.ResultStatus ?? "", d.TestProcessInfos,
+                    d.TestProcessData, d.ErrorMessage, d.StartTime, d.EndTime, d.TestItemCode))
+                .ToList();
+        }
+
         // 同一测试项可能多次（重测），取每个代码最近一次
         var rows = await db.TestDataDetails
             .Where(d => d.DeviceSn == deviceSn)
@@ -329,6 +374,17 @@ public sealed class EfTestResultStore : ITestResultStore
         }
 
         await using var db = await CreateQueryDbAsync(useRemote, ct);
+        if (_options.ResolvedSchema == ResultSchema.Product)
+        {
+            var productDetails = await db.ProductTestDataDetails
+                .Where(d => d.DeviceSn == deviceSn).ExecuteDeleteAsync(ct);
+            var productMain = await db.ProductTestData
+                .Where(x => x.DeviceSn == deviceSn).ExecuteDeleteAsync(ct);
+            _logger.LogWarning("删除测试记录：SN={Sn}，数据源={Source}，主表 {Main} 行，详情 {Details} 行，操作员={Operator}。",
+                deviceSn, useRemote ? "远程MySQL" : "本地SQLite", productMain, productDetails, _session.Operator);
+            return new DeletedRecordCount(productMain, productDetails);
+        }
+
         var details = await db.TestDataDetails.Where(d => d.DeviceSn == deviceSn).ExecuteDeleteAsync(ct);
         var main = await db.TestData.Where(x => x.DeviceSn == deviceSn).ExecuteDeleteAsync(ct);
         _logger.LogWarning("删除测试记录：SN={Sn}，数据源={Source}，主表 {Main} 行，详情 {Details} 行，操作员={Operator}。",
@@ -346,6 +402,18 @@ public sealed class EfTestResultStore : ITestResultStore
     public async Task<StoredStepDetail?> GetLatestStepAsync(string deviceSn, string testItemCode, CancellationToken ct = default)
     {
         await using var db = await _factory.CreateDbContextAsync(ct);
+        if (_options.ResolvedSchema == ResultSchema.Product)
+        {
+            var productRow = await db.ProductTestDataDetails
+                .Where(d => d.DeviceSn == deviceSn && d.TestItemCode == testItemCode)
+                .OrderByDescending(d => d.EndTime).FirstOrDefaultAsync(ct);
+            return productRow is null
+                ? null
+                : new StoredStepDetail(productRow.TestItemName, productRow.ResultStatus ?? "",
+                    productRow.TestProcessInfos, productRow.TestProcessData, productRow.ErrorMessage,
+                    productRow.StartTime, productRow.EndTime, productRow.TestItemCode);
+        }
+
         var row = await db.TestDataDetails
             .Where(d => d.DeviceSn == deviceSn && d.TestItemCode == testItemCode)
             .OrderByDescending(d => d.EndTime)

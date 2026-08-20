@@ -87,7 +87,7 @@ Template/
 
 推荐令牌：
 
-- `{{ProjectCode}}`、`{{ProjectName}}`
+- `{{ProductCode}}`、`{{ProductName}}`
 - `{{MainProjectName}}`
 - `{{RootNamespace}}`
 - `{{BusinessType}}`

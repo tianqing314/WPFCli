@@ -24,6 +24,12 @@ internal sealed class TestContext : ITestContext
     private readonly Action<SampleEventArgs>? _onSample;
 
     /// <summary>
+    /// 人工确认回调（弹 ManualConfirmDialog，可空——无 UI 订阅时 ConfirmAsync 返回 false）。
+    /// 参数：(message, imagePath, ct) → true=OK，false=NG/超时/取消。
+    /// </summary>
+    private readonly Func<string, string?, CancellationToken, Task<bool>>? _confirm;
+
+    /// <summary>
     /// 采集量单位。
     /// </summary>
     private string _unit = "V";
@@ -63,6 +69,7 @@ internal sealed class TestContext : ITestContext
     /// <param name="logger">日志。</param>
     /// <param name="report">实时消息回调。</param>
     /// <param name="onSample">采样点回调（可空）。</param>
+    /// <param name="confirm">人工确认回调（可空——无 UI 订阅时 ConfirmAsync 返回 false）。</param>
     public TestContext(
         IDeviceProvider devices,
         PositionDescriptor position,
@@ -70,7 +77,8 @@ internal sealed class TestContext : ITestContext
         IConditionEvaluator evaluator,
         ILogger logger,
         Action<string, RealtimeLevel> report,
-        Action<SampleEventArgs>? onSample = null
+        Action<SampleEventArgs>? onSample = null,
+        Func<string, string?, CancellationToken, Task<bool>>? confirm = null
     )
     {
         _devices = devices;
@@ -80,6 +88,7 @@ internal sealed class TestContext : ITestContext
         Logger = logger;
         _report = report;
         _onSample = onSample;
+        _confirm = confirm;
     }
 
     /// <summary>
@@ -191,6 +200,35 @@ internal sealed class TestContext : ITestContext
                 Values = values,
             }
         );
+    }
+
+    /// <summary>
+    /// 弹出人工确认框，等待操作员 OK/NG。取消/NG/超时/无 UI 订阅返回 false。
+    /// 复用 <see cref="TESTRIG.Core.Abstractions.ManualConfirmRequestedEventArgs"/> 与
+    /// <c>ManualConfirmDialog</c>（整机模板订阅 <see cref="TestRunner.ManualConfirmRequested"/> 事件后弹出）。
+    /// </summary>
+    /// <param name="message">确认消息。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>true=OK；false=NG/超时/取消/无 UI。</returns>
+    public Task<bool> ConfirmAsync(string message, CancellationToken ct = default)
+        => ConfirmAsync(message, null, ct);
+
+    /// <summary>
+    /// 弹出带图片的人工确认框，等待操作员 OK/NG。取消/NG/超时/无 UI 订阅返回 false。
+    /// <paramref name="imagePath"/> 原样透传给 UI（pack URI 或文件路径）。
+    /// </summary>
+    /// <param name="message">确认消息。</param>
+    /// <param name="imagePath">图片路径（可空）。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>true=OK；false=NG/超时/取消/无 UI。</returns>
+    public async Task<bool> ConfirmAsync(string message, string? imagePath, CancellationToken ct = default)
+    {
+        // 无 UI 订阅：按取消（false）返回，避免号位挂死
+        if (_confirm is null)
+        {
+            return false;
+        }
+        return await _confirm(message, imagePath, ct);
     }
 
     /// <summary>

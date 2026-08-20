@@ -103,6 +103,28 @@ public interface ITestContext
     void ReportSample(double timeSec, params double[] values);
 
     /// <summary>
+    /// 弹出人工确认框（复用 <c>ManualConfirmDialog</c>），等待操作员 OK/NG。
+    /// 取消 / NG / 超时返回 false。用于旧脚本的 <c>OpenInfoConfirmWindow</c> 等场景：
+    /// 测试项执行中途请求人工确认，取消通常意味失败，调用方按 <c>if (!(await ctx.ConfirmAsync(msg))) pass = false;</c> 处理。
+    /// 无 UI 订阅时返回 false（避免号位挂死）。
+    /// </summary>
+    /// <param name="message">确认消息（显示在弹窗主体）。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>true=操作员确认通过；false=不合格/超时/取消/无 UI。</returns>
+    Task<bool> ConfirmAsync(string message, CancellationToken ct = default);
+
+    /// <summary>
+    /// 弹出带图片的人工确认框（如指引图、参考照片），等待操作员 OK/NG。取消/NG/超时返回 false。
+    /// 用于旧脚本的 <c>OpenInfoImgConfirmWindow</c> 场景。<paramref name="imagePath"/> 原样透传给 UI，
+    /// 可为 pack URI（如 <c>pack://application:,,,/Assy;Component/images/x.png</c>）或文件路径，UI 端按需解析。
+    /// </summary>
+    /// <param name="message">确认消息。</param>
+    /// <param name="imagePath">图片路径（pack URI 或文件路径）。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>true=操作员确认通过；false=不合格/超时/取消/无 UI。</returns>
+    Task<bool> ConfirmAsync(string message, string? imagePath, CancellationToken ct = default);
+
+    /// <summary>
     /// 当前测试项的参数集合。
     /// </summary>
     IReadOnlyList<ParameterDescriptor> Parameters => Step.Parameters;
@@ -182,7 +204,8 @@ public enum ManualConfirmResult
 
 /// <summary>
 /// 人工确认请求事件参数：<see cref="TestRunner"/> 执行到 <c>StepType=Manual</c> 的测试项时发布，
-/// UI 订阅后弹出确认框（说明/操作指引 + OK/NG 按钮 + 可选超时），操作员确认后调 <see cref="Respond"/> 回传。
+/// 或测试项处理器执行中调用 <see cref="ITestContext.ConfirmAsync"/> 时发布，
+/// UI 订阅后弹出确认框（说明/操作指引 + OK/NG 按钮 + 可选超时 + 可选附图），操作员确认后调 <see cref="Respond"/> 回传。
 /// 该号位暂停等待，不阻塞其他号位。
 /// </summary>
 public sealed class ManualConfirmRequestedEventArgs : EventArgs
@@ -201,6 +224,19 @@ public sealed class ManualConfirmRequestedEventArgs : EventArgs
     /// 确认超时毫秒数（0 = 不限时）。
     /// </summary>
     public int TimeoutMs { get; }
+
+    /// <summary>
+    /// 内联确认消息（测试项执行中调用 <see cref="ITestContext.ConfirmAsync"/> 时设置）。
+    /// null = 整机 ManualStep 流程，UI 用 <see cref="Step"/> 的 Name/Description 显示；
+    /// 非空 = 内联确认，UI 用此消息作为弹窗主体文本（标题仍用 <see cref="Step"/>.Name）。
+    /// </summary>
+    public string? Message { get; init; }
+
+    /// <summary>
+    /// 内联确认附图路径（pack URI 或文件路径）。null = 无图。
+    /// 形如 <c>pack://application:,,,/Assy;Component/images/x.png</c> 原样透传，UI 端按需解析资源。
+    /// </summary>
+    public string? ImagePath { get; init; }
 
     /// <summary>
     /// 回传确认结果的通道（UI 调用 <see cref="Respond"/>）。

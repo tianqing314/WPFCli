@@ -1,5 +1,7 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using TESTRIG.Core.Abstractions;
+using TESTRIG.Infrastructure.Configuration;
 
 namespace TESTRIG.Infrastructure.Data;
 
@@ -15,7 +17,25 @@ public static class ResultWriter
     /// <param name="db">结果库上下文。</param>
     /// <param name="result">测试会话结果。</param>
     /// <param name="ct">取消令牌。</param>
-    public static async Task WriteSessionAsync(ResultDbContextBase db, TestSessionResult result, CancellationToken ct = default)
+    public static Task WriteSessionAsync(ResultDbContextBase db, TestSessionResult result, CancellationToken ct = default) =>
+        WriteSessionAsync(db, result, new ResultStoreOptions(), ct);
+
+    /// <summary>
+    /// 按结果 schema 写入会话。Product schema 先建立 ID=TaskId 的主表，再用同一 ID 写所有详情。
+    /// </summary>
+    public static async Task WriteSessionAsync(ResultDbContextBase db, TestSessionResult result,
+        ResultStoreOptions options, CancellationToken ct = default)
+    {
+        if (options.ResolvedSchema == ResultSchema.Product)
+        {
+            await WriteProductAsync(db, result, options, ct);
+            return;
+        }
+
+        await WritePcbaAsync(db, result, ct);
+    }
+
+    private static async Task WritePcbaAsync(ResultDbContextBase db, TestSessionResult result, CancellationToken ct)
     {
         foreach (var pos in result.Positions)
         {
@@ -30,6 +50,8 @@ public static class ResultWriter
                     DeviceSn = sn,
                     TestItemCode = rec.Step.Key,
                     TestItemName = rec.Step.Name,
+                    TestItemDesc = rec.Step.Description,
+                    TestItemConditions = SerializeConditions(rec.Step.Conditions),
                     TestProcessInfos = rec.ProcessInfos,
                     TestProcessData = rec.ProcessData,
                     ResultStatus = rec.Result.Status.ToString(),
@@ -67,4 +89,74 @@ public static class ResultWriter
             }
         }
     }
+
+    private static async Task WriteProductAsync(ResultDbContextBase db, TestSessionResult result,
+        ResultStoreOptions options, CancellationToken ct)
+    {
+        var positions = result.Positions.Where(p => !string.IsNullOrWhiteSpace(p.SerialNumber)).ToList();
+        if (positions.Count == 0)
+        {
+            return;
+        }
+
+        // product_test_data_details.task_id 是 product_test_data.id 的业务关联，不能只写一个孤立的 TaskId。
+        var first = positions[0];
+        var start = positions.SelectMany(p => p.Steps).Select(s => s.StartedAt).DefaultIfEmpty(result.StartedAt).Min();
+        var end = positions.SelectMany(p => p.Steps).Select(s => s.FinishedAt).DefaultIfEmpty(result.FinishedAt).Max();
+        var actualStepCount = positions.Sum(p => p.Steps.Count);
+        var expectedStepCount = result.ExpectedStepCount;
+        var allCompleted = result.FullRun && expectedStepCount > 0 && actualStepCount >= expectedStepCount;
+        var allStepsPassed = allCompleted && positions.SelectMany(p => p.Steps).All(s => s.Result.IsPass);
+        var main = await db.ProductTestData.FirstOrDefaultAsync(x => x.Id == result.TaskId, ct);
+        if (main is null)
+        {
+            main = new ProductTestData { Id = result.TaskId, StartTime = start };
+            db.ProductTestData.Add(main);
+        }
+
+        main.ForkSn = first.Position.Name;
+        main.DeviceSn = first.SerialNumber!;
+        main.DeviceModel = result.DeviceModel ?? "";
+        main.TaskName = result.TaskKey;
+        main.TestTypeClass = options.TestTypeClass;
+        main.TestTypeDetail = options.TestTypeDetail;
+        main.StationNo = ParseStationNo(result.StationNo);
+        main.BatchNo = result.BatchNo;
+        // 三个状态都以“是否真正完成全部应测项”为前提；中途停止时即使已测项通过，也全部记 false。
+        main.IsAllCompleted = allCompleted;
+        main.IsOncePass = allStepsPassed && !result.IsRePress;
+        main.IsFinalPass = allStepsPassed;
+        main.TimeConsume = Math.Max(0, (end - start).TotalSeconds);
+        main.EndTime = end;
+        main.Operator = result.Operator;
+
+        foreach (var pos in positions)
+        {
+            foreach (var rec in pos.Steps)
+            {
+                db.ProductTestDataDetails.Add(new ProductTestDataDetail
+                {
+                    TaskId = main.Id,
+                    DeviceSn = pos.SerialNumber!,
+                    TestItemCode = rec.Step.Key,
+                    TestItemName = rec.Step.Name,
+                    TestItemDesc = rec.Step.Description,
+                    TestItemConditions = SerializeConditions(rec.Step.Conditions),
+                    TestProcessInfos = rec.ProcessInfos,
+                    TestProcessData = rec.ProcessData,
+                    ResultStatus = rec.Result.Status.ToString(),
+                    ErrorMessage = rec.Result.IsPass ? null : (rec.Result.Detail ?? rec.Result.Summary),
+                    StartTime = rec.StartedAt,
+                    EndTime = rec.FinishedAt,
+                    Operator = result.Operator,
+                });
+            }
+        }
+    }
+
+    private static int? ParseStationNo(string? stationNo) =>
+        int.TryParse(stationNo, out var value) ? value : null;
+
+    private static string? SerializeConditions(IReadOnlyList<ConditionDescriptor> conditions) =>
+        conditions.Count == 0 ? null : JsonSerializer.Serialize(conditions);
 }

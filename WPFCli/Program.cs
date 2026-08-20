@@ -80,7 +80,7 @@ internal static class Program
         Console.ForegroundColor = ConsoleColor.DarkGray;
         Console.WriteLine("  参数:");
         Console.WriteLine("    --biz <类型>                             业务类型（必填）");
-        Console.WriteLine("    --code <代号>                            项目代号（必填，2-20 位字母数字）");
+        Console.WriteLine("    --code <代号>                            产品代号（必填，2-20 位字母数字）");
         Console.WriteLine("    --list-templates                         列出当前模板目录中的业务模板");
         Console.WriteLine("    --template-root <目录>                   指定模板根目录");
         Console.WriteLine("    --output <目录>                          指定输出目录");

@@ -1,0 +1,2278 @@
+{
+  "GUID": "fba468a9-b329-4ff0-a457-216c82469868",
+  "Name": "ConST811A整机测试",
+  "Type": {
+    "Type": "2",
+    "Categories": "P21_D",
+    "IsManualConfig": false,
+    "TestCategoriesItems": [
+      {
+        "IsSelected": true,
+        "Name": "公共",
+        "Value": "P21_D",
+        "IsRadio": false,
+        "Error": ""
+      },
+      {
+        "IsSelected": true,
+        "Name": "表绝压版",
+        "Value": "MP",
+        "IsRadio": true,
+        "Error": ""
+      },
+      {
+        "IsSelected": false,
+        "Name": "差压版",
+        "Value": "DP",
+        "IsRadio": true,
+        "Error": ""
+      },
+      {
+        "IsSelected": false,
+        "Name": "微差压版",
+        "Value": "LLP",
+        "IsRadio": true,
+        "Error": ""
+      },
+      {
+        "IsSelected": false,
+        "Name": "气象版",
+        "Value": "BP",
+        "IsRadio": true,
+        "Error": ""
+      }
+    ],
+    "Error": ""
+  },
+  "View": "TestBench_SelfCheckTaskRunView",
+  "ViewModel": "P21_SelfCheckTaskRunViewModel",
+  "ViewModelAssembly": "Bots.TestBench.UI.P21",
+  "ScriptFile": "p21.bots.autotest.cs",
+  "RefAssemblies": "Bots.TestBench.Device.Base.dll,Bots.TestBench.Model.Task.dll,Bots.TestBench.Model.Scripts.dll",
+  "Devices": [
+    {
+      "$type": "Bots.TestBench.Device.ConST811ATestTool, Bots.TestBench.Device.ConST811ATestTool",
+      "DeviceKey": "GZP21",
+      "DeviceName": "811A工装",
+      "DeviceMode": "GZ811A",
+      "DeviceType": "Tool",
+      "CommConfigs": [
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.EthernetConfig, Bots.TestBench.Device.Base",
+          "Port": 8899
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Device.ConST810, Bots.TestBench.Device.ConST810",
+      "DeviceKey": "P06",
+      "DeviceName": "ConST810",
+      "DeviceMode": "ConST810",
+      "DeviceType": "Tool",
+      "CommConfigs": [
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.USBConfig, Bots.TestBench.Device.Base",
+          "Vid": "0x2E19",
+          "Pid": "0x02F8"
+        },
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.EthernetConfig, Bots.TestBench.Device.Base",
+          "Port": 8000
+        }
+      ]
+    },
+    {
+      "$type": "Bots.TestBench.Device.ConST811A, Bots.TestBench.Device.ConST811A",
+      "DeviceKey": "P21",
+      "DeviceSNRegex": "^811A(D|G|L|B|AL|AM)([0-9]{2})([0-9A-F,T]{2})([0-9]{4})",
+      "DeviceName": "ConST811A",
+      "DeviceMode": "",
+      "DeviceType": "DUT",
+      "CommConfigs": [
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.USBConfig, Bots.TestBench.Device.Base",
+          "Vid": "0x2e19",
+          "Pid": "0x02f9"
+        },
+        {
+          "$type": "Bots.TestBench.Device.Base.Comm.EthernetConfig, Bots.TestBench.Device.Base",
+          "Port": 8000
+        }
+      ]
+    }
+  ],
+  "PreparationTask": 
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Entry": "TestReady"
+      },
+      "SortIdentifier": 0,
+      "Categories": "P21_D_Ready",
+      "Name": "测试准备",
+      "TestDesc": "1、正常安装好2个模块。\r\n 2、将所有电测线正常接入。",
+      "HandleDesc": "",
+      "IsEnable": true,
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "c96c1f49-dd01-4ff3-a65b-a352ab04d76c"
+    },
+  "TaskCollection": [
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Entry": "TestDeviceWriteSN"
+      },
+      "SortIdentifier": 1,
+      "Categories": "P21_D",
+      "Name": "SN写入",
+      "TestDesc": "写入整机SN号，并核对",
+      "HandleDesc": "",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "写入SN",
+          "Tag": "SN",
+          "Value": "",
+          "GUID": "b3456789-a516-4f89-a703-97070e525328"
+        }
+      ],
+      "Conditions": [],
+      "GUID": "59219d39-2498-4285-a17e-8a311e72d9b3"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Entry": "TestDeviceWriteType"
+      },
+      "SortIdentifier": 2,
+      "Categories": "P21_D",
+      "Name": "设备类型写入",
+      "TestDesc": "写入整机设备类型，并核对",
+      "HandleDesc": "",
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "c2977ff1-7edf-46f8-bf71-c0de36af24cf"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Entry": "TestSoftVersions"
+      },
+      "SortIdentifier": 3,
+      "Categories": "P21_D",
+      "Name": "软件版本验证及升级",
+      "TestDesc": "发指令获取核心板固件版本、主程序版本、控制板版本，并校验版本",
+      "HandleDesc": "",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "SN",
+          "Tag": "SN",
+          "Value": "",
+          "GUID": "564976f4-d2cf-46fb-ad08-0da3e6668cda"
+        }
+      ],
+      "Conditions": [],
+      "GUID": "297c2987-86c7-4ea7-a4a5-b810f87f1409"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 3,
+      "Categories": "P21_D",
+      "Name": "CPS手动检测",
+      "TestDesc": "1.将设备与连接台接好后，查看CPS图标，正常显示为通过。 \r\n2.上行控压，达到目标点进行下行控压，确定排气正常从C104出气。 气压版：上行7MPa，下行100kPa, 差压版：上行250kPa,下行50kPa，微差压版：上行10kPa，下行2kPa。 \r\n3.手动排空。",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestCPS"
+      },
+      "GUID": "e22a941b-66a3-44ee-b199-c80ac6106bb7"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 4,
+      "Categories": "P21_D",
+      "Name": "网口通讯",
+      "TestDesc": "通讯测试",
+      "HandleDesc": "检测网线是否插好，IP地址是否对应",
+      "Location": {
+        "Entry": "TestLAN"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "1d549bf2-2167-42b8-927e-d6f949f290b3"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 5,
+      "Categories": "P21_D",
+      "Name": "按键测试",
+      "TestDesc": "按键测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestKeyBoard"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "51b5a626-e777-41b9-9425-f6f7465851d5"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 6,
+      "Categories": "P21_D",
+      "Name": "屏幕测试",
+      "TestDesc": "进行屏幕亮度、屏幕坏点、屏幕触摸操作验证",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LCDTest"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "a871275f-a409-40bb-84cd-683f0e86cc19"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 7,
+      "Categories": "P21_D",
+      "Name": "蜂鸣器测试",
+      "TestDesc": "点击屏幕音量键，扬声器响一声，“确认”按钮",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "BeeperTest"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "ae006ef2-e18f-47c7-b9b0-aa5d8e19a827"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 8,
+      "Categories": "P21_D",
+      "Name": "风扇测试",
+      "TestDesc": "风扇停止/启动测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "FANTest"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "fabde802-6ce2-4c07-90bd-53b5730f54ad"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.ManualTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 9,
+      "Categories": "P21_D",
+      "Name": "电源指示灯测试",
+      "TestDesc": "目测电源按键指示灯为常亮状态.",
+      "HandleDesc": "",
+      "GUID": "1b0ac0cb-de40-461f-9fcb-c943513d9414"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 10,
+      "Categories": "P21_D",
+      "Name": "系统板PA模块测试",
+      "TestDesc": "系统板PA模块测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestPaModule"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "5e4499d3-fe51-4a18-a510-e5866c71b485"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 11,
+      "Categories": "P21_D",
+      "Name": "HART测试",
+      "TestDesc": "搜索Hart小板搜索到则通过",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestHart"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "42a12b30-4488-4c87-bd01-5148e26f1ae0"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Name": "电池功耗测试",
+      "SortIdentifier": 12,
+      "Categories": "P21_D",
+      "TestDesc": "检验电池供电状态及功耗正常",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestMeterState"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "整机功耗",
+          "Operator": "<=",
+          "Value": 11500,
+          "Unit": "mW",
+          "GUID": "3d863f0d-840b-4894-b4cf-57531292b6e7"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "整机功耗-10M机型",
+          "Operator": "<=",
+          "Value": 12500,
+          "Unit": "mW",
+          "GUID": "6ca68fa0-7d01-430f-abf7-8d31f6586c09"
+        }
+      ],
+      "GUID": "5f170be6-eedb-4488-9bb4-f20a0558e6fe"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 14,
+      "Categories": "P21_D",
+      "Name": "电测板电源测试",
+      "TestDesc": "发送指令读取电测板自检状态码，状态码为0，无故障",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "ElectricalPowerTest"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "935af66a-7bb9-4901-8696-11bfe5af6094"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 15,
+      "Categories": "P21_D",
+      "Name": "电测板测量/输出功能测试",
+      "TestDesc": "电测板测量/输出功能测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "ElectricalMeasurementAndOutputFunctionTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压0V允差值",
+          "Operator": "<=",
+          "Value": 0.16,
+          "Unit": "V",
+          "GUID": "a9db5fb8-57c3-42d7-b535-18143e1641aa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压0.1V允差值",
+          "Operator": "<=",
+          "Value": 0.16,
+          "Unit": "V",
+          "GUID": "d18c4c7e-cde7-404b-ab3b-d1b2d1600da6"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压1V允差值",
+          "Operator": "<=",
+          "Value": 0.16,
+          "Unit": "V",
+          "GUID": "543ae77e-078a-46b8-868d-8c5b323db8a4"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压10V允差值",
+          "Operator": "<=",
+          "Value": 0.16,
+          "Unit": "V",
+          "GUID": "a0424e0c-b58b-4cff-b119-e3f23bfd7c2b"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压高压档16V允差值",
+          "Operator": "<=",
+          "Value": 1,
+          "Unit": "V",
+          "GUID": "0c08b4a0-9254-42c9-887d-bbc64e459819"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压高压档24V允差值",
+          "Operator": "<=",
+          "Value": 1,
+          "Unit": "V",
+          "GUID": "a123d6b7-d237-4b90-a2bb-c36758855b00"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压高压档29V允差值",
+          "Operator": "<=",
+          "Value": 1,
+          "Unit": "V",
+          "GUID": "26f75f94-90f1-4835-9e3d-708ec14c05d2"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电流0mA允差值",
+          "Operator": "<=",
+          "Value": 0.25,
+          "Unit": "mA",
+          "GUID": "9a1cb7a3-13d6-4019-8da4-91e5ce8850c0"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压1mA允差值",
+          "Operator": "<=",
+          "Value": 0.25,
+          "Unit": "mA",
+          "GUID": "ac5e4107-6a39-4ee7-a430-93c7b95830b1"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "测量电压10mA允差值",
+          "Operator": "<=",
+          "Value": 0.25,
+          "Unit": "mA",
+          "GUID": "399536d5-2466-4a02-9caa-9cb05a17e50f"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "24V环路电压供电允差",
+          "Operator": "<=",
+          "Value": 0.24,
+          "Unit": "mA",
+          "GUID": "c4b53853-5e5d-4742-88b4-8389982670cd"
+        }
+      ],
+      "GUID": "ac1843f4-6167-41e6-8fe3-97703e6f408c"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 16,
+      "Categories": "P21_D",
+      "Name": "开关测量功能测试",
+      "TestDesc": "开关测量功能测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestSwitch"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "eb0aa2bb-4813-4d7a-96f2-bc5f47d7b357"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 17,
+      "Categories": "P21_D",
+      "Name": "外接压力模块通讯测试",
+      "TestDesc": "测试外接压力模块状态及和主机通讯情况",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "ModuleConnectStateTest"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "2aba578d-470e-400a-a8bf-b069e5fd2bea"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 18,
+      "Categories": "P21_D",
+      "Name": "系统板RTC时间测试",
+      "TestDesc": "系统板RTC时间测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "RTCTimeTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "时间差",
+          "Lower": -5,
+          "Upper": 5,
+          "Unit": "s",
+          "GUID": "68f62c5f-1321-46c6-a570-a06e3b939e7e"
+        }
+      ],
+      "GUID": "d830a25b-65db-47de-b011-3a40390f54e0"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 19,
+      "Categories": "P21_D",
+      "Name": "USB存储",
+      "TestDesc": "往U盘写一测试文件，读文件，比较内容，提示结果，“确认”按钮",
+      "HandleDesc": "确认U盘是否插好",
+      "Location": {
+        "Entry": "TestUSBPrincipal"
+      },
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "写入数据",
+          "Value": "testData010101-usb",
+          "GUID": "8c933dee-4150-469d-a626-98096691c46e"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextCondition, Bots.TestBench.Model.Scripts",
+          "Name": "读取数据",
+          "Operator": "==",
+          "Value": "testData010101-usb",
+          "GUID": "1ae985c4-2cb9-49df-a38b-6af80f0e8b77"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "U盘大小",
+          "Lower": 7.0,
+          "Upper": 8.0,
+          "Unit": "GB",
+          "GUID": "03854fb4-85e8-44a7-b4ab-a09791b823a1"
+        }
+      ],
+      "GUID": "efc1fe0b-d858-4a83-8e9c-90de9fb7cf2c"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 20,
+      "Categories": "P21_D",
+      "Name": "USB通讯",
+      "TestDesc": "通讯测试",
+      "HandleDesc": "检测USB通讯线是否插好",
+      "Location": {
+        "Entry": "TestUSBSubordinate"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "689a42a0-0e91-44e1-9775-e43765425db7"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Entry": "TestOverallWIFI"
+      },
+      "SortIdentifier": 21,
+      "Categories": "P21_D",
+      "Name": "WIFI测试",
+      "TestDesc": "连接指定无线网络，并通讯测试",
+      "HandleDesc": "",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "WIFI名称",
+          "Value": "CONSTSC",
+          "GUID": "dab5650a-5440-4dde-824a-4db9eb1b2587"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "加密模式",
+          "Value": "WPA2_PSK",
+          "GUID": "35ae7433-3f2a-40b6-a664-edfc676dbbce"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "密码",
+          "Value": "4001131199",
+          "GUID": "3d93c488-bcc1-4a14-8948-a2bde1f3902b"
+        }
+      ],
+      "Conditions": [],
+      "GUID": "4b79b4fd-9c32-480e-adc9-6b83ee7a2434"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 22,
+      "Categories": "P21_D",
+      "Name": "蓝牙测试",
+      "TestDesc": "蓝牙测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestBluetooth"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "bbaaeb1e-3ac8-4d6a-8a6b-48874814cede"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Location": {
+        "Entry": "TestStorageCardPrincipal"
+      },
+      "SortIdentifier": 23,
+      "Categories": "P21_D",
+      "Name": "SD卡测试",
+      "TestDesc": "往SD卡写一测试文件，读文件，比较内容，提示结果，“确认”按钮",
+      "HandleDesc": "确认SD卡是否插好",
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "写入数据",
+          "Value": "testData010101-sd",
+          "GUID": "0521b5b0-b379-487f-9e0b-7b6c8b5c2645"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextCondition, Bots.TestBench.Model.Scripts",
+          "Name": "读取数据",
+          "Operator": "==",
+          "Value": "testData010101-sd",
+          "GUID": "1e5a86c2-6012-4c06-90f2-79d06f84c63c"
+        }
+      ],
+      "GUID": "c9c6858f-ab82-4cbd-a8fd-3d61ff31f503"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 24,
+      "Categories": "P21_D",
+      "Name": "控制板电源测试",
+      "TestDesc": "发指令查询控制板诊断信息，返回状态值为正常则通过",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestControllerBroadPower"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "732b65e8-1f64-4f3b-92e6-debf65fe323d"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 24,
+      "Categories": "P21_D_MP",
+      "Name": "NTC测试",
+      "TestDesc": "NTC测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "NTCTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "设定温度上限",
+          "Operator": "<",
+          "Value": 35,
+          "GUID": "d79eba04-c075-41e8-8c8e-d5f1e6e580cb"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "设定温度下限",
+          "Operator": ">",
+          "Value": 15,
+          "GUID": "9bbfed44-ad4f-4f7d-9c9f-b6fe7cdcfaa9"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超差温度下限",
+          "Operator": "<=",
+          "Value": 15,
+          "GUID": "51982ded-9ecf-4020-9f56-78c37817525c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超差温度上限",
+          "Operator": ">=",
+          "Value": 55,
+          "GUID": "9acb2be4-8af0-411a-b23a-562a13c9c311"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "打压温度下限",
+          "Operator": ">=",
+          "Value": 35,
+          "GUID": "2dd3c931-3c4a-40c0-b783-037fa2f1165f"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "打压温度上限",
+          "Operator": "<",
+          "Value": 55,
+          "GUID": "b1966f1f-7f8a-4a17-bc31-8544689003d5"
+        }
+      ],
+      "GUID": "c08b0d49-7165-465b-ae90-10783c2d1c49"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 25,
+      "Categories": "P21_D",
+      "Name": "进气传感器校准",
+      "TestDesc": "发指令进行设备进气传感器校准",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestCalibrationSensor"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "重启后等待时间",
+          "Operator": "<=",
+          "Value": 20,
+          "Unit": "秒",
+          "GUID": "fd59b036-79d8-4287-a935-5f12ce4dd421"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "重启后尝试连接时间",
+          "Operator": "<=",
+          "Value": 30,
+          "Unit": "秒",
+          "GUID": "ef0b673b-04ea-440b-8208-f45b25ae3f25"
+        }
+      ],
+      "GUID": "7cb3a526-8403-492b-8b5f-76cf0631f8b3"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 25,
+      "Categories": "P21_D",
+      "Name": "自整定",
+      "TestDesc": "发指令进行设备自整定",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestSelfTuning"
+      },
+      "Parameters": [],
+      "Conditions": [],
+      "GUID": "44f214a3-06ef-4c19-864b-9d5fb503e692"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 28,
+      "Categories": "P21_D_DP",
+      "Name": "低压量程压力泄露测试和排空测试",
+      "TestDesc": "低压量程测试压力的泄露性能和排空功能",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LeakTestComposition_Low_DP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "cfb11f29-ccd4-4bb5-9987-2ef747a04d78"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "03365d86-24f6-4611-9411-726275784674"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压45秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "fdcc3c79-3353-47eb-8613-969cdb28d92d"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "18502482-2894-41e3-8ab0-9a0c294fe5db"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "0fa8762d-ab05-4b4e-9592-4abdb82ed356"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "42612771-8f29-4773-85d2-5cca1ee342b5"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力上限",
+          "Operator": "<=",
+          "Value": 1,
+          "Unit": "kPa",
+          "GUID": "b0236375-e9d1-41ad-bda0-44fd6566a247"
+        }
+      ],
+      "GUID": "9c08ec67-e224-4552-bfaf-b9ddd892f6d4"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 28,
+      "Categories": "P21_D_LLP",
+      "Name": "低压量程压力泄露测试和排空测试",
+      "TestDesc": "低压量程测试压力的泄露性能和排空功能",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LeakTestComposition_Low_LLP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.3,
+          "Unit": "%",
+          "GUID": "28925236-2810-4ff3-9664-3fd713e4645f"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.3,
+          "Unit": "%",
+          "GUID": "063eb67d-2c08-4b8a-b933-97279cd8f0b6"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压45秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "946af5d2-6109-424f-8cdc-6871597fce6f"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "daf4c9ed-9b74-4816-aca3-be76d4d5b469"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "35b58348-7231-4f84-8e06-863ffe9e0099"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "f0b04f27-3a7a-4211-937d-3396c10d661d"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力上限",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "kPa",
+          "GUID": "4fc6159d-fccc-48c5-aeea-95ba709e9eab"
+        }
+      ],
+      "GUID": "04359025-ddc8-4af4-ab88-3e237abdc513"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 29,
+      "Categories": "P21_D_LLP",
+      "Name": "高压量程压力泄露测试和排空测试",
+      "TestDesc": "高压量程测试压力的泄露性能和排空功能",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LeakTestComposition_High_LLP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.3,
+          "Unit": "%",
+          "GUID": "a2a5fa49-cc97-40da-8d92-2730abde0e22"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.3,
+          "Unit": "%",
+          "GUID": "ed208603-ad04-4ab8-b527-4e747a302789"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压45秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "98e822bf-2a31-4bf9-9e19-b8364fd22ef0"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "eb4601e0-fb93-41ef-8d21-92a3c13d77cb"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "5a161c79-2aec-4fe3-bcc2-c513f07613ad"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "2eb9b91a-735a-4602-a924-9129cfd9509a"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力上限",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "kPa",
+          "GUID": "75d2fa22-11d2-462e-b089-b0a3fa73ce15"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压稳定时间",
+          "Operator": ">=",
+          "Value": 50,
+          "Unit": "S",
+          "GUID": "b4327aa9-618e-48bf-b159-c1e0b898ca89"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压稳定时间",
+          "Operator": ">=",
+          "Value": 30,
+          "Unit": "S",
+          "GUID": "54f3cfad-95e8-4068-876e-21a98593776e"
+        }
+      ],
+      "GUID": "46ab138f-f283-4a47-a74f-fd711031c614"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 25,
+      "Categories": "P21_D_MP",
+      "Name": "低压量程压力泄露测试和排空测试",
+      "TestDesc": "低压量程测试压力的泄露性能和排空功能",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LeakTestComposition_Low_MP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "d44c975d-1b9b-46f7-83f3-3a79658b9956"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "4612e3a2-f062-47b9-b4d0-d90a794e26c1"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压45秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "934a00b6-b861-47fb-8397-016ff855ef5f"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "6cd65abe-e32b-44ab-b0ba-1c6ac55a90a4"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "d606c103-bb8f-4534-891c-eb7effc62e47"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "f8181547-e211-49ec-946c-9e9a7c59ac2d"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力上限",
+          "Operator": "<=",
+          "Value": 2,
+          "Unit": "kPa",
+          "GUID": "60a802ee-0a0f-4d1f-91dd-74b1e3e8176e"
+        }
+      ],
+      "GUID": "60202b1e-42d6-4aa7-b696-f5e3a0b01542"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 25,
+      "Categories": "P21_D_MP",
+      "Name": "高压量程压力泄露测试和排空测试",
+      "TestDesc": "高压量程测试压力的泄露性能和排空功能",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LeakTestComposition_High_MP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "7db1e3e8-03db-4cca-9dcc-c00a09daca43"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "31cdf035-2453-4db1-8cf1-0fd728f7cb1c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压50秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "6182e4ca-7bfa-49d6-8cf7-f46b6c912211"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "45f4ed8f-6d39-436d-82c9-527f97c6cd45"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控稳时间",
+          "Operator": "<=",
+          "Value": 130,
+          "Unit": "秒",
+          "GUID": "5b8452db-5e9f-442e-8981-544103c02437"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "aa3bb503-f4e2-4d0a-93f8-a2021284698c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力上限",
+          "Operator": "<=",
+          "Value": 2,
+          "Unit": "kPa",
+          "GUID": "e83c71c1-e895-4528-b8f0-cf6a86d00beb"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压稳定时间",
+          "Operator": ">=",
+          "Value": 50,
+          "Unit": "S",
+          "GUID": "27a52643-8584-4fd2-acc7-31737fbbe6ef"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压稳定时间",
+          "Operator": ">=",
+          "Value": 30,
+          "Unit": "S",
+          "GUID": "f1725bc4-920a-427d-a8dd-4fd264015413"
+        }
+      ],
+      "GUID": "efdfe457-2ef6-4734-8d4d-6d003d3997e7"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 27,
+      "Categories": "P21_D_MP",
+      "Name": "加压流程测试",
+      "TestDesc": "分别控高压低压，达到指标范围后切测量，等待300S进行设备磨合",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestFlow"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "第一个压力值",
+          "Operator": "<=",
+          "Value": 7000,
+          "Unit": "KPa",
+          "GUID": "dca8c180-f719-4aa3-af8c-dd54f26b375b"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "第二个压力值",
+          "Operator": "<=",
+          "Value": 1,
+          "Unit": "KPa",
+          "GUID": "907b5e3f-2476-4c07-a19a-b1e7f759c2cc"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "第一个压力值范围",
+          "Operator": ">=",
+          "Value": 0.95,
+          "GUID": "9288ae3b-84da-4838-a93b-92574ba87057"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "第二个压力值判断范围",
+          "Operator": "<=",
+          "Value": 50,
+          "Unit": "KPa",
+          "GUID": "eae9f92e-b86a-49b1-a8d8-4b8f805761fa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "等待时间",
+          "Operator": "<=",
+          "Value": 300,
+          "Unit": "秒",
+          "GUID": "818492bd-5fdc-47e3-b0c6-68a96f8c54e0"
+        }
+      ],
+      "GUID": "fee1133c-30b8-49c4-9d18-5666b4247d80"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 26,
+      "Categories": "P21_D_MP",
+      "Name": "气泵测试",
+      "TestDesc": "气泵测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "GasPumpTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流上限",
+          "Operator": "<",
+          "Value": 5,
+          "Unit": "A",
+          "GUID": "009ebe67-7294-4dc3-984d-2ac06f4442d5"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流上限-10M机型",
+          "Operator": "<",
+          "Value": 8,
+          "Unit": "A",
+          "GUID": "374d022f-8795-4275-b942-245dc89c7759"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流下限",
+          "Operator": ">",
+          "Value": 0.5,
+          "Unit": "A",
+          "GUID": "abfa6703-c420-4062-b9f3-c23834eeb5ef"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵测试时间",
+          "Operator": "<",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "1a83fd17-5e79-4f97-a6f4-c770d0b6b1ad"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵测试时间-10M机型",
+          "Operator": "<",
+          "Value": 210,
+          "Unit": "秒",
+          "GUID": "d586371f-7d01-4537-87d2-b5a11017e20c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵测试超差标准",
+          "Operator": ">",
+          "Value": 0.005,
+          "GUID": "f42b9561-8280-4ad1-b6ad-0e675f618ee0"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵测试时间",
+          "Operator": "<",
+          "Value": 20,
+          "Unit": "秒",
+          "GUID": "595ee669-80ef-4360-9dbe-40a9e984f91c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵测试超差标准",
+          "Operator": ">",
+          "Value": 0.005,
+          "GUID": "0b2adea7-7549-42aa-8060-d38acd7bef52"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控压时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "66720bb5-3f5b-4cd4-a8ce-5fdd23b391a1"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控压时间",
+          "Operator": "<=",
+          "Value": 20,
+          "Unit": "秒",
+          "GUID": "31fc4d9f-cdb2-4d8b-9636-a62e50765a33"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流的压力比率范围",
+          "Lower": 0.2,
+          "Upper": 1,
+          "GUID": "b0a1cc7f-0082-4edb-ad4f-7b6f3ae4491e"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵电流的压力比率范围",
+          "Lower": 0.1,
+          "Upper": 0.9,
+          "GUID": "8ac42b93-10fe-44a4-8ccc-e2459d4c5865"
+        }
+      ],
+      "GUID": "5fe7f6fd-07b2-448f-b6ae-d66b075bf001"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 31,
+      "Categories": "P21_D_MP",
+      "Name": "压力控制测试",
+      "TestDesc": "压力控制测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "PressureControlTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": "b9f238b5-180e-425e-88f7-288d47bdf508"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": "5ce50c30-d931-4be2-ae35-b2e807434c37"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": "8c4f9f1f-2297-432d-83ec-abab12103608"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": "bb1554db-e5dd-4f76-9f4f-9c97ef04c8cd"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 130,
+          "Unit": "S",
+          "GUID": "2e869b6b-eca1-4d96-8f28-b5bf51431080"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 35,
+          "Unit": "S",
+          "GUID": "f430ca17-1d88-444b-9097-56a73e23218d"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "0%控压点允差",
+          "Operator": "<=",
+          "Value": 2,
+          "Unit": "%",
+          "GUID": "df6a8891-686b-4cab-a56d-ab4eaa9db34f"
+        }
+      ],
+      "GUID": "55cc8df8-cbb3-47bb-9fcb-43799cee2524"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 32,
+      "Categories": "P21_D_MP",
+      "Name": "V6阀开启功能测试",
+      "TestDesc": "V6阀开启功能测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "V6ValveOpenTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "控压时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "s",
+          "GUID": "fb3106db-6a7c-431d-9a17-15a7a972f0f2"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "控压时间-10M",
+          "Operator": "<=",
+          "Value": 210,
+          "Unit": "s",
+          "GUID": "ac4b4113-e29d-4b42-b1be-b254ff3b2c94"
+        }
+      ],
+      "GUID": "b60fcb14-c8b5-43ed-9e72-24943f7518fe"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 33,
+      "Categories": "P21_D_MP",
+      "Name": "大气压传感器测试",
+      "TestDesc": "检测811主机的大气压传感器状态",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "AtmosSensorTest"
+      },
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "设备编号",
+          "Tag": "SN",
+          "Value": "",
+          "GUID": "0b9ad962-edf2-489d-a7f5-8a7b4c45f52f"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "AtmosphereSensor",
+          "Operator": "<=",
+          "Value": 0.2,
+          "Unit": "kPa",
+          "GUID": "ef11be41-d83b-4350-a9c0-e6babf90f82f"
+        }
+      ],
+      "GUID": "0065976c-1e1b-4dd5-9b21-51e7d0e908db"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 24,
+      "Categories": "P21_D_DP",
+      "Name": "NTC测试",
+      "TestDesc": "NTC测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "NTCTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "设定温度上限",
+          "Operator": "<",
+          "Value": 35,
+          "GUID": "d79eba04-c075-41e8-8c8e-d5f1e6e580cb"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "设定温度下限",
+          "Operator": ">",
+          "Value": 15,
+          "GUID": "9bbfed44-ad4f-4f7d-9c9f-b6fe7cdcfaa9"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超差温度下限",
+          "Operator": "<=",
+          "Value": 15,
+          "GUID": "51982ded-9ecf-4020-9f56-78c37817525c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "超差温度上限",
+          "Operator": ">=",
+          "Value": 55,
+          "GUID": "9acb2be4-8af0-411a-b23a-562a13c9c311"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "打压温度下限",
+          "Operator": ">=",
+          "Value": 35,
+          "GUID": "2dd3c931-3c4a-40c0-b783-037fa2f1165f"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "打压温度上限",
+          "Operator": "<",
+          "Value": 55,
+          "GUID": "b1966f1f-7f8a-4a17-bc31-8544689003d5"
+        }
+      ],
+      "GUID": "61706f4f-9543-497f-8cfd-9e9731aa8722"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 26,
+      "Categories": "P21_D_DP",
+      "Name": "气泵测试",
+      "TestDesc": "气泵测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "GasPumpTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流上限",
+          "Operator": "<",
+          "Value": 5,
+          "Unit": "A",
+          "GUID": "009ebe67-7294-4dc3-984d-2ac06f4442d5"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流下限",
+          "Operator": ">",
+          "Value": 0.5,
+          "Unit": "A",
+          "GUID": "abfa6703-c420-4062-b9f3-c23834eeb5ef"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵测试时间",
+          "Operator": "<",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "1a83fd17-5e79-4f97-a6f4-c770d0b6b1ad"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵测试超差标准",
+          "Operator": ">",
+          "Value": 0.005,
+          "GUID": "f42b9561-8280-4ad1-b6ad-0e675f618ee0"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵测试时间",
+          "Operator": "<",
+          "Value": 20,
+          "Unit": "秒",
+          "GUID": "595ee669-80ef-4360-9dbe-40a9e984f91c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵测试超差标准",
+          "Operator": ">",
+          "Value": 0.005,
+          "GUID": "0b2adea7-7549-42aa-8060-d38acd7bef52"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控压时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "66720bb5-3f5b-4cd4-a8ce-5fdd23b391a1"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控压时间",
+          "Operator": "<=",
+          "Value": 20,
+          "Unit": "秒",
+          "GUID": "31fc4d9f-cdb2-4d8b-9636-a62e50765a33"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流的压力比率范围",
+          "Lower": 0.2,
+          "Upper": 1,
+          "GUID": "b0a1cc7f-0082-4edb-ad4f-7b6f3ae4491e"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵电流的压力比率范围",
+          "Lower": 0.1,
+          "Upper": 0.9,
+          "GUID": "8ac42b93-10fe-44a4-8ccc-e2459d4c5865"
+        }
+      ],
+      "GUID": "ee79b436-1df0-4304-9aff-0aa8006b8070"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 29,
+      "Categories": "P21_D_DP",
+      "Name": "高压量程压力泄露测试和排空测试",
+      "TestDesc": "高压量程测试压力的泄露性能和排空功能",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LeakTestComposition_High_DP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "1960e36d-59bc-4db9-a1e1-dc533525bbf5"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": "26dbb818-677f-4d7b-8fb6-f566a84fc932"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压45秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "2ddd4aa5-28a9-4f3e-8800-bb4cd589b5c9"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": "6a471468-d757-4a27-b22e-e623b72fb115"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "bdd7661f-befc-45e0-bd28-bc67b0f9c058"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": "cbda99cc-de3b-4dec-94d1-bad27bee1826"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力上限",
+          "Operator": "<=",
+          "Value": 1,
+          "Unit": "kPa",
+          "GUID": "2d716c79-ae00-4e44-98d3-427a1eb82a28"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压稳定时间",
+          "Operator": ">=",
+          "Value": 50,
+          "Unit": "S",
+          "GUID": "37e7b3f2-a2c8-45fc-8094-f7304ce132c4"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压稳定时间",
+          "Operator": ">=",
+          "Value": 30,
+          "Unit": "S",
+          "GUID": "6f38e540-7de1-47b0-a910-b9f445a6ca80"
+        }
+      ],
+      "GUID": "fadfff03-3136-4bdf-b17c-4910b5aec660"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 30,
+      "Categories": "P21_D_DP",
+      "Name": "压力控制测试",
+      "TestDesc": "压力控制测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "PressureControlTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": "dde8c6bc-a4d5-40fd-be67-8c045064b2bd"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": "bc6469e8-52a5-4207-9c71-168ed1fc6242"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": "1adcca2c-8a02-45ce-aa22-38e4b892179e"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": "c1966593-9a17-4692-a2f1-04d327d70f08"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "S",
+          "GUID": "030be967-6f66-49f1-9603-8c406b78de8d"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 35,
+          "Unit": "S",
+          "GUID": "5c2b05e7-4620-4d5c-8849-cf191fe6799c"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "0%控压点允差",
+          "Operator": "<=",
+          "Value": 2,
+          "Unit": "%",
+          "GUID": "ab433cb2-b4e3-4398-bb6b-c51a2b4c16fd"
+        }
+      ],
+      "GUID": "1a019941-d27a-41ae-8c17-8f1a27afcc79"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 31,
+      "Categories": "P21_D_DP",
+      "Name": "大气压传感器测试",
+      "TestDesc": "检测811主机的大气压传感器状态",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "AtmosSensorTest"
+      },
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "设备编号",
+          "Tag": "SN",
+          "Value": "",
+          "GUID": "ee6bf6f2-e3ab-456e-9404-d8ddd5306284"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "AtmosphereSensor",
+          "Operator": "<=",
+          "Value": 0.2,
+          "Unit": "kPa",
+          "GUID": "b68ec9d7-1e16-4bcb-9783-728ace1004fc"
+        }
+      ],
+      "GUID": "26c57cf7-462f-45e2-add9-9e75bcebc2cc"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 30,
+      "Categories": "P21_D_LLP",
+      "Name": "压力控制测试",
+      "TestDesc": "压力控制测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "PressureControlTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": "5aaada40-0aaa-4fce-8280-2a0bda68a493"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": "b4ee38e3-73ce-4136-a580-8808cf229505"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": "2dd7b2e7-4c97-4921-a372-f23d3bce42b8"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": "a7285c8c-225a-4774-a63a-75c96398d8ff"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "S",
+          "GUID": "cff41b1c-3215-4f22-ad75-58988929b929"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 35,
+          "Unit": "S",
+          "GUID": "ca2a096e-4513-4715-b56c-7f5b096f9c39"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "0%控压点允差",
+          "Operator": "<=",
+          "Value": 2,
+          "Unit": "%",
+          "GUID": "cedb89da-c49c-45b1-9049-efa717f26fb8"
+        }
+      ],
+      "GUID": "d2dd7d82-2332-465b-ac4b-1adeb14cd063"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 31,
+      "Categories": "P21_D_LLP",
+      "Name": "大气压传感器测试",
+      "TestDesc": "检测811主机的大气压传感器状态",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "AtmosSensorTest"
+      },
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "设备编号",
+          "Tag": "SN",
+          "Value": "",
+          "GUID": "6ba6566a-6a78-45dd-b34e-2f1d8307fe12"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "AtmosphereSensor",
+          "Operator": "<=",
+          "Value": 0.2,
+          "Unit": "kPa",
+          "GUID": "bdc8ee7b-730d-4799-9065-221e7df5bd9d"
+        }
+      ],
+      "GUID": "c794bc8c-a5e7-4612-ba15-c5c6f3e49c01"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 32,
+      "Categories": "P21_D_LLP",
+      "Name": "气容密封测试",
+      "TestDesc": "右侧与中间接口使用三通和软管与810连接；用810控压10Kpa, 切换到测量。30s后泄露率≤ 0.3%",
+      "HandleDesc": "泄露就修",
+      "Location": {
+        "Entry": "QRLeakTest"
+      },
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "造压超时",
+          "Value": "20",
+          "Unit": "sec.",
+          "GUID": "63490e67-da27-40e8-bcb1-fb10b3f724e9"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "判稳等待时间",
+          "Value": "10",
+          "Unit": "sec.",
+          "GUID": "7696321c-24d0-4c13-8c24-f19b1b4f8654"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "采样时间",
+          "Value": "30",
+          "Unit": "sec.",
+          "GUID": "b7636f8c-8cb1-4479-bb9d-407334e844aa"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "判稳压力值",
+          "Operator": ">",
+          "Value": 10,
+          "Unit": "kPa",
+          "GUID": "01350db1-bcac-4dc7-bac2-7603f3ce4216"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "判稳变化率",
+          "Operator": "<=",
+          "Value": 0.3,
+          "Unit": "%",
+          "GUID": "4ad9f29f-ffcd-4b0f-a70b-b91aca29555c"
+        }
+      ],
+      "GUID": "6d94f583-709e-42f1-8c67-5f76daa1d692"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 33,
+      "Categories": "P21_D_DP",
+      "Name": "气容密封测试",
+      "TestDesc": "右侧与中间接口使用三通和软管与810连接；用810控压10Kpa, 切换到测量。30s后泄露率≤ 0.3%",
+      "HandleDesc": "泄露就修",
+      "Location": {
+        "Entry": "QRLeakTest"
+      },
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "造压超时",
+          "Value": "20",
+          "Unit": "sec.",
+          "GUID": "2dc880e3-7372-4600-90bc-943511727758"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "判稳等待时间",
+          "Value": "10",
+          "Unit": "sec.",
+          "GUID": "957741b9-7260-4299-8971-0de252e518aa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueParameter, Bots.TestBench.Model.Scripts",
+          "Name": "采样时间",
+          "Value": "30",
+          "Unit": "sec.",
+          "GUID": "c1b4c502-98e6-4886-bc66-4fafeb956d0c"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "判稳压力值",
+          "Operator": ">",
+          "Value": 10,
+          "Unit": "kPa",
+          "GUID": "9764d016-be23-4c52-8b8e-265815c2c3aa"
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "判稳变化率",
+          "Operator": "<=",
+          "Value": 0.3,
+          "Unit": "%",
+          "GUID": "ca8c12ed-f983-49a1-9732-83eb87821f52"
+        }
+      ],
+      "GUID": "d476f63d-a0bd-4188-a202-ff7f9d70045e"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "Name": "适配器供电测试",
+      "SortIdentifier": 33,
+      "Categories": "P21_D",
+      "TestDesc": "测试适配器充电状态",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "TestPowerAdapter"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "电池电量",
+          "Lower": 40,
+          "Upper": 80,
+          "Unit": "%",
+          "GUID": "0992b565-7857-4408-ba9f-3f5d4e497340"
+        }
+      ],
+      "GUID": "20a362da-6d8b-477d-9ff3-92671ef502ce"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 29,
+      "Categories": "P21_D_BP",
+      "Name": "高压量程压力泄露测试和排空测试",
+      "TestDesc": "高压量程测试压力的泄露性能和排空功能",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "LeakTestSingle_BP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.1,
+          "Unit": "%",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压45秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压气源30秒泄露率",
+          "Operator": "<=",
+          "Value": 0.5,
+          "Unit": "%",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控稳时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力上限",
+          "Operator": "<=",
+          "Value": 100,
+          "Unit": "kPa",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压稳定时间",
+          "Operator": ">=",
+          "Value": 50,
+          "Unit": "S",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压稳定时间",
+          "Operator": ">=",
+          "Value": 30,
+          "Unit": "S",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "排空后压力与大气压差",
+          "Lower": 94,
+          "Upper": 100,
+          "Unit": "kPa",
+          "GUID": ""
+        }
+      ],
+      "GUID": ""
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 26,
+      "Categories": "P21_D_BP",
+      "Name": "气泵测试",
+      "TestDesc": "气泵测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "GasPumpTest"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流上限",
+          "Operator": "<",
+          "Value": 5,
+          "Unit": "A",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流下限",
+          "Operator": ">",
+          "Value": 0.5,
+          "Unit": "A",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵测试时间",
+          "Operator": "<",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵测试超差标准",
+          "Operator": ">",
+          "Value": 0.005,
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵测试时间",
+          "Operator": "<",
+          "Value": 20,
+          "Unit": "秒",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵测试超差标准",
+          "Operator": ">",
+          "Value": 0.005,
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控压时间",
+          "Operator": "<=",
+          "Value": 120,
+          "Unit": "秒",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控压时间",
+          "Operator": "<=",
+          "Value": 20,
+          "Unit": "秒",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压泵电流的压力比率范围",
+          "Lower": 0.2,
+          "Upper": 1,
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.RangeCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压泵电流的压力比率范围",
+          "Lower": 0.1,
+          "Upper": 0.9,
+          "GUID": ""
+        }
+      ],
+      "GUID": "5fe7f6fd-07b2-448f-b6ae-d66b075bf001"
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 31,
+      "Categories": "P21_D_BP",
+      "Name": "压力控制测试",
+      "TestDesc": "压力控制测试",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "PressureControlTest_BP"
+      },
+      "Parameters": [],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压控压时间",
+          "Operator": "<=",
+          "Value": 25,
+          "Unit": "S",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压设定点控压允差",
+          "Operator": "<=",
+          "Value": 5,
+          "Unit": "%",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "正压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 130,
+          "Unit": "S",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "负压5%HP->100%HP控压时间",
+          "Operator": "<=",
+          "Value": 35,
+          "Unit": "S",
+          "GUID": ""
+        },
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "0%控压点允差",
+          "Operator": "<=",
+          "Value": 2,
+          "Unit": "%",
+          "GUID": ""
+        }
+      ],
+      "GUID": ""
+    },
+    {
+      "$type": "Bots.TestBench.Model.Task.AutoTestItem, Bots.TestBench.Model.Task",
+      "SortIdentifier": 32,
+      "Categories": "P21_D_BP",
+      "Name": "大气压传感器测试",
+      "TestDesc": "检测主机的大气压传感器状态",
+      "HandleDesc": "",
+      "Location": {
+        "Entry": "AtmosSensorTest"
+      },
+      "Parameters": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.TextParameter, Bots.TestBench.Model.Scripts",
+          "Name": "设备编号",
+          "Tag": "SN",
+          "Value": "",
+          "GUID": "0b9ad962-edf2-489d-a7f5-8a7b4c45f52f"
+        }
+      ],
+      "Conditions": [
+        {
+          "$type": "Bots.TestBench.Model.Scripts.ValueCondition, Bots.TestBench.Model.Scripts",
+          "Name": "AtmosphereSensor",
+          "Operator": "<=",
+          "Value": 0.2,
+          "Unit": "kPa",
+          "GUID": "ef11be41-d83b-4350-a9c0-e6babf90f82f"
+        }
+      ],
+      "GUID": "0065976c-1e1b-4dd5-9b21-51e7d0e908db"
+    }
+  ]
+}

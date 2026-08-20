@@ -97,6 +97,11 @@ public sealed record TestSessionResult(
     public bool FullRun { get; init; }
 
     /// <summary>
+    /// 本次会话按所选号位应执行的测试项总数。用于区分“全选但中途停止”和真正完成全部测试。
+    /// </summary>
+    public int ExpectedStepCount { get; init; }
+
+    /// <summary>
     /// 是否为重压后的重测会话（自动化异常/不合格 → 重新压合再测）。
     /// 为真时主表对应 SN 标记「已重压」，供数据追溯。
     /// </summary>

@@ -44,10 +44,10 @@ testrig-cli --biz machine --code PT03 --dry-run --no-build
 | 参数 | 说明 |
 | --- | --- |
 | `--biz <类型>` | 业务模板，必填；名称从模板目录自动发现 |
-| `--code <项目代号>` | 2-20 位字母数字，必须以字母开头 |
+| `--code <产品代号>` | 2-20 位字母数字，必须以字母开头 |
 | `--list-templates` | 列出发现的业务模板及启用状态 |
 | `--template-root <目录>` | 使用指定的模板根目录 |
-| `--output <目录>` | 指定输出目录，默认 `Output/<项目代号>` |
+| `--output <目录>` | 指定输出目录，默认 `Output/<产品代号>` |
 | `--force` | 完整构建成功后替换已有输出 |
 | `--dry-run` | 在临时目录完成生成和自检，不发布输出 |
 | `--no-build` | 生成但不执行 `dotnet build` |
@@ -113,9 +113,9 @@ testrig-cli --biz machine --code PT03 --dry-run --no-build
 
 | 令牌 | 值 |
 | --- | --- |
-| `{{ProjectCode}}` / `{{ProjectName}}` | 项目代号 |
+| `{{ProductCode}}` / `{{ProductName}}` | 产品代号 |
 | `{{MainProjectName}}` | 替换后的主项目名，例如 `PT01.App` |
-| `{{RootNamespace}}` | 项目代号 |
+| `{{RootNamespace}}` | 产品代号 |
 | `{{BusinessType}}` | 业务类型 |
 | `{{TargetFramework}}` | 根配置中的目标框架 |
 
@@ -125,7 +125,7 @@ testrig-cli --biz machine --code PT03 --dry-run --no-build
 
 模板依赖版本集中在 `Template/Common/Directory.Packages.props`，项目文件不再内联包版本。公共 WPF 项目统一到 `net8.0-windows10.0.19041.0`；DeviceLink 有意保留 `net6.0` 和 `netstandard2.0`，后续将作为 GitHub 子模块独立维护。
 
-生成项目不会预置内网 OA/API 地址，真实硬件默认关闭，未配置的外部 API 客户端会短路返回。登录历史只保存用户名，不持久化或恢复密码。
+生成项目不会预置内网 OA/API 地址；基础模板真实硬件默认关闭，Machine 的 ConST811A 导入模板按真实通讯要求默认开启，最终以生成项目 `appsettings.json` 的 `Pcba:Hardware:UseReal` 为准。未配置的外部 API 客户端会短路返回。登录历史只保存用户名，不持久化或恢复密码。
 
 ## 项目结构
 

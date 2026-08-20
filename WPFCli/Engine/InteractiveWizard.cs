@@ -25,11 +25,11 @@ public static class InteractiveWizard
         var businessType = PromptBusinessType(templatePath, opts);
         if (businessType == null) return null;
 
-        PrintStep(2, 5, "设置项目代号", "仅允许以字母开头的 2-20 位字母或数字");
-        var projectCode = PromptProjectCode(templateConfig);
-        if (projectCode == null) return null;
-        opts.ProjectCode = projectCode;
-        opts.OutputDir = Path.Combine(workspaceRoot, "Output", projectCode);
+        PrintStep(2, 5, "设置产品代号", "仅允许以字母开头的 2-20 位字母或数字");
+        var productCode = PromptProductCode(templateConfig);
+        if (productCode == null) return null;
+        opts.ProductCode = productCode;
+        opts.OutputDir = Path.Combine(workspaceRoot, "Output", productCode);
         if (Directory.Exists(opts.OutputDir))
         {
             opts.OverwriteExisting = PromptYesNo(
@@ -310,8 +310,8 @@ public static class InteractiveWizard
         return method;
     }
 
-    /// <summary>校验项目代号合法性（CLI 与交互共用）。返回错误消息，null 表示通过。</summary>
-    public static string? ValidateProjectCode(TemplateConfig cfg, string input)
+    /// <summary>校验产品代号合法性（CLI 与交互共用）。返回错误消息，null 表示通过。</summary>
+    public static string? ValidateProductCode(TemplateConfig cfg, string input)
     {
         if (string.IsNullOrEmpty(input))
             return "此项为必填，请输入。";
@@ -348,12 +348,12 @@ public static class InteractiveWizard
         return null;
     }
 
-    private static string? PromptProjectCode(TemplateConfig cfg)
+    private static string? PromptProductCode(TemplateConfig cfg)
     {
         while (true)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("  项目代号");
+            Console.Write("  产品代号");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write(" [如 PT01、MyApp]");
@@ -362,7 +362,7 @@ public static class InteractiveWizard
 
             var input = Console.ReadLine()?.Trim();
 
-            var error = ValidateProjectCode(cfg, input ?? "");
+            var error = ValidateProductCode(cfg, input ?? "");
             if (error != null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -634,7 +634,7 @@ public static class InteractiveWizard
 
         rows.AddRange(new[]
         {
-            ("项目代号", opts.ProjectCode),
+            ("产品代号", opts.ProductCode),
             ("输出目录", opts.OutputDir),
             ("模板描述", opts.Template.Description),
             ("目标框架", opts.Template.TargetFramework),

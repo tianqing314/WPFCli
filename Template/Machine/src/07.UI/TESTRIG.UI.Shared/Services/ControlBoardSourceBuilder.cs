@@ -112,7 +112,7 @@ public static class ControlBoardSourceBuilder
 
     /// <summary>
     /// 解析当前项目的命名空间前缀：程序集名形如 <c>{代号}.UI.Shared</c>，取 <c>{代号}</c>（模板态为 TESTRIG，
-    /// 生成态为实际项目代号），保证导出的 cs 使用与宿主项目一致的 using/namespace。
+    /// 生成态为实际产品代号），保证导出的 cs 使用与宿主项目一致的 using/namespace。
     /// </summary>
     /// <returns>命名空间前缀。</returns>
     private static string ResolveNamespacePrefix()

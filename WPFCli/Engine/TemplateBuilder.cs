@@ -11,7 +11,7 @@ namespace WPFCli.Engine;
 /// 并对文件名、文件夹名、文本文件内容做精确占位符替换。
 ///
 /// 替换策略：
-    ///   - 支持 {{ProjectCode}} 等显式令牌，并兼容旧 PCBA 占位符
+    ///   - 支持 {{ProductCode}} 等显式令牌，并兼容旧 PCBA 占位符
     ///   - 仅处理明确允许的 UTF-8 文本类型，未知文件不读取
 ///   - 排除目录（DeviceLink/tools/docs）下的文件不替换内容，但仍拷贝
 ///   - 拷贝时排除编译产物目录（bin/obj/.reasonix/.vs/.git）
@@ -34,7 +34,7 @@ public static class TemplateBuilder
     private static readonly Regex ExplicitTokenPattern = new(@"\{\{[A-Za-z][A-Za-z0-9]*\}\}", RegexOptions.Compiled);
 
     /// <summary>
-    /// 项目代号占位符（如 "TESTRIG"）的边界感知正则缓存：只替换前后非字母/数字的独立词，
+    /// 产品代号占位符（如 "TESTRIG"）的边界感知正则缓存：只替换前后非字母/数字的独立词，
     /// 避免误伤 DataTemplate/ControlTemplate/ItemTemplate 等 C#/XAML 常见技术标识符。
     /// 下划线不视为词字符（PCBA_suffix 这类模板占位风格仍需替换）。
     /// </summary>
@@ -124,7 +124,7 @@ public static class TemplateBuilder
         }
 
         // 3. 替换文件内容（排除目录、跳过二进制和模板元数据）
-        onProgress?.Invoke($"  替换占位符 '{opts.Template.Placeholder}' → '{opts.ProjectCode}'");
+        onProgress?.Invoke($"  替换占位符 '{opts.Template.Placeholder}' → '{opts.ProductCode}'");
         var replaced = ReplaceContentInFiles(opts.OutputDir, opts, excludeReplace);
         onProgress?.Invoke($"  内容替换文件: {replaced}");
 
@@ -163,7 +163,7 @@ public static class TemplateBuilder
         var issues = new List<string>();
         var rootDir = opts.OutputDir;
         var placeholder = opts.Template.Placeholder;
-        var projectCode = opts.ProjectCode;
+        var productCode = opts.ProductCode;
 
         // 1. 关键产物存在性
         if (!File.Exists(opts.SolutionPath))
@@ -173,8 +173,8 @@ public static class TemplateBuilder
             issues.Add($"主项目不存在: {mainCsproj}");
 
         // 2. 占位符残留扫描（排除 excludeFromReplacement 目录、二进制、模板元数据）
-        //    注意：项目代号可能以占位符为前缀（如代号 PCBA221、占位符 Template 时代号 Template221），
-        //    替换产物天然含占位符子串，须剔除项目代号后再判断，避免误报。
+        //    注意：产品代号可能以占位符为前缀（如代号 PCBA221、占位符 Template 时代号 Template221），
+        //    替换产物天然含占位符子串，须剔除产品代号后再判断，避免误报。
         var exclude = Merge(opts.Template.ExcludeFromReplacement, opts.BusinessTemplate.ExcludeFromReplacement);
         var leftover = new List<string>();
         foreach (var file in EnumerateFilesSafe(rootDir))
@@ -185,7 +185,7 @@ public static class TemplateBuilder
             if (Path.GetFileName(file).Equals("template.config.json", StringComparison.OrdinalIgnoreCase)) continue;
 
             if (!TryReadUtf8(file, out var content, out _)) continue;
-            if (HasPlaceholderLeftover(content, placeholder, projectCode))
+            if (HasPlaceholderLeftover(content, placeholder, productCode))
                 leftover.Add(relPath);
         }
         if (leftover.Count > 0)
@@ -196,7 +196,7 @@ public static class TemplateBuilder
 
         var leftoverPaths = Directory.EnumerateFileSystemEntries(rootDir, "*", SearchOption.AllDirectories)
             .Select(path => Path.GetRelativePath(rootDir, path).Replace('\\', '/'))
-            .Where(path => path.Split('/').Any(segment => HasPlaceholderLeftover(segment, placeholder, projectCode)))
+            .Where(path => path.Split('/').Any(segment => HasPlaceholderLeftover(segment, placeholder, productCode)))
             .Take(6)
             .ToList();
         if (leftoverPaths.Count > 0)
@@ -207,24 +207,24 @@ public static class TemplateBuilder
 
     /// <summary>
     /// 判断内容是否仍有占位符残留：显式 {{...}} 令牌恒为残留；
-    /// 项目代号占位符按边界感知（独立词）匹配，且需先剔除完整项目代号（替换产物可能含占位符子串）。
+    /// 产品代号占位符按边界感知（独立词）匹配，且需先剔除完整产品代号（替换产物可能含占位符子串）。
     /// </summary>
-    private static bool HasPlaceholderLeftover(string content, string placeholder, string projectCode)
+    private static bool HasPlaceholderLeftover(string content, string placeholder, string productCode)
     {
         if (ExplicitTokenPattern.IsMatch(content)) return true;
         if (placeholder.Length == 0) return false;
         var rx = GetPlaceholderBoundaryRegex(placeholder);
         if (!rx.IsMatch(content)) return false;
-        if (projectCode.Length > 0 && projectCode.StartsWith(placeholder, StringComparison.Ordinal) &&
-            content.Contains(projectCode, StringComparison.Ordinal))
+        if (productCode.Length > 0 && productCode.StartsWith(placeholder, StringComparison.Ordinal) &&
+            content.Contains(productCode, StringComparison.Ordinal))
         {
-            // 剔除项目代号后再匹配（若残留的只是代号本身则非问题）
-            return rx.IsMatch(content.Replace(projectCode, "", StringComparison.Ordinal));
+            // 剔除产品代号后再匹配（若残留的只是代号本身则非问题）
+            return rx.IsMatch(content.Replace(productCode, "", StringComparison.Ordinal));
         }
         return true;
     }
 
-    /// <summary>取（并缓存）项目代号占位符的边界感知正则。</summary>
+    /// <summary>取（并缓存）产品代号占位符的边界感知正则。</summary>
     private static Regex GetPlaceholderBoundaryRegex(string placeholder)
     {
         lock (PlaceholderBoundaryCache)
@@ -429,20 +429,20 @@ public static class TemplateBuilder
     {
         var replacements = new List<(string Token, string Value)>
         {
-            ("{{ProjectCode}}", opts.ProjectCode),
-            ("{{ProjectName}}", opts.ProjectCode),
+            ("{{ProductCode}}", opts.ProductCode),
+            ("{{ProductName}}", opts.ProductCode),
             ("{{MainProjectName}}", opts.MainProjectName),
-            ("{{RootNamespace}}", opts.ProjectCode),
+            ("{{RootNamespace}}", opts.ProductCode),
             ("{{BusinessType}}", opts.BusinessType),
             ("{{TargetFramework}}", opts.Template.TargetFramework)
         };
 
-        // 项目代号占位符：边界感知替换（仅独立词），并缓存对应正则
+        // 产品代号占位符：边界感知替换（仅独立词），并缓存对应正则
         var placeholder = opts.Template.Placeholder;
         if (placeholder.Length > 0)
         {
             GetPlaceholderBoundaryRegex(placeholder);
-            replacements.Add((placeholder, opts.ProjectCode));
+            replacements.Add((placeholder, opts.ProductCode));
         }
 
         // 被检类型占位符替换（仅动态工装模板配置了 dutPlaceholder）
@@ -475,7 +475,7 @@ public static class TemplateBuilder
     {
         foreach (var replacement in replacements)
         {
-            // 项目代号占位符做边界感知替换（避免误伤 DataTemplate/ControlTemplate 等标识符）；
+            // 产品代号占位符做边界感知替换（避免误伤 DataTemplate/ControlTemplate 等标识符）；
             // 其余令牌（{{...}}、dutPlaceholder 等）保持子串替换（如 TemplateUUTDut.cs → ConST221Dut.cs 需子串命中）
             if (PlaceholderBoundaryCache.TryGetValue(replacement.Token, out var rx))
                 value = rx.Replace(value, replacement.Value);
@@ -564,37 +564,54 @@ public static class TemplateBuilder
         return count;
     }
 
-    /// <summary>移动/重命名失败时重试 —— 清除 read-only 属性后重试，处理 AccessDenied/IOException（杀软/索引器短暂锁文件）。</summary>
-    private static void TryMoveWithRetry(Action moveAction, string path)
+    /// <summary>
+    /// 移动/重命名失败时做有界退避重试，处理杀软、索引器等造成的短暂目录占用。
+    /// </summary>
+    internal static void TryMoveWithRetry(Action moveAction, string path)
+    {
+        const int maxAttempts = 8;
+        var delayMs = 100;
+
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            try
+            {
+                moveAction();
+                return;
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            {
+                if (attempt == maxAttempts)
+                    throw new IOException($"无法重命名（已清除 read-only 并重试 {maxAttempts} 次）: {path} — {ex.Message}", ex);
+
+                // 第一次失败后清理属性；后续失败通常是共享句柄暂未释放，等待后再试。
+                if (attempt == 1)
+                    ClearReadOnlyAttribute(path);
+
+                Thread.Sleep(delayMs);
+                delayMs = Math.Min(delayMs * 2, 1000);
+            }
+        }
+    }
+
+    private static void ClearReadOnlyAttribute(string path)
     {
         try
         {
-            moveAction();
+            if (File.Exists(path))
+            {
+                var attrs = File.GetAttributes(path);
+                if ((attrs & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    File.SetAttributes(path, attrs & ~FileAttributes.ReadOnly);
+            }
+            else if (Directory.Exists(path))
+            {
+                ClearReadOnlyAttributeRecursive(path);
+            }
         }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+        catch
         {
-            // 等待短暂时间后重试（杀毒软件/Windows 搜索索引器可能短暂锁文件）
-            Thread.Sleep(200);
-
-            // 清除 read-only 属性后重试
-            try
-            {
-                if (File.Exists(path))
-                {
-                    var attrs = File.GetAttributes(path);
-                    if ((attrs & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                        File.SetAttributes(path, attrs & ~FileAttributes.ReadOnly);
-                }
-                else if (Directory.Exists(path))
-                {
-                    ClearReadOnlyAttributeRecursive(path);
-                }
-                moveAction();
-            }
-            catch (Exception ex2)
-            {
-                throw new IOException($"无法重命名（即使清除 read-only 并等待后仍失败）: {path} — {ex2.Message}", ex2);
-            }
+            // 属性清理只是恢复手段；重试仍可能在占用释放后成功。
         }
     }
 

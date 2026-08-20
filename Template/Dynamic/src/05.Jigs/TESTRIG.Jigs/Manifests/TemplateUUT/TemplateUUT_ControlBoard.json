@@ -1,6 +1,6 @@
 {
   "Key": "{{DutType}}_ControlBoard",
-  "DeviceFamily": "{{DutType}}",
+  "DeviceFamily": "{{ProductCode}}",
   "BoardName": "{{DutType}}控制板",
   "Description": "{{DutType}} 控制板动态测试（按真机逻辑迁移自旧 TemplateUUT/ConST171_MainBoard_Auto，源命名 MainBoard 有误，实为控制板；被检 ConST171Base + 标准盒 ConST326/继电器/DAM6803D 电压/2 路电流表）",
   "Dut": {

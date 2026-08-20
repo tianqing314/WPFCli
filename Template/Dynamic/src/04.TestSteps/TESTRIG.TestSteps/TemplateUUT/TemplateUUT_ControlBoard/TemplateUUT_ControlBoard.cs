@@ -172,7 +172,7 @@ public sealed class Prep{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "Prep{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -213,7 +213,7 @@ public sealed class Version{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "Version{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -238,7 +238,7 @@ public sealed class PowerTrack{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "PowerTrack{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>通道继电器与对应指标条件名（E1~E5、E7；跳过 E6）。</summary>
     private static readonly (R Relay, string Cond, string Label)[] Channels =
@@ -285,7 +285,7 @@ public sealed class PowerStatus{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "PowerStatus{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -314,7 +314,7 @@ public sealed class Consume{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "Consume{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -360,7 +360,7 @@ public sealed class Buzzer{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "Buzzer{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -405,7 +405,7 @@ public sealed class ScreenSerial{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "ScreenSerial{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>下发数据 1（大彩屏首帧）。</summary>
     private static readonly byte[] SendData1 =
@@ -578,7 +578,7 @@ public sealed class PressureSensor{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "PressureSensor{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -625,7 +625,7 @@ public sealed class TempSensor{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "TempSensor{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -687,7 +687,7 @@ public sealed class Fan{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "Fan{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -726,7 +726,7 @@ public sealed class ControlValve{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "ControlValve{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -796,7 +796,7 @@ public sealed class VacuumCtl{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "VacuumCtl{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -834,7 +834,7 @@ public sealed class BoostCtl{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "BoostCtl{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -873,7 +873,7 @@ public sealed class PreCtl{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "PreCtl{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -911,7 +911,7 @@ public sealed class FocDriver{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "FocDriver{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -979,7 +979,7 @@ public sealed class FocComm{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "FocComm{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>
@@ -1006,7 +1006,7 @@ public sealed class Finish{{DutType}}Handler : IStepHandler
     /// <summary>处理的测试项类型。</summary>
     public string Kind => "Finish{{DutType}}";
     /// <summary>限定设备家族（仅 {{DutType}} 的板使用）。</summary>
-    public string? DeviceFamily => "{{DutType}}";
+    public string? DeviceFamily => "{{ProductCode}}";
 
     /// <summary>执行本测试项。</summary>
     /// <param name="ctx">测试项上下文。</param>

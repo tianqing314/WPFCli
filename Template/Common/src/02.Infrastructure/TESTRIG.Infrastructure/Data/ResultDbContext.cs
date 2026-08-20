@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TESTRIG.Infrastructure.Data;
 
 /// <summary>
-/// 结果库共用基类：定义两张表的 DbSet 与主键/索引映射，供本地 SQLite 与远程 MySQL 复用。
+/// 结果库共用基类：定义 PCBA/Product 两套结果表的 DbSet 与主键/索引映射，供本地 SQLite 与远程 MySQL 复用。
 /// </summary>
 public abstract class ResultDbContextBase : DbContext
 {
@@ -27,6 +27,12 @@ public abstract class ResultDbContextBase : DbContext
     /// </summary>
     public DbSet<PcbaTestDataDetail> TestDataDetails => Set<PcbaTestDataDetail>();
 
+    /// <summary>Product schema 主表。</summary>
+    public DbSet<ProductTestData> ProductTestData => Set<ProductTestData>();
+
+    /// <summary>Product schema 明细表。</summary>
+    public DbSet<ProductTestDataDetail> ProductTestDataDetails => Set<ProductTestDataDetail>();
+
     /// <summary>
     /// 配置主键与索引（主表按 SN 唯一 upsert；子表按 SN+项、TaskId 建索引）。
     /// </summary>
@@ -40,6 +46,17 @@ public abstract class ResultDbContextBase : DbContext
             e.HasIndex(x => x.DeviceSn).IsUnique();
         });
         b.Entity<PcbaTestDataDetail>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.DeviceSn, x.TestItemCode });
+            e.HasIndex(x => x.TaskId);
+        });
+        b.Entity<ProductTestData>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => x.DeviceSn);
+        });
+        b.Entity<ProductTestDataDetail>(e =>
         {
             e.HasKey(x => x.Id);
             e.HasIndex(x => new { x.DeviceSn, x.TestItemCode });
@@ -63,7 +80,7 @@ public sealed class ResultDbContext : ResultDbContextBase
 }
 
 /// <summary>
-/// 远程 MySQL 结果库（正式环境上报目标），复用与本地相同的表结构与映射。
+/// 远程 MySQL 结果库（正式环境上报目标），复用与本地相同的 schema 映射。
 /// </summary>
 public sealed class RemoteResultDbContext : ResultDbContextBase
 {
@@ -179,6 +196,14 @@ public sealed class PcbaTestDataDetail
     [Column("test_item_name")]
     public string TestItemName { get; set; } = "";
 
+    /// <summary>测试项描述。</summary>
+    [Column("test_item_desc")]
+    public string? TestItemDesc { get; set; }
+
+    /// <summary>测试项判定条件（JSON/文本）。</summary>
+    [Column("test_item_conditions")]
+    public string? TestItemConditions { get; set; }
+
     /// <summary>
     /// 测试过程日志信息（按流程记录）。
     /// </summary>
@@ -220,4 +245,50 @@ public sealed class PcbaTestDataDetail
     /// </summary>
     [Column("operator")]
     public string? Operator { get; set; }
+}
+
+/// <summary>产品结果主表，对应 product_test_data。</summary>
+[Table("product_test_data")]
+public sealed class ProductTestData
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [Column("id")] public Guid Id { get; set; } = Guid.NewGuid();
+    [Column("fork_sn")] public string? ForkSn { get; set; }
+    [Column("device_sn")] public string DeviceSn { get; set; } = "";
+    [Column("device_model")] public string DeviceModel { get; set; } = "";
+    [Column("task_name")] public string? TaskName { get; set; }
+    [Column("test_type_class")] public string? TestTypeClass { get; set; }
+    [Column("test_type_detail")] public int? TestTypeDetail { get; set; }
+    [Column("station_no")] public int? StationNo { get; set; }
+    [Column("batch_no")] public string? BatchNo { get; set; }
+    [Column("is_once_pass")] public bool? IsOncePass { get; set; }
+    [Column("is_all_completed")] public bool? IsAllCompleted { get; set; }
+    [Column("is_final_pass")] public bool? IsFinalPass { get; set; }
+    [Column("time_consume")] public double? TimeConsume { get; set; }
+    [Column("start_time")] public DateTime StartTime { get; set; }
+    [Column("end_time")] public DateTime EndTime { get; set; }
+    [Column("operator")] public string? Operator { get; set; }
+}
+
+/// <summary>产品结果明细表，对应 product_test_data_details。</summary>
+[Table("product_test_data_details")]
+public sealed class ProductTestDataDetail
+{
+    [Column("id")] public Guid Id { get; set; } = Guid.NewGuid();
+    [Column("task_id")] public Guid? TaskId { get; set; }
+    [Column("device_sn")] public string DeviceSn { get; set; } = "";
+    [Column("test_item_code")] public string TestItemCode { get; set; } = "";
+    [Column("test_item_name")] public string TestItemName { get; set; } = "";
+    [Column("test_item_desc")] public string? TestItemDesc { get; set; }
+    [Column("test_item_conditions")] public string? TestItemConditions { get; set; }
+    [Column("test_process_infos")] public string? TestProcessInfos { get; set; }
+    [Column("test_process_data")] public string? TestProcessData { get; set; }
+    [Column("result_status")] public string? ResultStatus { get; set; }
+    [Column("error_message")] public string? ErrorMessage { get; set; }
+    [Column("retry_index")] public int? RetryIndex { get; set; }
+    [Column("retry_category_name")] public string? RetryCategoryName { get; set; }
+    [Column("start_time")] public DateTime StartTime { get; set; }
+    [Column("end_time")] public DateTime EndTime { get; set; }
+    [Column("operator")] public string? Operator { get; set; }
 }

@@ -304,7 +304,7 @@ public sealed class ReferencesAdapterTests
         Directory.CreateDirectory(templateRoot);
         return new BuildOptions
         {
-            ProjectCode = "PT01",
+            ProductCode = "PT01",
             Template = new TemplateConfig { Placeholder = "PCBA" },
             TemplatePath = templateRoot,
             BusinessTemplate = new TemplateConfig { DutPlaceholder = "ConST171" },

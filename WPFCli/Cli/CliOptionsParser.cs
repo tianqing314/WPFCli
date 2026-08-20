@@ -83,13 +83,13 @@ public static class CliOptionsParser
         if (string.IsNullOrWhiteSpace(business))
             return CliParseResult.Failure("缺少必填参数 --biz <业务类型>");
         if (string.IsNullOrWhiteSpace(code))
-            return CliParseResult.Failure("缺少必填参数 --code <项目代号>");
+            return CliParseResult.Failure("缺少必填参数 --code <产品代号>");
 
         var businessError = TemplateCatalog.TryResolve(templatePath, business, out var businessTemplate);
         if (businessError != null)
             return CliParseResult.Failure(businessError);
 
-        var codeError = InteractiveWizard.ValidateProjectCode(templateConfig, code);
+        var codeError = InteractiveWizard.ValidateProductCode(templateConfig, code);
         if (codeError != null)
             return CliParseResult.Failure($"代号 \"{code}\" 非法：{codeError}");
 
@@ -115,7 +115,7 @@ public static class CliOptionsParser
             TemplatePath = templatePath,
             BusinessTemplatePath = businessTemplate!.DirectoryPath,
             BusinessTemplate = businessTemplate.Config,
-            ProjectCode = code,
+            ProductCode = code,
             OutputDir = outputDir,
             OverwriteExisting = overwriteExisting,
             DryRun = dryRun,

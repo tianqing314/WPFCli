@@ -5,8 +5,8 @@ namespace WPFCli.Models;
 /// </summary>
 public class BuildOptions
 {
-    /// <summary>用户输入的项目代号（如 PT01）。</summary>
-    public string ProjectCode { get; set; } = "";
+    /// <summary>用户输入的产品代号（如 PT01）。</summary>
+    public string ProductCode { get; set; } = "";
 
     /// <summary>输出目录绝对路径（固定为 &lt;工作区&gt;\Output\&lt;代号&gt;）。</summary>
     public string OutputDir { get; set; } = "";
@@ -48,10 +48,10 @@ public class BuildOptions
     public DutImportMethod ImportMethod { get; set; } = DutImportMethod.OriginalPlatform;
 
     /// <summary>主项目名（替换占位符后，如 PT01.App）。</summary>
-    public string MainProjectName => Template.MainProjectName.Replace(Template.Placeholder, ProjectCode);
+    public string MainProjectName => Template.MainProjectName.Replace(Template.Placeholder, ProductCode);
 
     /// <summary>解决方案文件名（替换占位符后，如 PT01.sln）。</summary>
-    public string SolutionFileName => $"{ProjectCode}.sln";
+    public string SolutionFileName => $"{ProductCode}.sln";
 
     /// <summary>解决方案文件绝对路径。</summary>
     public string SolutionPath => Path.Combine(OutputDir, SolutionFileName);

@@ -42,11 +42,22 @@ dotnet run --project src/08.App/TESTRIG.App
 
 ## 仿真模式
 
-`appsettings.json` 中 `Pcba:Hardware:UseReal` 默认为 `false`（仿真）：
+基础模板的 `appsettings.json` 中 `Pcba:Hardware:UseReal` 默认为 `false`（仿真）；Machine 的 ConST811A References 导入模板按真实通讯要求将其设为 `true`。运行时启用状态以生成项目的配置为准：
 - 标准盒 / PLC 走仿真驱动，无需真实硬件。
 - TemplateUUT 被检无仿真变体，`UseReal=false` 时仍加载真机驱动类（反射注册），但不会主动连接——
   启动与 UI 正常，仅在点「开始测试」时尝试真机连接并按异常收尾（不崩溃）。
 - 切换真机：将 `UseReal` 改为 `true`，或设环境变量 `TESTRIG_REAL_HARDWARE=1`。
+
+## 结果库映射
+
+结果表由每套模板自己的 `src/08.App/TESTRIG.App/appsettings.json` 中 `Pcba.ResultStore.Schema` 决定：
+
+| 模板 | Schema | 主表 / 明细表 |
+| --- | --- | --- |
+| Dynamic | `pcba` | `pcba_test_data` / `pcba_test_data_details` |
+| Machine、Inspect、Complete | `product` | `product_test_data` / `product_test_data_details` |
+
+Product schema 写入时先创建 `product_test_data` 主记录，并使用本次会话 `TaskId` 作为主表 `id`；所有 `product_test_data_details.task_id` 均使用该主表 ID。`test_item_desc`、`test_item_conditions` 来自清单测试项，过程信息和过程数据来自测试执行记录。远程 MySQL 连接由 `Pcba.RemoteSync.ConnectionString` 配置，启动时会显式使用 `SslMode=None` 适配现场数据库。
 
 ## 新增被检（加板）流程
 

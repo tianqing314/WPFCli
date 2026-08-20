@@ -41,6 +41,9 @@ public static class ProjectCompiler
         psi.ArgumentList.Add("-c");
         psi.ArgumentList.Add(configuration);
         psi.ArgumentList.Add("--nologo");
+        // WPF 解决方案并行构建时，临时 XAML 项目偶发无诊断退出（0 warning / 0 error / exit 1）。
+        // 与仓库验证命令保持一致，串行构建可稳定生成应用和 Updater。
+        psi.ArgumentList.Add("-m:1");
 
         using var proc = new Process { StartInfo = psi };
 

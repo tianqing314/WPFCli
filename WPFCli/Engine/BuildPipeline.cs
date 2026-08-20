@@ -116,7 +116,8 @@ public sealed class BuildPipeline
         finally
         {
             opts.OutputDir = finalOutput;
-            TryDeleteDirectory(stagingOutput);
+            // DEBUG: skip cleanup to inspect failed staging
+            // if (!compileSuccess) TryDeleteDirectory(stagingOutput);
         }
     }
 

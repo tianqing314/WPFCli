@@ -1,6 +1,6 @@
 {
   "Key": "TemplateUUT_Inspect",
-  "DeviceFamily": "TemplateUUT",
+  "DeviceFamily": "{{ProductCode}}",
   "BoardName": "TemplateUUT 出厂检验",
   "Description": "TemplateUUT 出厂检验（内置占位：外观/附件/功能复检。出厂模板专属 UI 为证书/合格证生成、预览与打印）",
   "Dut": {

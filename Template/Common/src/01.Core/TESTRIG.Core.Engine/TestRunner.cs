@@ -388,6 +388,7 @@ public sealed class TestRunner
             StationNo = options.StationNo,
             DeviceModel = manifest.Dut.Model,
             FullRun = options.StepKeys is null,   // 未按测试项过滤 = 跑了全部测试项
+            ExpectedStepCount = positions.Count * manifest.Steps.Count,
         };
     }
 
@@ -448,7 +449,8 @@ public sealed class TestRunner
             if (step.StepType.Equals("Manual", StringComparison.OrdinalIgnoreCase))
             {
                 ctx = new TestContext(provider, pos, step, _evaluator, _logger, StepReport,
-                    s => SampleReported?.Invoke(this, s))
+                    s => SampleReported?.Invoke(this, s),
+                    (msg, img, ct2) => RequestConfirmAsync(pos.Index, step, msg, img, ct2))
                 { SerialNumber = serialNo };
                 result = await ConfirmManualAsync(ctx, step, ct);
                 serialNo = ctx.SerialNumber ?? serialNo;
@@ -464,7 +466,8 @@ public sealed class TestRunner
                 }
 
                 ctx = new TestContext(provider, pos, step, _evaluator, _logger, StepReport,
-                    s => SampleReported?.Invoke(this, s))
+                    s => SampleReported?.Invoke(this, s),
+                    (msg, img, ct2) => RequestConfirmAsync(pos.Index, step, msg, img, ct2))
                 { SerialNumber = serialNo };
 
                 var fatal = false;
@@ -616,6 +619,54 @@ public sealed class TestRunner
     }
 
     /// <summary>
+    /// 内联人工确认：测试项处理器执行中调用 <see cref="ITestContext.ConfirmAsync"/> 时经此方法。
+    /// 发布 <see cref="ManualConfirmRequested"/> 事件（携带 message/imagePath）复用 <c>ManualConfirmDialog</c>，
+    /// 等待操作员 OK/NG；OK→true，NG/超时/取消→false。无 UI 订阅时返回 false（避免号位挂死）。
+    /// 与 <see cref="ConfirmManualAsync"/> 不同：不参与 StepType=Manual 流程、无超时配置、不构造 StepResult。
+    /// </summary>
+    /// <param name="positionIndex">号位索引。</param>
+    /// <param name="step">当前测试项（用作弹窗标题上下文）。</param>
+    /// <param name="message">确认消息（弹窗主体）。</param>
+    /// <param name="imagePath">附图路径（可空）。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>true=操作员确认 OK；false=NG/超时/取消/无 UI。</returns>
+    private async Task<bool> RequestConfirmAsync(
+        int positionIndex,
+        StepDescriptor step,
+        string? message,
+        string? imagePath,
+        CancellationToken ct)
+    {
+        // 无 UI 订阅：按取消（false）返回，避免号位挂死
+        if (ManualConfirmRequested is null)
+        {
+            _logger.LogWarning("内联确认无 UI 订阅，按取消返回：{Step}", step.Key);
+            return false;
+        }
+
+        var tcs = new TaskCompletionSource<ManualConfirmResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var args = new ManualConfirmRequestedEventArgs(positionIndex, step, 0, tcs)
+        {
+            Message = message,
+            ImagePath = imagePath,
+        };
+
+        // 取消令牌：触发时把结论置为 Timeout（→ false），让 await 早日返回
+        using var registration = ct.Register(() => tcs.TrySetResult(ManualConfirmResult.Timeout));
+        ManualConfirmRequested.Invoke(this, args);
+
+        try
+        {
+            var result = await tcs.Task;
+            return result == ManualConfirmResult.Ok;
+        }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
     /// 整体测试前：同一 DeviceFamily 仅首次运行前执行一次。
     /// 若生命周期处理器指定了 <see cref="IBoardLifecycleHandler.ManifestKey"/>，还须 manifest.Key 匹配才执行。
     /// </summary>
@@ -683,7 +734,8 @@ public sealed class TestRunner
                 Settings = new Dictionary<string, string>(), Parameters = [], Conditions = [],
             };
             var ctx = new TestContext(provider, firstPos, placeholderStep, _evaluator, _logger,
-                (msg, lvl) => Message?.Invoke(this, new RealtimeMessageEventArgs { PositionIndex = firstPos.Index, Message = msg, Level = lvl }));
+                (msg, lvl) => Message?.Invoke(this, new RealtimeMessageEventArgs { PositionIndex = firstPos.Index, Message = msg, Level = lvl }),
+                confirm: (msg, img, ct2) => RequestConfirmAsync(firstPos.Index, placeholderStep, msg, img, ct2));
 
             _logger.LogInformation("{Step} 开始（DeviceFamily={Family}）", stepName, manifest.DeviceFamily);
             var result = await stepFunc(ctx, ct);

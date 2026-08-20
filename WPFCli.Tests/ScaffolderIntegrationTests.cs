@@ -6,6 +6,21 @@ namespace WPFCli.Tests;
 
 public sealed class ScaffolderIntegrationTests
 {
+    [Fact]
+    public void Rename_retries_transient_access_denials()
+    {
+        var attempts = 0;
+
+        TemplateBuilder.TryMoveWithRetry(() =>
+        {
+            attempts++;
+            if (attempts < 3)
+                throw new UnauthorizedAccessException("transient lock");
+        }, Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N")));
+
+        Assert.Equal(3, attempts);
+    }
+
     public static IEnumerable<object[]> EnabledBusinessTemplates()
     {
         var templateRoot = Path.Combine(LocateWorkspace(), "Template");
@@ -54,8 +69,8 @@ public sealed class ScaffolderIntegrationTests
             Assert.Null(TemplateCatalog.TryResolve(root, "complete", out var business));
             business!.Config.DeleteFromOutput.Add("remove.txt");
             File.WriteAllText(Path.Combine(root, "Common", "remove.txt"), "remove me");
-            File.WriteAllText(Path.Combine(root, "Common", "{{ProjectCode}}.txt"),
-                "{{ProjectCode}}|{{MainProjectName}}|PCBA_suffix");
+            File.WriteAllText(Path.Combine(root, "Common", "{{ProductCode}}.txt"),
+                "{{ProductCode}}|{{MainProjectName}}|PCBA_suffix");
             var binary = new byte[] { 0xFF, 0xFE, 0x50, 0x43, 0x42, 0x41 };
             File.WriteAllBytes(Path.Combine(root, "Common", "payload.dat"), binary);
 
@@ -210,7 +225,7 @@ public sealed class ScaffolderIntegrationTests
         string output)
         => new()
         {
-            ProjectCode = "PT01",
+            ProductCode = "PT01",
             Template = rootConfig,
             TemplatePath = templateRoot,
             BusinessTemplate = business.Config,

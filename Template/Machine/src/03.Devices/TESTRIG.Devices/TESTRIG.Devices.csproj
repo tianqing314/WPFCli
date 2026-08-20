@@ -23,6 +23,9 @@
     <Reference Include="Xmas11.Comm.Devices.ZQWL"><HintPath>$(X11)\Xmas11.Comm.Devices.ZQWL.dll</HintPath><Private>true</Private></Reference>
     <Reference Include="Xmas11.Comm.Devices.ZCZH"><HintPath>$(X11)\Xmas11.Comm.Devices.ZCZH.dll</HintPath><Private>true</Private></Reference>
     <Reference Include="Xmas11.Comm.Devices.DPG2"><HintPath>$(X11)\Xmas11.Comm.Devices.DPG2.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Devices.APC2"><HintPath>$(X11)\Xmas11.Comm.Devices.APC2.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Devices.HPC"><HintPath>$(X11)\Xmas11.Comm.Devices.HPC.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Xmas11.Comm.Device.ConSTGZ811A"><HintPath>$(X11)\Xmas11.Comm.Device.ConSTGZ811A.dll</HintPath><Private>true</Private></Reference>
     <Reference Include="Xmas11.Domain"><HintPath>$(X11)\Xmas11.Domain.dll</HintPath><Private>true</Private></Reference>
     <!-- ConST326 标准盒源/测：DPC2Base -->
     <Reference Include="Xmas11.Comm.Devices.DPC2"><HintPath>$(X11)\Xmas11.Comm.Devices.DPC2.dll</HintPath><Private>true</Private></Reference>

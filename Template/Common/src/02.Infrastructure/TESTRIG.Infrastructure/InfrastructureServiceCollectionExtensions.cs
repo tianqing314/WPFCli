@@ -24,6 +24,14 @@ public static class InfrastructureServiceCollectionExtensions
     public static IServiceCollection AddPcbaInfrastructure(this IServiceCollection services, IConfiguration config)
     {
         services.Configure<PcbaOptions>(config.GetSection(PcbaOptions.Section));
+        var resultStoreSection = config.GetSection(PcbaOptions.Section).GetSection("ResultStore");
+        var resultStoreOptions = new ResultStoreOptions
+        {
+            Schema = resultStoreSection["Schema"] ?? "pcba",
+            TestTypeClass = resultStoreSection["TestTypeClass"],
+            TestTypeDetail = int.TryParse(resultStoreSection["TestTypeDetail"], out var typeDetail) ? typeDetail : null,
+        };
+        services.AddSingleton(resultStoreOptions);
         services.AddSingleton<ManifestLoader>();
 
         // 认证：配置了 OA 基址走组合认证（测试账号 admin 免 OA 走本地，其余走 OA），否则纯本地离线认证。
@@ -60,6 +68,8 @@ public static class InfrastructureServiceCollectionExtensions
         var remoteConn = config.GetSection(PcbaOptions.Section).GetSection("RemoteSync")["ConnectionString"];
         if (!string.IsNullOrWhiteSpace(remoteConn))
         {
+            // 现场数据库未启用 TLS；显式关闭可避免 MySqlConnector 在无凭证环境下启动失败。
+            remoteConn = AppendSslModeNone(remoteConn);
             services.AddDbContextFactory<RemoteResultDbContext>(o =>
                 o.UseMySql(remoteConn, ServerVersion.AutoDetect(remoteConn)));
             services.AddSingleton<IExternalSync, MySqlExternalSync>();
@@ -73,11 +83,17 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<ITestResultStore>(sp => new EfTestResultStore(
             sp.GetRequiredService<IDbContextFactory<ResultDbContext>>(),
             sp.GetService<IDbContextFactory<RemoteResultDbContext>>(),
+            sp.GetRequiredService<ResultStoreOptions>(),
             sp.GetRequiredService<IExternalSync>(),
             sp.GetRequiredService<IUserSession>(),
             sp.GetRequiredService<ILogger<EfTestResultStore>>()));
         return services;
     }
+
+    private static string AppendSslModeNone(string connectionString) =>
+        connectionString.Contains("SslMode=", StringComparison.OrdinalIgnoreCase)
+            ? connectionString
+            : connectionString.TrimEnd(';') + ";SslMode=None;";
 
     /// <summary>
     /// 开机确保本地结果库已建。开发期无正式迁移：若检测到表结构漂移（缺列）则重建。
@@ -86,12 +102,22 @@ public static class InfrastructureServiceCollectionExtensions
     public static void EnsurePcbaDatabase(this IServiceProvider provider)
     {
         var factory = provider.GetRequiredService<IDbContextFactory<ResultDbContext>>();
+        var schema = provider.GetRequiredService<ResultStoreOptions>().ResolvedSchema;
         using var db = factory.CreateDbContext();
         db.Database.EnsureCreated();
         try
         {
-            // 触一下新列；缺列（旧库）→ 重建（仿真数据，可接受）
-            _ = db.TestData.Select(x => new { x.StartTime, x.EndTime, x.IsRePressed }).FirstOrDefault();
+            // 触一下当前 schema 的关键列；缺表/缺列（旧库）→ 重建（仿真数据，可接受）。
+            if (schema == ResultSchema.Product)
+            {
+                _ = db.ProductTestData.Select(x => new { x.Id, x.IsAllCompleted, x.TestTypeClass }).FirstOrDefault();
+                _ = db.ProductTestDataDetails.Select(x => new { x.TaskId, x.TestItemDesc, x.TestItemConditions }).FirstOrDefault();
+            }
+            else
+            {
+                _ = db.TestData.Select(x => new { x.StartTime, x.EndTime, x.IsRePressed }).FirstOrDefault();
+                _ = db.TestDataDetails.Select(x => new { x.TestItemDesc, x.TestItemConditions }).FirstOrDefault();
+            }
         }
         catch
         {

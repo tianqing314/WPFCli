@@ -40,6 +40,39 @@ public sealed class PcbaOptions
     /// 远程 MySQL 结果库上报配置。ConnectionString 为空时不启用远程上报。
     /// </summary>
     public RemoteSyncOptions RemoteSync { get; set; } = new();
+
+    /// <summary>
+    /// 结果库表结构。Dynamic 使用 pcba；Machine/Inspect/Complete 使用 product。
+    /// </summary>
+    public ResultStoreOptions ResultStore { get; set; } = new();
+}
+
+/// <summary>
+/// 结果库 schema 及产品结果表的固定分类字段。
+/// </summary>
+public sealed class ResultStoreOptions
+{
+    /// <summary>pcba 或 product，大小写不敏感。</summary>
+    public string Schema { get; set; } = "pcba";
+
+    /// <summary>product_test_data.test_type_class。</summary>
+    public string? TestTypeClass { get; set; }
+
+    /// <summary>product_test_data.test_type_detail。</summary>
+    public int? TestTypeDetail { get; set; }
+
+    /// <summary>解析后的结果表 schema。</summary>
+    public ResultSchema ResolvedSchema =>
+        string.Equals(Schema, "product", StringComparison.OrdinalIgnoreCase)
+            ? ResultSchema.Product
+            : ResultSchema.Pcba;
+}
+
+/// <summary>结果数据库表结构。</summary>
+public enum ResultSchema
+{
+    Pcba,
+    Product,
 }
 
 /// <summary>

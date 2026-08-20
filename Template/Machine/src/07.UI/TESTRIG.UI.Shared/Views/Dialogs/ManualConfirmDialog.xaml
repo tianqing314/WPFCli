@@ -42,6 +42,14 @@
                            Style="{StaticResource Text.Body}" Foreground="{StaticResource Brush.TextWeak}"/>
             </Border>
 
+            <!-- 附图（可选：内联确认 OpenInfoImgConfirmWindow 场景） -->
+            <Border x:Name="ImageBox" Margin="0,12,0,0" Padding="8" CornerRadius="3"
+                    Background="{StaticResource Brush.Surface2}"
+                    BorderBrush="{StaticResource Brush.Divider}" BorderThickness="1"
+                    Visibility="Collapsed">
+                <Image x:Name="ConfirmImage" MaxHeight="280" Stretch="Uniform"/>
+            </Border>
+
             <!-- 超时倒计时（可选） -->
             <TextBlock x:Name="TimeoutText" Margin="0,12,0,0" TextWrapping="Wrap"
                        Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Danger}"/>
